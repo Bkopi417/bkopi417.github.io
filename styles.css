@@ -208,13 +208,14 @@ p {
 }
 
 /* Labs grid */
-.labs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 180px));
-  gap: 25px;
-  justify-content: center;
-  width: 100%;
-  max-width: 1200px;
+.lab-card-upper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+  transition: transform 0.3s ease;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
 }
 
 .lab-card-upper img {
@@ -236,7 +237,6 @@ p {
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.6);
   transition: transform 0.3s ease;
-  width: 180px;
   aspect-ratio: 5 / 3;
   background: #000;
 }
