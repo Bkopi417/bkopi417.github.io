@@ -106,21 +106,50 @@
     </footer>
 
 <div id="days"></div>
-
 <script>
 const zones = [
-  { label: "🇺🇸 PST", zone: "America/Los_Angeles", lat: 34.0522, lon: -118.2437 },
-  { label: "🇺🇸 EST", zone: "America/New_York", lat: 40.7128, lon: -74.0060 },
-  { label: "🌍 GMT", zone: "Europe/London", lat: 51.5072, lon: -0.1276 },
-  { label: "🇪🇺 CET", zone: "Europe/Budapest", lat: 47.4979, lon: 19.0402 },
-  { label: "🇯🇵 JST", zone: "Asia/Tokyo", lat: 35.6762, lon: 139.6503 },
-  { label: "🇦🇺 AEST", zone: "Australia/Sydney", lat: -33.8688, lon: 151.2093 }
+  {
+    label: "🇺🇸 PST",
+    zone: "America/Los_Angeles",
+    lat: 34.0522,
+    lon: -118.2437
+  },
+  {
+    label: "🇺🇸 EST",
+    zone: "America/New_York",
+    lat: 40.7128,
+    lon: -74.0060
+  },
+  {
+    label: "🌍 GMT",
+    zone: "Europe/London",
+    lat: 51.5072,
+    lon: -0.1276
+  },
+  {
+    label: "🇪🇺 CET",
+    zone: "Europe/Berlin",
+    lat: 52.5200,
+    lon: 13.4050
+  },
+  {
+    label: "🇯🇵 JST",
+    zone: "Asia/Tokyo",
+    lat: 35.6762,
+    lon: 139.6503
+  },
+  {
+    label: "🇦🇺 AEST",
+    zone: "Australia/Sydney",
+    lat: -33.8688,
+    lon: 151.2093
+  }
 ];
 
 let weatherData = {};
 
 function formatTime(timeZone) {
-  return new Date().toLocaleTimeString("hu-HU", {
+  return new Date().toLocaleTimeString("en-GB", {
     timeZone,
     hour: "2-digit",
     minute: "2-digit",
@@ -167,21 +196,21 @@ function updateClock() {
   const localTime = formatTime(localZone);
 
   let html = `
-    <div style="
-      font-family: monospace;
-      line-height: 1.8;
-      color: #00ff88;
-    ">
-      <div>
-        🖥️ LOCAL (${localZone}):
-        <strong>${localTime}</strong>
-      </div>
+  <div style="
+    font-family: monospace;
+    line-height: 1.7;
+    color: #00ff88;
+  ">
+    <div style="margin-bottom:12px;">
+      🖥️ LOCAL (${localZone}):
+      <strong>${localTime}</strong>
+    </div>
 
-      <hr style="
-        border: none;
-        border-top: 1px solid #333;
-        margin: 10px 0;
-      ">
+    <hr style="
+      border:none;
+      border-top:1px solid #333;
+      margin:10px 0 16px;
+    ">
   `;
 
   zones.forEach(z => {
@@ -189,14 +218,35 @@ function updateClock() {
 
     const weatherText = weather
       ? `${weatherIcon(weather.code)} ${weather.temp}°C`
-      : "…";
+      : "...";
 
     html += `
+    <div style="
+      margin-bottom:14px;
+      padding-bottom:10px;
+      border-bottom:1px solid #111;
+    ">
       <div>
-        ${z.label}:
-        <strong>${formatTime(z.zone)}</strong>
-        <span style="opacity: .8;"> | ${weatherText}</span>
+        <strong>${z.label}</strong>:
+        ${formatTime(z.zone)}
+        <span style="color:#00ffaa;"> | ${weatherText}</span>
       </div>
+
+      <div style="
+        color:#888;
+        font-size:12px;
+        margin-top:2px;
+      ">
+        📍 ${z.city} · ${z.region}
+      </div>
+
+      <div style="
+        color:#666;
+        font-size:11px;
+      ">
+        LAT ${z.lat} | LON ${z.lon}
+      </div>
+    </div>
     `;
   });
 
