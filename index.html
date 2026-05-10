@@ -111,36 +111,48 @@ const zones = [
   {
     label: "🇺🇸 PST",
     zone: "America/Los_Angeles",
+    city: "Los Angeles",
+    region: "North America",
     lat: 34.0522,
     lon: -118.2437
   },
   {
     label: "🇺🇸 EST",
     zone: "America/New_York",
+    city: "New York",
+    region: "North America",
     lat: 40.7128,
     lon: -74.0060
   },
   {
     label: "🌍 GMT",
     zone: "Europe/London",
+    city: "London",
+    region: "Europe",
     lat: 51.5072,
     lon: -0.1276
   },
   {
     label: "🇪🇺 CET",
     zone: "Europe/Berlin",
+    city: "Berlin",
+    region: "Europe",
     lat: 52.5200,
     lon: 13.4050
   },
   {
     label: "🇯🇵 JST",
     zone: "Asia/Tokyo",
+    city: "Tokyo",
+    region: "Asia",
     lat: 35.6762,
     lon: 139.6503
   },
   {
     label: "🇦🇺 AEST",
     zone: "Australia/Sydney",
+    city: "Sydney",
+    region: "Oceania",
     lat: -33.8688,
     lon: 151.2093
   }
@@ -259,7 +271,6 @@ setInterval(updateClock, 1000);
 fetchWeather();
 setInterval(fetchWeather, 10 * 60 * 1000);
 </script>
-
 </body>
 </html>
 
