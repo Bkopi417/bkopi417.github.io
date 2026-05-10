@@ -105,78 +105,109 @@
         <div class="container"></div>
     </footer>
 
+<div id="days"></div>
+
 <script>
+const zones = [
+  { label: "🇺🇸 PST", zone: "America/Los_Angeles", lat: 34.0522, lon: -118.2437 },
+  { label: "🇺🇸 EST", zone: "America/New_York", lat: 40.7128, lon: -74.0060 },
+  { label: "🌍 GMT", zone: "Europe/London", lat: 51.5072, lon: -0.1276 },
+  { label: "🇪🇺 CET", zone: "Europe/Budapest", lat: 47.4979, lon: 19.0402 },
+  { label: "🇯🇵 JST", zone: "Asia/Tokyo", lat: 35.6762, lon: 139.6503 },
+  { label: "🇦🇺 AEST", zone: "Australia/Sydney", lat: -33.8688, lon: 151.2093 }
+];
+
+let weatherData = {};
+
+function formatTime(timeZone) {
+  return new Date().toLocaleTimeString("hu-HU", {
+    timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  });
+}
+
+function weatherIcon(code) {
+  if (code === 0) return "☀️";
+  if ([1, 2, 3].includes(code)) return "⛅";
+  if ([45, 48].includes(code)) return "🌫️";
+  if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) return "🌧️";
+  if ([71, 73, 75, 77, 85, 86].includes(code)) return "❄️";
+  if ([95, 96, 99].includes(code)) return "⛈️";
+  return "🌡️";
+}
+
+async function fetchWeather() {
+  for (const z of zones) {
+    try {
+      const url =
+        `https://api.open-meteo.com/v1/forecast` +
+        `?latitude=${z.lat}&longitude=${z.lon}` +
+        `&current=temperature_2m,weather_code`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      weatherData[z.label] = {
+        temp: Math.round(data.current.temperature_2m),
+        code: data.current.weather_code
+      };
+    } catch {
+      weatherData[z.label] = null;
+    }
+  }
+
+  updateClock();
+}
+
 function updateClock() {
-    const now = new Date();
+  const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const localTime = formatTime(localZone);
 
-    // Nyugatról kelet felé
-    const zones = [
-        { label: "🇺🇸 Los Angeles", zone: "America/Los_Angeles" },
-        { label: "🇨🇦 Ottawa", zone: "America/Toronto" },
-        { label: "🇬🇧 London", zone: "Europe/London" },
-        { label: "🇭🇺 Budapest", zone: "Europe/Budapest" },
-        { label: "🇦🇪 Dubai", zone: "Asia/Dubai" },
-        { label: "🇯🇵 Tokió", zone: "Asia/Tokyo" },
-        { label: "🇦🇺 Sydney", zone: "Australia/Sydney" }
-    ];
-
-    function formatTime(timeZone) {
-        return now.toLocaleTimeString("hu-HU", {
-            timeZone,
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false
-        });
-    }
-
-    const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const localTime = formatTime(localZone);
-    const utcTime = formatTime("UTC");
-
-    let html = `
+  let html = `
     <div style="
-        font-family: monospace;
-        line-height: 1.8;
-        color: #00ff88;
+      font-family: monospace;
+      line-height: 1.8;
+      color: #00ff88;
     ">
-        <div>
-            🖥️ Local (${localZone}):
-            <strong>${localTime}</strong>
-        </div>
+      <div>
+        🖥️ LOCAL (${localZone}):
+        <strong>${localTime}</strong>
+      </div>
 
-        <div>
-            🌍 UTC:
-            <strong>${utcTime}</strong>
-        </div>
+      <hr style="
+        border: none;
+        border-top: 1px solid #333;
+        margin: 10px 0;
+      ">
+  `;
 
-        <hr style="
-            border: none;
-            border-top: 1px solid #333;
-            margin: 10px 0;
-        ">
+  zones.forEach(z => {
+    const weather = weatherData[z.label];
+
+    const weatherText = weather
+      ? `${weatherIcon(weather.code)} ${weather.temp}°C`
+      : "…";
+
+    html += `
+      <div>
+        ${z.label}:
+        <strong>${formatTime(z.zone)}</strong>
+        <span style="opacity: .8;"> | ${weatherText}</span>
+      </div>
     `;
+  });
 
-    zones.forEach(z => {
-        html += `
-        <div>
-            ${z.label}:
-            <strong>${formatTime(z.zone)}</strong>
-        </div>
-        `;
-    });
+  html += `</div>`;
 
-    html += `</div>`;
-
-    const clockElement = document.getElementById("days");
-
-    if (clockElement) {
-        clockElement.innerHTML = html;
-    }
+  document.getElementById("days").innerHTML = html;
 }
 
 setInterval(updateClock, 1000);
-updateClock();
+fetchWeather();
+setInterval(fetchWeather, 10 * 60 * 1000);
 </script>
 
 </body>
