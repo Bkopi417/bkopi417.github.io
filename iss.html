@@ -3,251 +3,309 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Stuff | Kopi</title>
+  <title>ISS | Kopi</title>
+
   <link rel="stylesheet" href="styles.css">
-	<link rel="stylesheet" href="styles.css">
+
+  <style>
+    .iss-wrapper {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .iss-card {
+      border: 1px solid #111;
+      background: #050505;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 255, 120, 0.08);
+    }
+
+    .iss-title {
+      font-size: 24px;
+      margin-bottom: 22px;
+      color: #00ffaa;
+      letter-spacing: 1px;
+    }
+
+    .iss-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px 60px;
+    }
+
+    .iss-section-title {
+      color: #00ffaa;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .iss-row {
+      margin-bottom: 10px;
+    }
+
+    .iss-label {
+      color: #888;
+    }
+
+    .iss-value {
+      color: #00ff88;
+      font-weight: bold;
+    }
+
+    .iss-card a {
+      color: #00ffaa;
+      text-decoration: none;
+    }
+
+    @media (max-width: 700px) {
+      .iss-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .iss-wrapper {
+        margin-top: 35px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-	<header>
-	  <div class="container">
-		<!-- Terminal-style logo -->
-		<div class="logo-terminal" style="position: relative;">
-		  <span class="terminal-arrow">➜</span>
-		  <span class="terminal-path">~ cd /home/kopi</span>
-		  <span class="terminal-cursor"></span>
-		  <!-- Hidden clickable overlay -->
-		  <a href="index.html" class="terminal-link"></a>
-		</div>
-
-		<!-- Navigation menu -->
-		<nav class="menu">
-		  <ul>
-			<li><a href="about.html">About</a></li>
-			<li><a href="stuff.html">Stuff</a></li>
-			<li><a href="iss.html">ISS</a></li>
-			<li><a href="projects.html">Projects</a></li>
-		  </ul>
-		</nav>
-	  </div>
-	</header>
-
-  <div class="card">
-    <div class="title">🛰 INTERNATIONAL SPACE STATION</div>
-
-    <div class="grid">
-
-      <div>
-        <div class="section-title">LIVE POSITION</div>
-
-        <div class="row">
-          <span class="label">LATITUDE:</span>
-          <span class="value" id="lat">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">LONGITUDE:</span>
-          <span class="value" id="lon">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">HEMISPHERE:</span>
-          <span class="value" id="hemisphere">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">MAP:</span>
-          <a id="mapLink" href="#" target="_blank">OPEN LOCATION</a>
-        </div>
+  <header>
+    <div class="container">
+      <div class="logo-terminal" style="position: relative;">
+        <span class="terminal-arrow">➜</span>
+        <span class="terminal-path">~ cd /home/kopi</span>
+        <span class="terminal-cursor"></span>
+        <a href="index.html" class="terminal-link"></a>
       </div>
 
-      <div>
-        <div class="section-title">ORBITAL DATA</div>
-
-        <div class="row">
-          <span class="label">ALTITUDE:</span>
-          <span class="value" id="alt">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">VELOCITY:</span>
-          <span class="value" id="speed">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">VELOCITY MPH:</span>
-          <span class="value" id="speedMph">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">MACH:</span>
-          <span class="value" id="mach">...</span>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-title">VISIBILITY</div>
-
-        <div class="row">
-          <span class="label">STATUS:</span>
-          <span class="value" id="visibility">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">FOOTPRINT:</span>
-          <span class="value" id="footprint">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">ORBITAL REGION:</span>
-          <span class="value">LOW EARTH ORBIT</span>
-        </div>
-
-        <div class="row">
-          <span class="label">ORBITAL PERIOD:</span>
-          <span class="value">~92 MIN</span>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-title">SOLAR DATA</div>
-
-        <div class="row">
-          <span class="label">SOLAR LAT:</span>
-          <span class="value" id="solarLat">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">SOLAR LON:</span>
-          <span class="value" id="solarLon">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">DAY NUMBER:</span>
-          <span class="value" id="daynum">...</span>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-title">TIME DATA</div>
-
-        <div class="row">
-          <span class="label">API TIMESTAMP:</span>
-          <span class="value" id="timestamp">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">UTC TIME:</span>
-          <span class="value" id="utcTime">...</span>
-        </div>
-
-        <div class="row">
-          <span class="label">LOCAL UPDATE:</span>
-          <span class="value" id="updated">...</span>
-        </div>
-      </div>
-
+      <nav class="menu">
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="stuff.html">Stuff</a></li>
+          <li><a href="iss.html">ISS</a></li>
+          <li><a href="projects.html">Projects</a></li>
+        </ul>
+      </nav>
     </div>
-  </div>
+  </header>
 
-</div>
+  <main class="iss-wrapper">
+    <div class="iss-card">
+      <div class="iss-title">🛰 INTERNATIONAL SPACE STATION</div>
 
-<script>
-function formatNumber(value, decimals = 2) {
-  return Number(value).toFixed(decimals);
-}
+      <div class="iss-grid">
 
-function getHemisphere(lat, lon) {
-  const ns = lat >= 0 ? "NORTH" : "SOUTH";
-  const ew = lon >= 0 ? "EAST" : "WEST";
-  return ns + " / " + ew;
-}
+        <div>
+          <div class="iss-section-title">LIVE POSITION</div>
 
-function kmToMiles(km) {
-  return km * 0.621371;
-}
+          <div class="iss-row">
+            <span class="iss-label">LATITUDE:</span>
+            <span class="iss-value" id="lat">...</span>
+          </div>
 
-function kmhToMach(kmh) {
-  return kmh / 1235;
-}
+          <div class="iss-row">
+            <span class="iss-label">LONGITUDE:</span>
+            <span class="iss-value" id="lon">...</span>
+          </div>
 
-function formatUnixTime(timestamp) {
-  return new Date(timestamp * 1000).toLocaleString("en-GB", {
-    timeZone: "UTC"
-  });
-}
+          <div class="iss-row">
+            <span class="iss-label">HEMISPHERE:</span>
+            <span class="iss-value" id="hemisphere">...</span>
+          </div>
 
-async function updateISS() {
-  try {
-    const response = await fetch(
-      "https://api.wheretheiss.at/v1/satellites/25544"
-    );
+          <div class="iss-row">
+            <span class="iss-label">MAP:</span>
+            <a id="mapLink" href="#" target="_blank">OPEN LOCATION</a>
+          </div>
+        </div>
 
-    const data = await response.json();
+        <div>
+          <div class="iss-section-title">ORBITAL DATA</div>
 
-    const lat = data.latitude;
-    const lon = data.longitude;
-    const altitude = data.altitude;
-    const velocity = data.velocity;
+          <div class="iss-row">
+            <span class="iss-label">ALTITUDE:</span>
+            <span class="iss-value" id="alt">...</span>
+          </div>
 
-    document.getElementById("lat").textContent =
-      formatNumber(lat, 4) + "°";
+          <div class="iss-row">
+            <span class="iss-label">VELOCITY:</span>
+            <span class="iss-value" id="speed">...</span>
+          </div>
 
-    document.getElementById("lon").textContent =
-      formatNumber(lon, 4) + "°";
+          <div class="iss-row">
+            <span class="iss-label">VELOCITY MPH:</span>
+            <span class="iss-value" id="speedMph">...</span>
+          </div>
 
-    document.getElementById("hemisphere").textContent =
-      getHemisphere(lat, lon);
+          <div class="iss-row">
+            <span class="iss-label">MACH:</span>
+            <span class="iss-value" id="mach">...</span>
+          </div>
+        </div>
 
-    document.getElementById("alt").textContent =
-      Math.round(altitude) + " km / " +
-      Math.round(kmToMiles(altitude)) + " mi";
+        <div>
+          <div class="iss-section-title">VISIBILITY</div>
 
-    document.getElementById("speed").textContent =
-      Math.round(velocity).toLocaleString("en-GB") + " km/h";
+          <div class="iss-row">
+            <span class="iss-label">STATUS:</span>
+            <span class="iss-value" id="visibility">...</span>
+          </div>
 
-    document.getElementById("speedMph").textContent =
-      Math.round(kmToMiles(velocity)).toLocaleString("en-GB") + " mph";
+          <div class="iss-row">
+            <span class="iss-label">FOOTPRINT:</span>
+            <span class="iss-value" id="footprint">...</span>
+          </div>
 
-    document.getElementById("mach").textContent =
-      "MACH " + formatNumber(kmhToMach(velocity), 1);
+          <div class="iss-row">
+            <span class="iss-label">ORBITAL REGION:</span>
+            <span class="iss-value">LOW EARTH ORBIT</span>
+          </div>
 
-    document.getElementById("visibility").textContent =
-      String(data.visibility).toUpperCase();
+          <div class="iss-row">
+            <span class="iss-label">ORBITAL PERIOD:</span>
+            <span class="iss-value">~92 MIN</span>
+          </div>
+        </div>
 
-    document.getElementById("footprint").textContent =
-      Math.round(data.footprint).toLocaleString("en-GB") + " km";
+        <div>
+          <div class="iss-section-title">SOLAR DATA</div>
 
-    document.getElementById("solarLat").textContent =
-      formatNumber(data.solar_lat, 4) + "°";
+          <div class="iss-row">
+            <span class="iss-label">SOLAR LAT:</span>
+            <span class="iss-value" id="solarLat">...</span>
+          </div>
 
-    document.getElementById("solarLon").textContent =
-      formatNumber(data.solar_lon, 4) + "°";
+          <div class="iss-row">
+            <span class="iss-label">SOLAR LON:</span>
+            <span class="iss-value" id="solarLon">...</span>
+          </div>
 
-    document.getElementById("daynum").textContent =
-      formatNumber(data.daynum, 5);
+          <div class="iss-row">
+            <span class="iss-label">DAY NUMBER:</span>
+            <span class="iss-value" id="daynum">...</span>
+          </div>
+        </div>
 
-    document.getElementById("timestamp").textContent =
-      data.timestamp;
+        <div>
+          <div class="iss-section-title">TIME DATA</div>
 
-    document.getElementById("utcTime").textContent =
-      formatUnixTime(data.timestamp) + " UTC";
+          <div class="iss-row">
+            <span class="iss-label">API TIMESTAMP:</span>
+            <span class="iss-value" id="timestamp">...</span>
+          </div>
 
-    document.getElementById("updated").textContent =
-      "LAST UPDATE: " + new Date().toLocaleTimeString("en-GB");
+          <div class="iss-row">
+            <span class="iss-label">UTC TIME:</span>
+            <span class="iss-value" id="utcTime">...</span>
+          </div>
 
-    document.getElementById("mapLink").href =
-      `https://www.google.com/maps?q=${lat},${lon}`;
+          <div class="iss-row">
+            <span class="iss-label">LOCAL UPDATE:</span>
+            <span class="iss-value" id="updated">...</span>
+          </div>
+        </div>
 
-  } catch (error) {
-    document.getElementById("updated").textContent =
-      "ERROR FETCHING ISS DATA";
-  }
-}
+      </div>
+    </div>
+  </main>
 
-updateISS();
-setInterval(updateISS, 5000);
-</script>
+  <script>
+    function formatNumber(value, decimals = 2) {
+      return Number(value).toFixed(decimals);
+    }
 
+    function getHemisphere(lat, lon) {
+      const ns = lat >= 0 ? "NORTH" : "SOUTH";
+      const ew = lon >= 0 ? "EAST" : "WEST";
+      return ns + " / " + ew;
+    }
+
+    function kmToMiles(km) {
+      return km * 0.621371;
+    }
+
+    function kmhToMach(kmh) {
+      return kmh / 1235;
+    }
+
+    function formatUnixTime(timestamp) {
+      return new Date(timestamp * 1000).toLocaleString("en-GB", {
+        timeZone: "UTC"
+      });
+    }
+
+    async function updateISS() {
+      try {
+        const response = await fetch(
+          "https://api.wheretheiss.at/v1/satellites/25544"
+        );
+
+        const data = await response.json();
+
+        const lat = data.latitude;
+        const lon = data.longitude;
+        const altitude = data.altitude;
+        const velocity = data.velocity;
+
+        document.getElementById("lat").textContent =
+          formatNumber(lat, 4) + "°";
+
+        document.getElementById("lon").textContent =
+          formatNumber(lon, 4) + "°";
+
+        document.getElementById("hemisphere").textContent =
+          getHemisphere(lat, lon);
+
+        document.getElementById("alt").textContent =
+          Math.round(altitude) + " km / " +
+          Math.round(kmToMiles(altitude)) + " mi";
+
+        document.getElementById("speed").textContent =
+          Math.round(velocity).toLocaleString("en-GB") + " km/h";
+
+        document.getElementById("speedMph").textContent =
+          Math.round(kmToMiles(velocity)).toLocaleString("en-GB") + " mph";
+
+        document.getElementById("mach").textContent =
+          "MACH " + formatNumber(kmhToMach(velocity), 1);
+
+        document.getElementById("visibility").textContent =
+          String(data.visibility).toUpperCase();
+
+        document.getElementById("footprint").textContent =
+          Math.round(data.footprint).toLocaleString("en-GB") + " km";
+
+        document.getElementById("solarLat").textContent =
+          formatNumber(data.solar_lat, 4) + "°";
+
+        document.getElementById("solarLon").textContent =
+          formatNumber(data.solar_lon, 4) + "°";
+
+        document.getElementById("daynum").textContent =
+          formatNumber(data.daynum, 5);
+
+        document.getElementById("timestamp").textContent =
+          data.timestamp;
+
+        document.getElementById("utcTime").textContent =
+          formatUnixTime(data.timestamp) + " UTC";
+
+        document.getElementById("updated").textContent =
+          "LAST UPDATE: " + new Date().toLocaleTimeString("en-GB");
+
+        document.getElementById("mapLink").href =
+          `https://www.google.com/maps?q=${lat},${lon}`;
+
+      } catch (error) {
+        document.getElementById("updated").textContent =
+          "ERROR FETCHING ISS DATA";
+      }
+    }
+
+    updateISS();
+    setInterval(updateISS, 5000);
+  </script>
 </body>
 </html>
