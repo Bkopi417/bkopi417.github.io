@@ -210,18 +210,20 @@ function updateClock() {
   let html = `
   <div style="
     font-family: monospace;
-    line-height: 1.7;
     color: #00ff88;
   ">
-    <div style="margin-bottom:12px;">
+    <div style="
+      margin-bottom:16px;
+      font-size:16px;
+    ">
       🖥️ LOCAL (${localZone}):
       <strong>${localTime}</strong>
     </div>
 
-    <hr style="
-      border:none;
-      border-top:1px solid #333;
-      margin:10px 0 16px;
+    <div style="
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:14px;
     ">
   `;
 
@@ -234,27 +236,52 @@ function updateClock() {
 
     html += `
     <div style="
-      margin-bottom:14px;
-      padding-bottom:10px;
-      border-bottom:1px solid #111;
+      border:1px solid #111;
+      padding:12px;
+      background:#050505;
+      box-shadow:0 0 8px rgba(0,255,120,0.08);
     ">
-      <div>
-        <strong>${z.label}</strong>:
+      <div style="
+        font-size:18px;
+        margin-bottom:6px;
+      ">
+        <strong>${z.label}</strong>
+      </div>
+
+      <div style="
+        font-size:22px;
+        color:#00ffaa;
+        margin-bottom:8px;
+      ">
         ${formatTime(z.zone)}
-        <span style="color:#00ffaa;"> | ${weatherText}</span>
+      </div>
+
+      <div style="
+        color:#ccc;
+        font-size:12px;
+        margin-bottom:4px;
+      ">
+        ${weatherText}
       </div>
 
       <div style="
         color:#888;
         font-size:12px;
-        margin-top:2px;
       ">
-        📍 ${z.city} · ${z.region}
+        📍 ${z.city}
       </div>
 
       <div style="
         color:#666;
         font-size:11px;
+      ">
+        ${z.region}
+      </div>
+
+      <div style="
+        color:#444;
+        font-size:10px;
+        margin-top:6px;
       ">
         LAT ${z.lat} | LON ${z.lon}
       </div>
@@ -262,7 +289,10 @@ function updateClock() {
     `;
   });
 
-  html += `</div>`;
+  html += `
+    </div>
+  </div>
+  `;
 
   document.getElementById("days").innerHTML = html;
 }
@@ -271,6 +301,8 @@ setInterval(updateClock, 1000);
 fetchWeather();
 setInterval(fetchWeather, 10 * 60 * 1000);
 </script>
+
+	
 </body>
 </html>
 
