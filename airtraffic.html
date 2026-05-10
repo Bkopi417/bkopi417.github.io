@@ -3,102 +3,129 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Air Traffic | Kopi</title>
+  <title>Earthquakes | Kopi</title>
 
   <link rel="stylesheet" href="styles.css">
 
   <style>
-    .air-wrapper {
+    .quake-wrapper {
       max-width: 1100px;
       margin: 60px auto;
       padding: 0 20px;
     }
 
-    .air-card {
+    .quake-card {
       border: 1px solid #111;
       background: #050505;
       padding: 20px;
       box-shadow: 0 0 10px rgba(0, 255, 120, 0.08);
     }
 
-    .air-title {
+    .quake-title {
       font-size: 24px;
       margin-bottom: 22px;
       color: #00ffaa;
       letter-spacing: 1px;
     }
 
-    .air-grid {
+    .quake-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 28px 60px;
+      margin-bottom: 28px;
     }
 
-    .air-section-title {
+    .quake-section-title {
       color: #00ffaa;
       margin-bottom: 12px;
       font-size: 16px;
     }
 
-    .air-row {
+    .quake-row {
       margin-bottom: 10px;
     }
 
-    .air-label {
+    .quake-label {
       color: #888;
     }
 
-    .air-value {
+    .quake-value {
       color: #00ff88;
       font-weight: bold;
     }
 
-    .air-table {
+    .quake-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 28px;
+      margin-top: 20px;
       font-size: 13px;
     }
 
-    .air-table th,
-    .air-table td {
+    .quake-table th,
+    .quake-table td {
       border-bottom: 1px solid #111;
       padding: 8px;
       text-align: left;
     }
 
-    .air-table th {
+    .quake-table th {
       color: #00ffaa;
       font-weight: normal;
     }
 
-    .air-table td {
+    .quake-table td {
       color: #888;
     }
 
-    .air-table .air-strong {
+    .quake-table .quake-strong {
       color: #00ff88;
       font-weight: bold;
     }
 
-    .air-card a {
+    .quake-card a {
       color: #00ffaa;
       text-decoration: none;
     }
 
-    .air-small {
+    .quake-small {
       color: #666;
       font-size: 12px;
       margin-top: 18px;
       line-height: 1.6;
     }
 
+    .quake-legend {
+      margin-top: 36px;
+      border-top: 1px solid #111;
+      padding-top: 22px;
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px 40px;
+    }
+
+    .legend-item {
+      border: 1px solid #0a0a0a;
+      background: #030303;
+      padding: 12px;
+    }
+
+    .legend-text {
+      color: #666;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 6px;
+    }
+
     @media (max-width: 800px) {
-      .air-grid {
+      .quake-grid,
+      .legend-grid {
         grid-template-columns: 1fr;
       }
 
-      .air-table {
+      .quake-table {
         font-size: 11px;
       }
     }
@@ -122,7 +149,7 @@
         <li><a href="about.html">About</a></li>
         <li><a href="stuff.html">Stuff</a></li>
         <li><a href="iss.html">ISS</a></li>
-        <li><a href="airtraffic.html">Air Traffic</a></li>
+        <li><a href="earthquakes.html">Earthquakes</a></li>
         <li><a href="projects.html">Projects</a></li>
       </ul>
     </nav>
@@ -130,114 +157,168 @@
   </div>
 </header>
 
-<main class="air-wrapper">
+<main class="quake-wrapper">
 
-  <div class="air-card">
+  <div class="quake-card">
 
-    <div class="air-title">
-      ✈ HUNGARY AIR TRAFFIC
+    <div class="quake-title">
+      🌍 LIVE EARTHQUAKE MONITOR
     </div>
 
-    <div class="air-grid">
+    <div class="quake-grid">
 
       <div>
-        <div class="air-section-title">AIRSPACE STATUS</div>
+        <div class="quake-section-title">GLOBAL ACTIVITY</div>
 
-        <div class="air-row">
-          <span class="air-label">TRACKED AIRCRAFT:</span>
-          <span class="air-value" id="airCount">...</span>
+        <div class="quake-row">
+          <span class="quake-label">EVENTS LAST 24H:</span>
+          <span class="quake-value" id="quakeCount">...</span>
         </div>
 
-        <div class="air-row">
-          <span class="air-label">IN FLIGHT:</span>
-          <span class="air-value" id="inFlight">...</span>
+        <div class="quake-row">
+          <span class="quake-label">STRONGEST MAG:</span>
+          <span class="quake-value" id="strongestMag">...</span>
         </div>
 
-        <div class="air-row">
-          <span class="air-label">ON GROUND:</span>
-          <span class="air-value" id="onGround">...</span>
+        <div class="quake-row">
+          <span class="quake-label">LATEST EVENT:</span>
+          <span class="quake-value" id="latestEvent">...</span>
         </div>
       </div>
 
       <div>
-        <div class="air-section-title">REGION</div>
+        <div class="quake-section-title">DEPTH DATA</div>
 
-        <div class="air-row">
-          <span class="air-label">AREA:</span>
-          <span class="air-value">HUNGARY</span>
+        <div class="quake-row">
+          <span class="quake-label">DEEPEST EVENT:</span>
+          <span class="quake-value" id="deepestEvent">...</span>
         </div>
 
-        <div class="air-row">
-          <span class="air-label">LAT RANGE:</span>
-          <span class="air-value">45.70° → 48.70°</span>
+        <div class="quake-row">
+          <span class="quake-label">AVG DEPTH:</span>
+          <span class="quake-value" id="avgDepth">...</span>
         </div>
 
-        <div class="air-row">
-          <span class="air-label">LON RANGE:</span>
-          <span class="air-value">16.00° → 23.00°</span>
-        </div>
-      </div>
-
-      <div>
-        <div class="air-section-title">TRAFFIC TELEMETRY</div>
-
-        <div class="air-row">
-          <span class="air-label">HIGHEST ALTITUDE:</span>
-          <span class="air-value" id="highestAlt">...</span>
-        </div>
-
-        <div class="air-row">
-          <span class="air-label">FASTEST AIRCRAFT:</span>
-          <span class="air-value" id="fastest">...</span>
-        </div>
-
-        <div class="air-row">
-          <span class="air-label">AVG SPEED:</span>
-          <span class="air-value" id="avgSpeed">...</span>
+        <div class="quake-row">
+          <span class="quake-label">SHALLOW EVENTS:</span>
+          <span class="quake-value" id="shallowEvents">...</span>
         </div>
       </div>
 
       <div>
-        <div class="air-section-title">TIME DATA</div>
+        <div class="quake-section-title">RISK SIGNALS</div>
 
-        <div class="air-row">
-          <span class="air-label">API TIME:</span>
-          <span class="air-value" id="apiTime">...</span>
+        <div class="quake-row">
+          <span class="quake-label">MAG 5.0+ EVENTS:</span>
+          <span class="quake-value" id="magFive">...</span>
         </div>
 
-        <div class="air-row">
-          <span class="air-label">LOCAL UPDATE:</span>
-          <span class="air-value" id="updated">...</span>
+        <div class="quake-row">
+          <span class="quake-label">TSUNAMI FLAGS:</span>
+          <span class="quake-value" id="tsunamiFlags">...</span>
         </div>
 
-        <div class="air-row">
-          <span class="air-label">UPDATE RATE:</span>
-          <span class="air-value">15 SEC</span>
+        <div class="quake-row">
+          <span class="quake-label">ALERT LEVELS:</span>
+          <span class="quake-value" id="alertLevels">...</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="quake-section-title">TIME DATA</div>
+
+        <div class="quake-row">
+          <span class="quake-label">FEED:</span>
+          <span class="quake-value">USGS 24H ALL</span>
+        </div>
+
+        <div class="quake-row">
+          <span class="quake-label">LOCAL UPDATE:</span>
+          <span class="quake-value" id="updated">...</span>
+        </div>
+
+        <div class="quake-row">
+          <span class="quake-label">UPDATE RATE:</span>
+          <span class="quake-value">5 MIN</span>
         </div>
       </div>
 
     </div>
 
-    <table class="air-table">
+    <div class="quake-section-title">LATEST / STRONGEST EVENTS</div>
+
+    <table class="quake-table">
       <thead>
         <tr>
-          <th>CALLSIGN</th>
-          <th>COUNTRY</th>
-          <th>ALTITUDE</th>
-          <th>SPEED</th>
-          <th>HEADING</th>
-          <th>POSITION</th>
+          <th>MAG</th>
+          <th>PLACE</th>
+          <th>DEPTH</th>
+          <th>TIME</th>
+          <th>TSUNAMI</th>
+          <th>MAP</th>
         </tr>
       </thead>
-      <tbody id="airRows">
+      <tbody id="quakeRows">
         <tr>
-          <td colspan="6">Loading aircraft data...</td>
+          <td colspan="6">Loading earthquake data...</td>
         </tr>
       </tbody>
     </table>
 
-    <div class="air-small">
-      NOTE: This uses public ADS-B state vector data. Coverage depends on receiver availability, aircraft transponders, and API limits, because apparently planes also enjoy having inconsistent metadata.
+    <div class="quake-legend">
+
+      <div class="quake-section-title">DATA LEGEND</div>
+
+      <div class="legend-grid">
+
+        <div class="legend-item">
+          <span class="quake-label">MAGNITUDE</span>
+          <div class="legend-text">
+            Earthquake size on a logarithmic seismic scale.
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="quake-label">DEPTH</span>
+          <div class="legend-text">
+            Distance below the Earth's surface where the quake originated.
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="quake-label">TSUNAMI FLAG</span>
+          <div class="legend-text">
+            Indicates whether the event has a tsunami-related flag in the feed.
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="quake-label">ALERT LEVEL</span>
+          <div class="legend-text">
+            USGS event alert color when available. Many smaller events have none.
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="quake-label">SHALLOW EVENT</span>
+          <div class="legend-text">
+            Event with depth under 70 km. Shallow quakes are often felt more strongly.
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="quake-label">FEED WINDOW</span>
+          <div class="legend-text">
+            This page uses the global USGS all-earthquakes feed for the last 24 hours.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="quake-small">
+      Public seismic feed rendered as terminal telemetry, because apparently the planet also needed a dashboard.
     </div>
 
   </div>
@@ -245,22 +326,10 @@
 </main>
 
 <script>
-const HUNGARY_BOUNDS = {
-  lamin: 45.70,
-  lomin: 16.00,
-  lamax: 48.70,
-  lomax: 23.00
-};
+const USGS_URL =
+  "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
 
-function metersToFeet(meters) {
-  return meters * 3.28084;
-}
-
-function msToKmh(ms) {
-  return ms * 3.6;
-}
-
-function formatNumber(value, decimals = 0) {
+function formatNumber(value, decimals = 1) {
   if (value === null || value === undefined || Number.isNaN(value)) {
     return "N/A";
   }
@@ -270,154 +339,156 @@ function formatNumber(value, decimals = 0) {
   });
 }
 
-function formatTime(timestamp) {
-  if (!timestamp) {
+function formatTime(ms) {
+  if (!ms) {
     return "N/A";
   }
 
-  return new Date(timestamp * 1000).toLocaleString("en-GB", {
-    timeZone: "UTC"
-  }) + " UTC";
+  return new Date(ms).toLocaleString("en-GB");
 }
 
-function cleanCallsign(value) {
-  const callsign = value ? value.trim() : "";
-  return callsign || "UNKNOWN";
+function getDepth(feature) {
+  return feature.geometry &&
+         feature.geometry.coordinates &&
+         feature.geometry.coordinates.length >= 3
+    ? feature.geometry.coordinates[2]
+    : null;
 }
 
-function openMapLink(lat, lon) {
+function getMapLink(feature) {
+  const coords = feature.geometry.coordinates;
+  const lon = coords[0];
+  const lat = coords[1];
+
   return `https://www.google.com/maps?q=${lat},${lon}`;
 }
 
-async function updateAirTraffic() {
-  try {
-    const url =
-      "https://opensky-network.org/api/states/all" +
-      `?lamin=${HUNGARY_BOUNDS.lamin}` +
-      `&lomin=${HUNGARY_BOUNDS.lomin}` +
-      `&lamax=${HUNGARY_BOUNDS.lamax}` +
-      `&lomax=${HUNGARY_BOUNDS.lomax}`;
+function getAlertSummary(features) {
+  const alerts = features
+    .map(f => f.properties.alert)
+    .filter(Boolean);
 
-    const response = await fetch(url);
+  if (!alerts.length) {
+    return "NONE";
+  }
+
+  const counts = alerts.reduce((acc, alert) => {
+    acc[alert] = (acc[alert] || 0) + 1;
+    return acc;
+  }, {});
+
+  return Object.entries(counts)
+    .map(([key, value]) => `${key.toUpperCase()}: ${value}`)
+    .join(" / ");
+}
+
+async function updateEarthquakes() {
+  try {
+    const response = await fetch(USGS_URL + "?cache=" + Date.now());
     const data = await response.json();
 
-    const states = data.states || [];
+    const features = data.features || [];
 
-    const aircraft = states
-      .map(state => ({
-        icao24: state[0],
-        callsign: cleanCallsign(state[1]),
-        country: state[2] || "UNKNOWN",
-        timePosition: state[3],
-        lastContact: state[4],
-        lon: state[5],
-        lat: state[6],
-        baroAltitude: state[7],
-        onGround: state[8],
-        velocity: state[9],
-        heading: state[10],
-        verticalRate: state[11],
-        geoAltitude: state[13]
-      }))
-      .filter(a => a.lat !== null && a.lon !== null);
+    if (!features.length) {
+      document.getElementById("quakeRows").innerHTML =
+        `<tr><td colspan="6">No earthquake data available.</td></tr>`;
+      return;
+    }
 
-    const inFlight = aircraft.filter(a => !a.onGround);
-    const onGround = aircraft.filter(a => a.onGround);
+    const sortedByMag = [...features].sort((a, b) => {
+      const magA = a.properties.mag || 0;
+      const magB = b.properties.mag || 0;
+      return magB - magA;
+    });
 
-    const highest = inFlight.reduce((max, a) => {
-      const alt = a.geoAltitude || a.baroAltitude || 0;
-      return alt > max ? alt : max;
-    }, 0);
+    const sortedByTime = [...features].sort((a, b) => {
+      return b.properties.time - a.properties.time;
+    });
 
-    const fastest = inFlight.reduce((max, a) => {
-      const speed = a.velocity || 0;
-      return speed > max ? speed : max;
-    }, 0);
+    const depths = features
+      .map(getDepth)
+      .filter(d => d !== null && !Number.isNaN(d));
 
-    const avgSpeed =
-      inFlight.length > 0
-        ? inFlight.reduce((sum, a) => sum + (a.velocity || 0), 0) / inFlight.length
-        : 0;
+    const strongest = sortedByMag[0];
+    const latest = sortedByTime[0];
 
-    document.getElementById("airCount").textContent =
-      aircraft.length;
+    const deepest = features.reduce((max, f) => {
+      const depth = getDepth(f);
+      const maxDepth = getDepth(max);
+      return depth > maxDepth ? f : max;
+    }, features[0]);
 
-    document.getElementById("inFlight").textContent =
-      inFlight.length;
+    const avgDepth =
+      depths.reduce((sum, d) => sum + d, 0) / depths.length;
 
-    document.getElementById("onGround").textContent =
-      onGround.length;
+    const shallowCount =
+      depths.filter(d => d < 70).length;
 
-    document.getElementById("highestAlt").textContent =
-      highest
-        ? `${formatNumber(highest, 0)} m / ${formatNumber(metersToFeet(highest), 0)} ft`
-        : "N/A";
+    const magFiveCount =
+      features.filter(f => (f.properties.mag || 0) >= 5).length;
 
-    document.getElementById("fastest").textContent =
-      fastest
-        ? `${formatNumber(msToKmh(fastest), 0)} km/h`
-        : "N/A";
+    const tsunamiCount =
+      features.filter(f => f.properties.tsunami === 1).length;
 
-    document.getElementById("avgSpeed").textContent =
-      avgSpeed
-        ? `${formatNumber(msToKmh(avgSpeed), 0)} km/h`
-        : "N/A";
+    document.getElementById("quakeCount").textContent =
+      features.length;
 
-    document.getElementById("apiTime").textContent =
-      formatTime(data.time);
+    document.getElementById("strongestMag").textContent =
+      "M " + formatNumber(strongest.properties.mag, 1);
+
+    document.getElementById("latestEvent").textContent =
+      latest.properties.place || "UNKNOWN";
+
+    document.getElementById("deepestEvent").textContent =
+      formatNumber(getDepth(deepest), 1) + " km";
+
+    document.getElementById("avgDepth").textContent =
+      formatNumber(avgDepth, 1) + " km";
+
+    document.getElementById("shallowEvents").textContent =
+      shallowCount;
+
+    document.getElementById("magFive").textContent =
+      magFiveCount;
+
+    document.getElementById("tsunamiFlags").textContent =
+      tsunamiCount;
+
+    document.getElementById("alertLevels").textContent =
+      getAlertSummary(features);
 
     document.getElementById("updated").textContent =
       new Date().toLocaleTimeString("en-GB");
 
-    renderAircraftTable(aircraft);
+    renderEarthquakeTable(sortedByMag.slice(0, 12));
 
   } catch (error) {
     document.getElementById("updated").textContent =
-      "ERROR FETCHING AIR TRAFFIC DATA";
+      "ERROR FETCHING EARTHQUAKE DATA";
 
-    document.getElementById("airRows").innerHTML = `
-      <tr>
-        <td colspan="6">API unavailable or rate limited.</td>
-      </tr>
-    `;
+    document.getElementById("quakeRows").innerHTML =
+      `<tr><td colspan="6">USGS feed unavailable.</td></tr>`;
   }
 }
 
-function renderAircraftTable(aircraft) {
-  const rowsElement = document.getElementById("airRows");
+function renderEarthquakeTable(events) {
+  const rowsElement = document.getElementById("quakeRows");
 
-  if (!aircraft.length) {
-    rowsElement.innerHTML = `
-      <tr>
-        <td colspan="6">No aircraft currently visible in this region.</td>
-      </tr>
-    `;
-    return;
-  }
-
-  const sortedAircraft = aircraft
-    .sort((a, b) => {
-      const altA = a.geoAltitude || a.baroAltitude || 0;
-      const altB = b.geoAltitude || b.baroAltitude || 0;
-      return altB - altA;
-    })
-    .slice(0, 12);
-
-  rowsElement.innerHTML = sortedAircraft.map(a => {
-    const altitude = a.geoAltitude || a.baroAltitude;
-    const speed = a.velocity ? msToKmh(a.velocity) : null;
-    const heading = a.heading !== null ? Math.round(a.heading) + "°" : "N/A";
+  rowsElement.innerHTML = events.map(feature => {
+    const props = feature.properties;
+    const depth = getDepth(feature);
+    const tsunami = props.tsunami === 1 ? "YES" : "NO";
 
     return `
       <tr>
-        <td class="air-strong">${a.callsign}</td>
-        <td>${a.country}</td>
-        <td>${altitude ? formatNumber(altitude, 0) + " m" : "N/A"}</td>
-        <td>${speed ? formatNumber(speed, 0) + " km/h" : "N/A"}</td>
-        <td>${heading}</td>
+        <td class="quake-strong">M ${formatNumber(props.mag, 1)}</td>
+        <td>${props.place || "UNKNOWN"}</td>
+        <td>${formatNumber(depth, 1)} km</td>
+        <td>${formatTime(props.time)}</td>
+        <td>${tsunami}</td>
         <td>
-          <a href="${openMapLink(a.lat, a.lon)}" target="_blank">
-            ${formatNumber(a.lat, 2)}, ${formatNumber(a.lon, 2)}
+          <a href="${getMapLink(feature)}" target="_blank">
+            MAP
           </a>
         </td>
       </tr>
@@ -425,8 +496,8 @@ function renderAircraftTable(aircraft) {
   }).join("");
 }
 
-updateAirTraffic();
-setInterval(updateAirTraffic, 15000);
+updateEarthquakes();
+setInterval(updateEarthquakes, 5 * 60 * 1000);
 </script>
 
 </body>
