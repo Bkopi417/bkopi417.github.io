@@ -289,10 +289,14 @@ footer {
 }
 
 .difficulty-easy {
-  color: limegreen;
+  color: green;
   font-weight: bold;
 }
 
+.difficulty-veryeasy {
+  color: lightgreen;
+  font-weight: bold;
+}
 
 /*-------------------------------------------------------------------------------------------------------------*/
 
