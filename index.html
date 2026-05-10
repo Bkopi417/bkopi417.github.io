@@ -110,6 +110,8 @@
 
 <div id="days"></div>
 
+<div id="days"></div>
+
 <script>
 const budapest = {
   city: "Budapest",
@@ -161,18 +163,23 @@ function distanceKm(lat1, lon1, lat2, lon2) {
 
 async function getWeather(lat, lon) {
   try {
+
     const url =
       `https://api.open-meteo.com/v1/forecast` +
-      `?latitude=${lat}&longitude=${lon}` +
-      `&current=temperature_2m,weather_code`;
+      `?latitude=${lat}` +
+      `&longitude=${lon}` +
+      `&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m`;
 
     const response = await fetch(url);
     const data = await response.json();
 
     return {
       temp: Math.round(data.current.temperature_2m),
+      humidity: data.current.relative_humidity_2m,
+      wind: Math.round(data.current.wind_speed_10m),
       code: data.current.weather_code
     };
+
   } catch {
     return null;
   }
@@ -188,6 +195,7 @@ async function init() {
 
   // Visitor location
   navigator.geolocation.getCurrentPosition(
+
     async position => {
 
       visitorLocation = {
@@ -201,12 +209,27 @@ async function init() {
       );
 
       updateClock();
-
     },
+
     () => {
       updateClock();
     }
   );
+}
+
+function renderWeather(weather) {
+
+  if (!weather) {
+    return "...";
+  }
+
+  return `
+    ${weatherIcon(weather.code)} ${weather.temp}°C
+    <span style="color:#666;">
+      | 💧 ${weather.humidity}%
+      | 🌬 ${weather.wind} km/h
+    </span>
+  `;
 }
 
 function updateClock() {
@@ -221,6 +244,7 @@ function updateClock() {
   let distanceText = "UNKNOWN";
 
   if (visitorLocation) {
+
     distanceText =
       distanceKm(
         budapest.lat,
@@ -230,14 +254,6 @@ function updateClock() {
       ) + " km";
   }
 
-  const budapestWeatherText = budapestWeather
-    ? `${weatherIcon(budapestWeather.code)} ${budapestWeather.temp}°C`
-    : "...";
-
-  const visitorWeatherText = visitorWeather
-    ? `${weatherIcon(visitorWeather.code)} ${visitorWeather.temp}°C`
-    : "...";
-
   const html = `
   <div style="
     font-family: monospace;
@@ -246,7 +262,7 @@ function updateClock() {
   ">
 
     <div>
-      🇭🇺 CET / BUDAPEST:
+      🇪🇺 CET / BUDAPEST:
       <strong>${budapestTime}</strong>
     </div>
 
@@ -263,7 +279,7 @@ function updateClock() {
       font-size:12px;
       margin-left:18px;
     ">
-      ${budapestWeatherText}
+      ${renderWeather(budapestWeather)}
     </div>
 
     <hr style="
@@ -291,7 +307,7 @@ function updateClock() {
       font-size:12px;
       margin-left:18px;
     ">
-      ${visitorWeatherText}
+      ${renderWeather(visitorWeather)}
     </div>
 
   </div>
@@ -303,6 +319,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 
 init();
+setInterval(init, 10 * 60 * 1000);
 </script>
 
 	
