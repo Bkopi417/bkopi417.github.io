@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nuclear | Kopi</title>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .nuke-wrapper {
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .nuke-card {
+      border: 1px solid #111;
+      background: #050505;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 255, 120, 0.08);
+    }
+
+    .nuke-title {
+      font-size: 24px;
+      margin-bottom: 22px;
+      color: #00ffaa;
+      letter-spacing: 1px;
+    }
+
+    .nuke-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px 60px;
+    }
+
+    .nuke-section-title {
+      color: #00ffaa;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .nuke-row {
+      margin-bottom: 10px;
+    }
+
+    .nuke-label {
+      color: #888;
+    }
+
+    .nuke-value {
+      color: #00ff88;
+      font-weight: bold;
+    }
+
+    .nuke-card a {
+      color: #00ffaa;
+      text-decoration: none;
+    }
+
+    .nuke-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 28px;
+      font-size: 13px;
+    }
+
+    .nuke-table th,
+    .nuke-table td {
+      border-bottom: 1px solid #111;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .nuke-table th {
+      color: #00ffaa;
+      font-weight: normal;
+    }
+
+    .nuke-table td {
+      color: #888;
+    }
+
+    .nuke-table .nuke-strong {
+      color: #00ff88;
+      font-weight: bold;
+    }
+
+    .nuke-legend {
+      margin-top: 40px;
+      border-top: 1px solid #111;
+      padding-top: 24px;
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px 40px;
+    }
+
+    .legend-item {
+      border: 1px solid #0a0a0a;
+      background: #030303;
+      padding: 12px;
+    }
+
+    .legend-text {
+      color: #666;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 6px;
+    }
+
+    .nuke-small {
+      color: #666;
+      font-size: 12px;
+      margin-top: 18px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 800px) {
+      .nuke-grid,
+      .legend-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nuke-table {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+
+    <div class="logo-terminal" style="position: relative;">
+      <span class="terminal-arrow">➜</span>
+      <span class="terminal-path">~ cd /home/kopi</span>
+      <span class="terminal-cursor"></span>
+      <a href="index.html" class="terminal-link"></a>
+    </div>
+
+    <nav class="menu">
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="stuff.html">Stuff</a></li>
+        <li><a href="iss.html">ISS</a></li>
+        <li><a href="earthquakes.html">Earthquakes</a></li>
+        <li><a href="nuclear.html">Nuclear</a></li>
+        <li><a href="projects.html">Projects</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<main class="nuke-wrapper">
+
+  <div class="nuke-card">
+
+    <div class="nuke-title">
+      ☢ HUNGARY NUCLEAR MONITOR
+    </div>
+
+    <div class="nuke-grid">
+
+      <div>
+        <div class="nuke-section-title">PAKS NPP</div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">SITE:</span>
+          <span class="nuke-value">Paks Nuclear Power Plant</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">COUNTRY:</span>
+          <span class="nuke-value">Hungary</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">LOCATION:</span>
+          <span class="nuke-value">Paks, Tolna County</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">COORDINATES:</span>
+          <span class="nuke-value">46.5725° N / 18.8542° E</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="nuke-section-title">REACTOR DATA</div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">OPERATING UNITS:</span>
+          <span class="nuke-value">4</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">REACTOR TYPE:</span>
+          <span class="nuke-value">PWR / VVER V-213</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">GROSS CAPACITY / UNIT:</span>
+          <span class="nuke-value">~509 MW</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">THERMAL CAPACITY / UNIT:</span>
+          <span class="nuke-value">~1485 MWt</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="nuke-section-title">ENVIRONMENT NEAR PAKS</div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">TEMPERATURE:</span>
+          <span class="nuke-value" id="temperature">...</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">HUMIDITY:</span>
+          <span class="nuke-value" id="humidity">...</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">WIND:</span>
+          <span class="nuke-value" id="wind">...</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">PRESSURE:</span>
+          <span class="nuke-value" id="pressure">...</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="nuke-section-title">RADIATION DATA</div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">SOURCE:</span>
+          <span class="nuke-value">Safecast</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">COUNTRY FILTER:</span>
+          <span class="nuke-value">Hungary bounding box</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">LATEST VALUE:</span>
+          <span class="nuke-value" id="radiationValue">...</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">READING COUNT:</span>
+          <span class="nuke-value" id="radiationCount">...</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="nuke-section-title">TIME DATA</div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">LOCAL UPDATE:</span>
+          <span class="nuke-value" id="updated">...</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">WEATHER UPDATE:</span>
+          <span class="nuke-value">10 MIN</span>
+        </div>
+
+        <div class="nuke-row">
+          <span class="nuke-label">RADIATION UPDATE:</span>
+          <span class="nuke-value">10 MIN</span>
+        </div>
+      </div>
+
+    </div>
+
+    <table class="nuke-table">
+      <thead>
+        <tr>
+          <th>UNIT</th>
+          <th>TYPE</th>
+          <th>STATUS</th>
+          <th>GROSS CAPACITY</th>
+          <th>THERMAL CAPACITY</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="nuke-strong">PAKS-1</td>
+          <td>VVER V-213</td>
+          <td>OPERATING</td>
+          <td>~509 MW</td>
+          <td>~1485 MWt</td>
+        </tr>
+        <tr>
+          <td class="nuke-strong">PAKS-2</td>
+          <td>VVER V-213</td>
+          <td>OPERATING</td>
+          <td>~509 MW</td>
+          <td>~1485 MWt</td>
+        </tr>
+        <tr>
+          <td class="nuke-strong">PAKS-3</td>
+          <td>VVER V-213</td>
+          <td>OPERATING</td>
+          <td>~509 MW</td>
+          <td>~1485 MWt</td>
+        </tr>
+        <tr>
+          <td class="nuke-strong">PAKS-4</td>
+          <td>VVER V-213</td>
+          <td>OPERATING</td>
+          <td>~509 MW</td>
+          <td>~1485 MWt</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="nuke-legend">
+
+      <div class="nuke-section-title">
+        DATA LEGEND
+      </div>
+
+      <div class="legend-grid">
+
+        <div class="legend-item">
+          <span class="nuke-label">PWR / VVER V-213</span>
+          <div class="legend-text">
+            Pressurized water reactor design used by the Paks units.
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="nuke-label">GROSS CAPACITY</span>
+          <div class="legend-text">
+            Electrical generation capacity before internal plant consumption.
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="nuke-label">THERMAL CAPACITY</span>
+          <div class="legend-text">
+            Reactor thermal power output, measured in megawatts thermal.
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="nuke-label">RADIATION VALUE</span>
+          <div class="legend-text">
+            Latest available public background radiation reading from the selected source.
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="nuke-label">HUNGARY BOUNDING BOX</span>
+          <div class="legend-text">
+            Coordinate filter used to limit radiation readings to Hungary.
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="nuke-label">ENVIRONMENT DATA</span>
+          <div class="legend-text">
+            Current weather near Paks, useful as environmental context.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="nuke-small">
+      This page intentionally avoids fake reactor telemetry. No invented core temperature, no fake control rods, no cinematic nonsense. Cruel to the imagination, kind to reality.
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+const PAKS = {
+  lat: 46.5725,
+  lon: 18.8542
+};
+
+const HUNGARY_BOUNDS = {
+  west: 16.00,
+  south: 45.70,
+  east: 23.00,
+  north: 48.70
+};
+
+function formatNumber(value, decimals = 1) {
+  if (value === null || value === undefined || Number.isNaN(value)) {
+    return "N/A";
+  }
+
+  return Number(value).toLocaleString("en-GB", {
+    maximumFractionDigits: decimals
+  });
+}
+
+function updateTime() {
+  document.getElementById("updated").textContent =
+    new Date().toLocaleTimeString("en-GB");
+}
+
+async function updateWeather() {
+  try {
+    const url =
+      "https://api.open-meteo.com/v1/forecast" +
+      `?latitude=${PAKS.lat}` +
+      `&longitude=${PAKS.lon}` +
+      "&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m,surface_pressure";
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const current = data.current;
+
+    document.getElementById("temperature").textContent =
+      formatNumber(current.temperature_2m, 1) + " °C";
+
+    document.getElementById("humidity").textContent =
+      formatNumber(current.relative_humidity_2m, 0) + " %";
+
+    document.getElementById("wind").textContent =
+      formatNumber(current.wind_speed_10m, 0) + " km/h / " +
+      formatNumber(current.wind_direction_10m, 0) + "°";
+
+    document.getElementById("pressure").textContent =
+      formatNumber(current.surface_pressure, 0) + " hPa";
+
+  } catch (error) {
+    document.getElementById("temperature").textContent = "UNAVAILABLE";
+    document.getElementById("humidity").textContent = "UNAVAILABLE";
+    document.getElementById("wind").textContent = "UNAVAILABLE";
+    document.getElementById("pressure").textContent = "UNAVAILABLE";
+  }
+}
+
+async function updateRadiation() {
+  try {
+    /*
+      Safecast API availability/CORS can vary.
+      This page does not invent values.
+      If the browser cannot access the endpoint, it displays UNAVAILABLE.
+    */
+
+    const url =
+      "https://api.safecast.org/measurements.json" +
+      `?distance=100000` +
+      `&latitude=${PAKS.lat}` +
+      `&longitude=${PAKS.lon}` +
+      `&order=captured_at+desc`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const readings = Array.isArray(data)
+      ? data
+      : [];
+
+    const hungaryReadings = readings.filter(item => {
+      const lat = Number(item.latitude);
+      const lon = Number(item.longitude);
+
+      return lat >= HUNGARY_BOUNDS.south &&
+             lat <= HUNGARY_BOUNDS.north &&
+             lon >= HUNGARY_BOUNDS.west &&
+             lon <= HUNGARY_BOUNDS.east;
+    });
+
+    if (!hungaryReadings.length) {
+      document.getElementById("radiationValue").textContent =
+        "NO RECENT DATA";
+
+      document.getElementById("radiationCount").textContent =
+        "0";
+
+      return;
+    }
+
+    const latest = hungaryReadings[0];
+
+    const value =
+      latest.value ||
+      latest.usv ||
+      latest.cpm ||
+      null;
+
+    const unit =
+      latest.unit ||
+      (latest.usv ? "μSv/h" : latest.cpm ? "CPM" : "");
+
+    document.getElementById("radiationValue").textContent =
+      value ? `${formatNumber(value, 3)} ${unit}` : "AVAILABLE";
+
+    document.getElementById("radiationCount").textContent =
+      hungaryReadings.length;
+
+  } catch (error) {
+    document.getElementById("radiationValue").textContent =
+      "UNAVAILABLE";
+
+    document.getElementById("radiationCount").textContent =
+      "UNAVAILABLE";
+  }
+}
+
+async function updateDashboard() {
+  updateTime();
+  await updateWeather();
+  await updateRadiation();
+}
+
+updateDashboard();
+setInterval(updateDashboard, 10 * 60 * 1000);
+setInterval(updateTime, 1000);
+</script>
+
+</body>
+</html>
