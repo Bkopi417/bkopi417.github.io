@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Air Traffic | Kopi</title>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .air-wrapper {
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .air-card {
+      border: 1px solid #111;
+      background: #050505;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 255, 120, 0.08);
+    }
+
+    .air-title {
+      font-size: 24px;
+      margin-bottom: 22px;
+      color: #00ffaa;
+      letter-spacing: 1px;
+    }
+
+    .air-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px 60px;
+    }
+
+    .air-section-title {
+      color: #00ffaa;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .air-row {
+      margin-bottom: 10px;
+    }
+
+    .air-label {
+      color: #888;
+    }
+
+    .air-value {
+      color: #00ff88;
+      font-weight: bold;
+    }
+
+    .air-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 28px;
+      font-size: 13px;
+    }
+
+    .air-table th,
+    .air-table td {
+      border-bottom: 1px solid #111;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .air-table th {
+      color: #00ffaa;
+      font-weight: normal;
+    }
+
+    .air-table td {
+      color: #888;
+    }
+
+    .air-table .air-strong {
+      color: #00ff88;
+      font-weight: bold;
+    }
+
+    .air-card a {
+      color: #00ffaa;
+      text-decoration: none;
+    }
+
+    .air-small {
+      color: #666;
+      font-size: 12px;
+      margin-top: 18px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 800px) {
+      .air-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .air-table {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+
+    <div class="logo-terminal" style="position: relative;">
+      <span class="terminal-arrow">➜</span>
+      <span class="terminal-path">~ cd /home/kopi</span>
+      <span class="terminal-cursor"></span>
+      <a href="index.html" class="terminal-link"></a>
+    </div>
+
+    <nav class="menu">
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="stuff.html">Stuff</a></li>
+        <li><a href="iss.html">ISS</a></li>
+        <li><a href="airtraffic.html">Air Traffic</a></li>
+        <li><a href="projects.html">Projects</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<main class="air-wrapper">
+
+  <div class="air-card">
+
+    <div class="air-title">
+      ✈ HUNGARY AIR TRAFFIC
+    </div>
+
+    <div class="air-grid">
+
+      <div>
+        <div class="air-section-title">AIRSPACE STATUS</div>
+
+        <div class="air-row">
+          <span class="air-label">TRACKED AIRCRAFT:</span>
+          <span class="air-value" id="airCount">...</span>
+        </div>
+
+        <div class="air-row">
+          <span class="air-label">IN FLIGHT:</span>
+          <span class="air-value" id="inFlight">...</span>
+        </div>
+
+        <div class="air-row">
+          <span class="air-label">ON GROUND:</span>
+          <span class="air-value" id="onGround">...</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="air-section-title">REGION</div>
+
+        <div class="air-row">
+          <span class="air-label">AREA:</span>
+          <span class="air-value">HUNGARY</span>
+        </div>
+
+        <div class="air-row">
+          <span class="air-label">LAT RANGE:</span>
+          <span class="air-value">45.70° → 48.70°</span>
+        </div>
+
+        <div class="air-row">
+          <span class="air-label">LON RANGE:</span>
+          <span class="air-value">16.00° → 23.00°</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="air-section-title">TRAFFIC TELEMETRY</div>
+
+        <div class="air-row">
+          <span class="air-label">HIGHEST ALTITUDE:</span>
+          <span class="air-value" id="highestAlt">...</span>
+        </div>
+
+        <div class="air-row">
+          <span class="air-label">FASTEST AIRCRAFT:</span>
+          <span class="air-value" id="fastest">...</span>
+        </div>
+
+        <div class="air-row">
+          <span class="air-label">AVG SPEED:</span>
+          <span class="air-value" id="avgSpeed">...</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="air-section-title">TIME DATA</div>
+
+        <div class="air-row">
+          <span class="air-label">API TIME:</span>
+          <span class="air-value" id="apiTime">...</span>
+        </div>
+
+        <div class="air-row">
+          <span class="air-label">LOCAL UPDATE:</span>
+          <span class="air-value" id="updated">...</span>
+        </div>
+
+        <div class="air-row">
+          <span class="air-label">UPDATE RATE:</span>
+          <span class="air-value">15 SEC</span>
+        </div>
+      </div>
+
+    </div>
+
+    <table class="air-table">
+      <thead>
+        <tr>
+          <th>CALLSIGN</th>
+          <th>COUNTRY</th>
+          <th>ALTITUDE</th>
+          <th>SPEED</th>
+          <th>HEADING</th>
+          <th>POSITION</th>
+        </tr>
+      </thead>
+      <tbody id="airRows">
+        <tr>
+          <td colspan="6">Loading aircraft data...</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="air-small">
+      NOTE: This uses public ADS-B state vector data. Coverage depends on receiver availability, aircraft transponders, and API limits, because apparently planes also enjoy having inconsistent metadata.
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+const HUNGARY_BOUNDS = {
+  lamin: 45.70,
+  lomin: 16.00,
+  lamax: 48.70,
+  lomax: 23.00
+};
+
+function metersToFeet(meters) {
+  return meters * 3.28084;
+}
+
+function msToKmh(ms) {
+  return ms * 3.6;
+}
+
+function formatNumber(value, decimals = 0) {
+  if (value === null || value === undefined || Number.isNaN(value)) {
+    return "N/A";
+  }
+
+  return Number(value).toLocaleString("en-GB", {
+    maximumFractionDigits: decimals
+  });
+}
+
+function formatTime(timestamp) {
+  if (!timestamp) {
+    return "N/A";
+  }
+
+  return new Date(timestamp * 1000).toLocaleString("en-GB", {
+    timeZone: "UTC"
+  }) + " UTC";
+}
+
+function cleanCallsign(value) {
+  const callsign = value ? value.trim() : "";
+  return callsign || "UNKNOWN";
+}
+
+function openMapLink(lat, lon) {
+  return `https://www.google.com/maps?q=${lat},${lon}`;
+}
+
+async function updateAirTraffic() {
+  try {
+    const url =
+      "https://opensky-network.org/api/states/all" +
+      `?lamin=${HUNGARY_BOUNDS.lamin}` +
+      `&lomin=${HUNGARY_BOUNDS.lomin}` +
+      `&lamax=${HUNGARY_BOUNDS.lamax}` +
+      `&lomax=${HUNGARY_BOUNDS.lomax}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const states = data.states || [];
+
+    const aircraft = states
+      .map(state => ({
+        icao24: state[0],
+        callsign: cleanCallsign(state[1]),
+        country: state[2] || "UNKNOWN",
+        timePosition: state[3],
+        lastContact: state[4],
+        lon: state[5],
+        lat: state[6],
+        baroAltitude: state[7],
+        onGround: state[8],
+        velocity: state[9],
+        heading: state[10],
+        verticalRate: state[11],
+        geoAltitude: state[13]
+      }))
+      .filter(a => a.lat !== null && a.lon !== null);
+
+    const inFlight = aircraft.filter(a => !a.onGround);
+    const onGround = aircraft.filter(a => a.onGround);
+
+    const highest = inFlight.reduce((max, a) => {
+      const alt = a.geoAltitude || a.baroAltitude || 0;
+      return alt > max ? alt : max;
+    }, 0);
+
+    const fastest = inFlight.reduce((max, a) => {
+      const speed = a.velocity || 0;
+      return speed > max ? speed : max;
+    }, 0);
+
+    const avgSpeed =
+      inFlight.length > 0
+        ? inFlight.reduce((sum, a) => sum + (a.velocity || 0), 0) / inFlight.length
+        : 0;
+
+    document.getElementById("airCount").textContent =
+      aircraft.length;
+
+    document.getElementById("inFlight").textContent =
+      inFlight.length;
+
+    document.getElementById("onGround").textContent =
+      onGround.length;
+
+    document.getElementById("highestAlt").textContent =
+      highest
+        ? `${formatNumber(highest, 0)} m / ${formatNumber(metersToFeet(highest), 0)} ft`
+        : "N/A";
+
+    document.getElementById("fastest").textContent =
+      fastest
+        ? `${formatNumber(msToKmh(fastest), 0)} km/h`
+        : "N/A";
+
+    document.getElementById("avgSpeed").textContent =
+      avgSpeed
+        ? `${formatNumber(msToKmh(avgSpeed), 0)} km/h`
+        : "N/A";
+
+    document.getElementById("apiTime").textContent =
+      formatTime(data.time);
+
+    document.getElementById("updated").textContent =
+      new Date().toLocaleTimeString("en-GB");
+
+    renderAircraftTable(aircraft);
+
+  } catch (error) {
+    document.getElementById("updated").textContent =
+      "ERROR FETCHING AIR TRAFFIC DATA";
+
+    document.getElementById("airRows").innerHTML = `
+      <tr>
+        <td colspan="6">API unavailable or rate limited.</td>
+      </tr>
+    `;
+  }
+}
+
+function renderAircraftTable(aircraft) {
+  const rowsElement = document.getElementById("airRows");
+
+  if (!aircraft.length) {
+    rowsElement.innerHTML = `
+      <tr>
+        <td colspan="6">No aircraft currently visible in this region.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  const sortedAircraft = aircraft
+    .sort((a, b) => {
+      const altA = a.geoAltitude || a.baroAltitude || 0;
+      const altB = b.geoAltitude || b.baroAltitude || 0;
+      return altB - altA;
+    })
+    .slice(0, 12);
+
+  rowsElement.innerHTML = sortedAircraft.map(a => {
+    const altitude = a.geoAltitude || a.baroAltitude;
+    const speed = a.velocity ? msToKmh(a.velocity) : null;
+    const heading = a.heading !== null ? Math.round(a.heading) + "°" : "N/A";
+
+    return `
+      <tr>
+        <td class="air-strong">${a.callsign}</td>
+        <td>${a.country}</td>
+        <td>${altitude ? formatNumber(altitude, 0) + " m" : "N/A"}</td>
+        <td>${speed ? formatNumber(speed, 0) + " km/h" : "N/A"}</td>
+        <td>${heading}</td>
+        <td>
+          <a href="${openMapLink(a.lat, a.lon)}" target="_blank">
+            ${formatNumber(a.lat, 2)}, ${formatNumber(a.lon, 2)}
+          </a>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+updateAirTraffic();
+setInterval(updateAirTraffic, 15000);
+</script>
+
+</body>
+</html>
