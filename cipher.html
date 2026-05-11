@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dead Drop Cipher | Kopi</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<header>
+    <div class="container">
+
+        <div class="logo-terminal" style="position: relative;">
+            <span class="terminal-arrow">➜</span>
+            <span class="terminal-path">~ cd /home/kopi/projects/dead-drop-cipher</span>
+            <span class="terminal-cursor"></span>
+
+            <a href="index.html" class="terminal-link"></a>
+        </div>
+
+        <nav class="menu">
+            <ul>
+                <li><a href="about.html">About</a></li>
+                <li><a href="stuff.html">CTF Stuff</a></li>
+                <li><a href="projects.html">Projects</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <section style="text-align: center; margin-top: 4rem;">
+        <h1>Dead Drop Cipher</h1>
+
+        <p style="margin-top: 1rem;">
+            Decode intercepted spy messages, recover the dead drop instructions, and avoid making history worse.
+        </p>
+
+        <p id="statusText" style="
+            margin-top: 1rem;
+            color: lime;
+            font-size: 0.95rem;
+        ">
+            CIPHER DESK ONLINE.
+        </p>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 3rem;
+    ">
+        <div class="terminal-box">
+            <p>LEVEL</p>
+            <h2 id="levelText">1 / 10</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>ATTEMPTS</p>
+            <h2 id="attemptText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>HINTS USED</p>
+            <h2 id="hintText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>STATUS</p>
+            <h2 id="lockText">LOCKED</h2>
+        </div>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+    ">
+
+        <div style="
+            width: 340px;
+            background: #050505;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: left;
+        ">
+            <h2 style="color: lime; font-size: 1.2rem;">Case File</h2>
+
+            <pre id="caseBox" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                line-height: 1.55;
+                margin-top: 1rem;
+                font-size: 0.9rem;
+            "></pre>
+
+            <h3 style="color: lime; margin-top: 1.5rem;">Known Tools</h3>
+
+            <pre style="
+                color: #777;
+                white-space: pre-wrap;
+                line-height: 1.45;
+                margin-top: 1rem;
+                font-size: 0.85rem;
+            ">CAESAR SHIFT
+A1Z26
+MORSE
+REVERSE TEXT
+VIGENERE
+COORDINATES
+KEYWORD CLUES
+MULTI-STAGE</pre>
+        </div>
+
+        <div style="
+            width: 460px;
+            background: #050505;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: left;
+        ">
+            <h2 style="color: lime; font-size: 1.2rem;">Intercept</h2>
+
+            <pre id="interceptBox" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                line-height: 1.65;
+                margin-top: 1rem;
+                font-size: 1rem;
+            "></pre>
+
+            <h3 style="color: lime; margin-top: 1.5rem;">Clue</h3>
+
+            <pre id="clueBox" style="
+                color: #777;
+                white-space: pre-wrap;
+                line-height: 1.5;
+                margin-top: 1rem;
+                font-size: 0.9rem;
+            "></pre>
+
+            <h3 style="color: lime; margin-top: 1.5rem;">Hint</h3>
+
+            <pre id="hintBox" style="
+                color: #777;
+                white-space: pre-wrap;
+                line-height: 1.5;
+                margin-top: 1rem;
+                font-size: 0.9rem;
+            ">[hidden]</pre>
+        </div>
+
+        <div style="
+            width: 360px;
+            background: #050505;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: left;
+        ">
+            <h2 style="color: lime; font-size: 1.2rem;">Decryption Terminal</h2>
+
+            <p style="margin-top: 1rem;">
+                RECOVERED MESSAGE
+            </p>
+
+            <input id="answerInput" type="text" placeholder="type decoded message" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem;
+                font-family: monospace;
+                width: 100%;
+                box-sizing: border-box;
+                margin-top: 0.5rem;
+            ">
+
+            <button id="checkBtn" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+                width: 100%;
+                margin-top: 1rem;
+            ">
+                SUBMIT DECRYPTION
+            </button>
+
+            <button id="hintBtn" style="
+                background: black;
+                color: orange;
+                border: 1px solid orange;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+                width: 100%;
+                margin-top: 0.75rem;
+            ">
+                REQUEST HINT
+            </button>
+
+            <button id="nextBtn" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+                width: 100%;
+                margin-top: 0.75rem;
+            ">
+                NEXT INTERCEPT
+            </button>
+
+            <button id="restartBtn" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+                width: 100%;
+                margin-top: 0.75rem;
+            ">
+                RESTART CASE
+            </button>
+
+            <pre id="resultBox" style="
+                color: #777;
+                white-space: pre-wrap;
+                line-height: 1.5;
+                margin-top: 1.5rem;
+                font-size: 0.85rem;
+            ">RESULT: awaiting decryption.</pre>
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>LOGIC MODULE: DEAD DROP CIPHER</p>
+</footer>
+
+<script>
+    const levelText = document.getElementById("levelText");
+    const attemptText = document.getElementById("attemptText");
+    const hintText = document.getElementById("hintText");
+    const lockText = document.getElementById("lockText");
+
+    const statusText = document.getElementById("statusText");
+    const caseBox = document.getElementById("caseBox");
+    const interceptBox = document.getElementById("interceptBox");
+    const clueBox = document.getElementById("clueBox");
+    const hintBox = document.getElementById("hintBox");
+    const resultBox = document.getElementById("resultBox");
+
+    const answerInput = document.getElementById("answerInput");
+    const checkBtn = document.getElementById("checkBtn");
+    const hintBtn = document.getElementById("hintBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    const levels = [
+        {
+            title: "LEVEL 01: Caesar Drop",
+            caseText:
+`SOURCE: Embassy street dead drop
+ERA: Cold War field network
+PRIORITY: LOW
+
+A junior courier left a simple substitution note.
+Probably training material. Probably.`,
+            intercept:
+`LQWHUFHSW:
+PHHW DW GDUH QLQH`,
+            clue:
+`Cipher type suspected:
+CAESAR SHIFT
+
+Field note:
+"Three steps kept the courier safe."`,
+            hint:
+`Shift every letter 3 positions back.
+D -> A, E -> B, F -> C.`,
+            answer: "MEET AT DARE NINE"
+        },
+        {
+            title: "LEVEL 02: Number Station",
+            caseText:
+`SOURCE: Shortwave broadcast
+ERA: Numbers station
+PRIORITY: MEDIUM
+
+A five-word instruction was transmitted after a tone burst.`,
+            intercept:
+`14-15-18-20-8 / 4-15-3-11 / 1-20 / 13-9-4-14-9-7-8-20`,
+            clue:
+`Cipher type suspected:
+A1Z26
+
+A=1, B=2, C=3... apparently alphabets need invoices now.`,
+            hint:
+`Convert each number into its matching alphabet letter.`,
+            answer: "NORTH DOCK AT MIDNIGHT"
+        },
+        {
+            title: "LEVEL 03: Reversed Courier",
+            caseText:
+`SOURCE: Courier notebook
+ERA: Border city operation
+PRIORITY: MEDIUM
+
+Message appears readable, if one enjoys doing everything backwards.`,
+            intercept:
+`ESUOH EFAS EHT RETFA NUS TES`,
+            clue:
+`Cipher type suspected:
+REVERSE TEXT
+
+No substitution. Just direction.`,
+            hint:
+`Read the entire line from right to left.`,
+            answer: "SET SUN AFTER THE SAFE HOUSE"
+        },
+        {
+            title: "LEVEL 04: Morse Burst",
+            caseText:
+`SOURCE: Burst transmitter
+ERA: Rural relay post
+PRIORITY: MEDIUM
+
+Operator captured a short Morse sequence before the transmitter moved.`,
+            intercept:
+`... - .- -.-- / --.- ..- .. . -`,
+            clue:
+`Cipher type suspected:
+MORSE
+
+Slash separates words.`,
+            hint:
+`... = S
+- = T
+.- = A
+-.-- = Y`,
+            answer: "STAY QUIET"
+        },
+        {
+            title: "LEVEL 05: Vigenere Desk",
+            caseText:
+`SOURCE: Consulate cipher desk
+ERA: Diplomatic pouch intercept
+PRIORITY: HIGH
+
+A keyword was found scribbled on a burned matchbox.`,
+            intercept:
+`VIGENERE:
+LXFOPVEFRNHR
+
+KEY:
+LEMON`,
+            clue:
+`Cipher type suspected:
+VIGENERE
+
+Keyword repeats over the encrypted text.`,
+            hint:
+`Classic example pattern.
+Use key LEMON repeated over the cipher text.`,
+            answer: "ATTACKATDAWN"
+        },
+        {
+            title: "LEVEL 06: Coordinate Phrase",
+            caseText:
+`SOURCE: Agent map grid
+ERA: Safehouse route planning
+PRIORITY: HIGH
+
+Two coordinates and one action marker were recovered from a torn page.`,
+            intercept:
+`B2 A1 D4 / C3 A1 C4 C4 / D2 C1`,
+            clue:
+`Grid:
+A1=A  A2=B  A3=C  A4=D
+B1=E  B2=F  B3=G  B4=H
+C1=I  C2=J  C3=K  C4=L
+D1=M  D2=N  D3=O  D4=P
+
+Read each coordinate as column+row.`,
+            hint:
+`B2 = F
+A1 = A
+D4 = P`,
+            answer: "FAP KALL NA",
+            accepted: ["FAP KALL NA", "FAP KALL NA"]
+        },
+        {
+            title: "LEVEL 07: Keyword Shift",
+            caseText:
+`SOURCE: Theater program
+ERA: Opera house meeting
+PRIORITY: HIGH
+
+The phrase "ORCHID" appears repeatedly near the cipher text.`,
+            intercept:
+`YMNX NX F YJXY`,
+            clue:
+`Cipher type suspected:
+CAESAR SHIFT
+
+Keyword clue:
+ORCHID = 6 letters`,
+            hint:
+`The keyword length is the Caesar shift.
+Shift 6 letters backward.`,
+            answer: "THIS IS A TEST"
+        },
+        {
+            title: "LEVEL 08: Layered Field Note",
+            caseText:
+`SOURCE: Dead drop under bridge
+ERA: Compromised courier route
+PRIORITY: CRITICAL
+
+Message seems reversed first, then shifted.`,
+            intercept:
+`HJXFWYJ YMJ UQFS`,
+            clue:
+`Two-stage cipher:
+1. Caesar shift
+2. Then reverse meaning was applied during handling
+
+Field clue:
+"Five steps, then mirror."`,
+            hint:
+`First shift letters 5 back:
+H -> C
+J -> E
+
+Then inspect the decoded phrase.`,
+            answer: "CEASE THE PLAN"
+        },
+        {
+            title: "LEVEL 09: Broken Transmission",
+            caseText:
+`SOURCE: Damaged radio transcript
+ERA: Mountain relay station
+PRIORITY: CRITICAL
+
+Noise corrupted two characters, but the phrase is still recoverable.`,
+            intercept:
+`D?OP / AT / OLD / ?OWER`,
+            clue:
+`Plaintext with missing characters.
+
+Context:
+Courier route includes OLD TOWER as known landmark.`,
+            hint:
+`The missing letters form:
+R and T.`,
+            answer: "DROP AT OLD TOWER"
+        },
+        {
+            title: "LEVEL 10: Final Dead Drop",
+            caseText:
+`SOURCE: Final handler channel
+ERA: Network collapse
+PRIORITY: MAXIMUM
+
+Multiple intercepted fragments point to the last safe extraction instruction.`,
+            intercept:
+`PART A:
+20-18-1-9-14
+
+PART B:
+GUR PBQROBBX
+
+PART C:
+ESAB MORF TIXE`,
+            clue:
+`Multi-stage:
+PART A = A1Z26
+PART B = ROT13
+PART C = reverse text
+
+Combine all parts in order.`,
+            hint:
+`PART A decodes to TRAIN.
+PART B ROT13 gives THE CODEBOOK.
+PART C reversed gives EXIT FROM BASE.
+
+Final answer is all three combined.`,
+            answer: "TRAIN THE CODEBOOK EXIT FROM BASE"
+        }
+    ];
+
+    let currentLevel = 0;
+    let attempts = 0;
+    let hintsUsed = 0;
+    let solved = false;
+
+    function normalize(value) {
+        return value
+            .trim()
+            .toUpperCase()
+            .replace(/[.,!?]/g, "")
+            .replace(/\s+/g, " ");
+    }
+
+    function loadLevel(index) {
+        const level = levels[index];
+
+        attempts = 0;
+        solved = false;
+
+        levelText.textContent = `${index + 1} / ${levels.length}`;
+        attemptText.textContent = attempts;
+        hintText.textContent = hintsUsed;
+
+        lockText.textContent = "LOCKED";
+        lockText.style.color = "red";
+
+        caseBox.textContent = level.caseText;
+        interceptBox.textContent = level.intercept;
+        clueBox.textContent = level.clue;
+        hintBox.textContent = "[hidden]";
+        resultBox.textContent = "RESULT: awaiting decryption.";
+
+        answerInput.value = "";
+        answerInput.disabled = false;
+        checkBtn.disabled = false;
+
+        checkBtn.style.opacity = "1";
+
+        nextBtn.textContent = index === levels.length - 1
+            ? "FINISH CASE"
+            : "NEXT INTERCEPT";
+
+        statusText.style.color = "lime";
+        statusText.textContent = `${level.title} loaded.`;
+    }
+
+    function checkAnswer() {
+        if (solved) {
+            return;
+        }
+
+        const level = levels[currentLevel];
+        const userAnswer = normalize(answerInput.value);
+
+        attempts++;
+        attemptText.textContent = attempts;
+
+        const validAnswers = level.accepted || [level.answer];
+        const isCorrect = validAnswers.some(answer => normalize(answer) === userAnswer);
+
+        if (isCorrect) {
+            solved = true;
+
+            lockText.textContent = "OPEN";
+            lockText.style.color = "lime";
+
+            statusText.style.color = "lime";
+            statusText.textContent = "DECRYPTION ACCEPTED: intercept resolved.";
+
+            resultBox.textContent =
+`RESULT:
+Correct.
+
+Recovered message:
+${level.answer}`;
+
+            answerInput.disabled = true;
+            checkBtn.disabled = true;
+            checkBtn.style.opacity = "0.45";
+
+            return;
+        }
+
+        statusText.style.color = "red";
+        statusText.textContent = "DECRYPTION REJECTED: message does not match.";
+
+        resultBox.textContent =
+`RESULT:
+Incorrect decryption.
+
+Attempt logged.
+Try again before the handler gets nervous.`;
+    }
+
+    function revealHint() {
+        const level = levels[currentLevel];
+
+        hintBox.textContent = level.hint;
+        hintsUsed++;
+        hintText.textContent = hintsUsed;
+
+        statusText.style.color = "orange";
+        statusText.textContent = "HINT RELEASED: operational dignity reduced.";
+    }
+
+    function nextLevel() {
+        if (!solved) {
+            statusText.style.color = "red";
+            statusText.textContent = "ACCESS DENIED: solve current intercept first.";
+            return;
+        }
+
+        if (currentLevel >= levels.length - 1) {
+            finishGame();
+            return;
+        }
+
+        currentLevel++;
+        loadLevel(currentLevel);
+    }
+
+    function finishGame() {
+        statusText.style.color = "lime";
+        statusText.textContent = "CASE CLOSED: all dead drops decrypted.";
+
+        caseBox.textContent =
+`FINAL REPORT
+
+All intercepted messages were decrypted.
+The handler network has been mapped.
+Courier instructions recovered.
+
+Hints used: ${hintsUsed}
+
+Classification:
+${getRank()}`;
+
+        interceptBox.textContent =
+`ARCHIVE STATUS:
+CLOSED
+
+Dead drop chain:
+RESOLVED`;
+
+        clueBox.textContent =
+`No further active intercepts.`;
+
+        hintBox.textContent =
+`The cipher desk is quiet.
+Suspicious. It is never quiet for good reasons.`;
+
+        resultBox.textContent =
+`RESULT:
+Operation complete.`;
+
+        lockText.textContent = "CLOSED";
+        lockText.style.color = "lime";
+
+        answerInput.disabled = true;
+        checkBtn.disabled = true;
+        nextBtn.disabled = true;
+
+        checkBtn.style.opacity = "0.45";
+        nextBtn.style.opacity = "0.45";
+    }
+
+    function getRank() {
+        if (hintsUsed === 0) {
+            return "FIELD CRYPTOGRAPHER - annoyingly sharp.";
+        }
+
+        if (hintsUsed <= 3) {
+            return "CIPHER ANALYST - useful, with tolerable supervision.";
+        }
+
+        if (hintsUsed <= 7) {
+            return "JUNIOR DESK OFFICER - survived the paperwork.";
+        }
+
+        return "RADIO ROOM INTERN - many hints were harmed in this operation.";
+    }
+
+    function restartGame() {
+        currentLevel = 0;
+        attempts = 0;
+        hintsUsed = 0;
+        solved = false;
+
+        nextBtn.disabled = false;
+        nextBtn.style.opacity = "1";
+
+        loadLevel(currentLevel);
+    }
+
+    checkBtn.addEventListener("click", checkAnswer);
+    hintBtn.addEventListener("click", revealHint);
+    nextBtn.addEventListener("click", nextLevel);
+    restartBtn.addEventListener("click", restartGame);
+
+    answerInput.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            checkAnswer();
+        }
+    });
+
+    loadLevel(currentLevel);
+</script>
+
+</body>
+</html>
