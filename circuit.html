@@ -15,7 +15,7 @@
 
         <div class="logo-terminal" style="position: relative;">
             <span class="terminal-arrow">➜</span>
-            <span class="terminal-path">~ cd /home/kopi/projects/circuit-lock</span>
+            <span class="terminal-path">~ cd /home/kopi/circuit-lock</span>
             <span class="terminal-cursor"></span>
 
             <a href="index.html" class="terminal-link"></a>
@@ -75,14 +75,21 @@
     </section>
 
     <section style="text-align: center; margin-top: 3rem;">
-        <div id="gameBoard" style="
-            display: grid;
-            grid-template-columns: repeat(5, 64px);
-            grid-template-rows: repeat(5, 64px);
-            gap: 8px;
-            justify-content: center;
-            margin: 0 auto;
-        "></div>
+
+        <div style="
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        ">
+            <div id="gameBoard" style="
+                display: grid;
+                grid-template-columns: repeat(15, 42px);
+                grid-template-rows: repeat(15, 42px);
+                gap: 5px;
+                justify-content: center;
+                min-width: max-content;
+                margin: 0 auto;
+            "></div>
+        </div>
 
         <div style="
             display: flex;
@@ -102,7 +109,7 @@
                 RESET LEVEL
             </button>
 
-            <button id="nextBtn" style="
+            <button id="shuffleBtn" style="
                 background: black;
                 color: lime;
                 border: 1px solid lime;
@@ -110,7 +117,7 @@
                 cursor: pointer;
                 font-family: monospace;
             ">
-                NEXT LEVEL
+                SHUFFLE
             </button>
         </div>
     </section>
@@ -128,35 +135,28 @@
     const levelText = document.getElementById("levelText");
     const lockStatus = document.getElementById("lockStatus");
     const resetBtn = document.getElementById("resetBtn");
-    const nextBtn = document.getElementById("nextBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
 
-    const SIZE = 5;
+    const SIZE = 15;
 
-    const levels = [
-        [
-            ["start", "line", "corner", "empty", "empty"],
-            ["empty", "empty", "line", "empty", "empty"],
-            ["empty", "empty", "corner", "line", "corner"],
-            ["empty", "empty", "empty", "empty", "line"],
-            ["empty", "empty", "empty", "empty", "end"]
-        ],
-        [
-            ["start", "corner", "empty", "empty", "empty"],
-            ["empty", "tee", "line", "corner", "empty"],
-            ["empty", "empty", "empty", "line", "empty"],
-            ["empty", "corner", "line", "corner", "empty"],
-            ["empty", "end", "empty", "empty", "empty"]
-        ],
-        [
-            ["start", "line", "corner", "empty", "empty"],
-            ["empty", "empty", "tee", "corner", "empty"],
-            ["empty", "empty", "empty", "line", "empty"],
-            ["empty", "corner", "line", "corner", "empty"],
-            ["empty", "end", "empty", "empty", "empty"]
-        ]
+    const level = [
+        ["start","line","line","corner","empty","empty","empty","empty","empty","empty","empty","empty","empty","empty","empty"],
+        ["empty","empty","empty","tee","line","corner","empty","empty","empty","corner","line","line","corner","empty","empty"],
+        ["empty","corner","line","cross","line","tee","line","line","line","cross","empty","empty","line","empty","empty"],
+        ["empty","line","empty","line","empty","line","empty","empty","empty","tee","line","corner","line","empty","empty"],
+        ["empty","line","empty","corner","line","cross","line","corner","empty","line","empty","line","tee","line","corner"],
+        ["empty","tee","line","line","corner","line","empty","line","empty","line","empty","line","empty","empty","line"],
+        ["empty","line","empty","empty","line","tee","line","cross","line","cross","line","corner","empty","empty","line"],
+        ["empty","corner","line","corner","empty","line","empty","line","empty","line","empty","line","empty","corner","tee"],
+        ["empty","empty","empty","line","empty","corner","line","cross","line","tee","line","cross","line","cross","line"],
+        ["empty","corner","line","cross","line","line","empty","line","empty","empty","empty","line","empty","line","empty"],
+        ["empty","line","empty","line","empty","corner","line","tee","line","corner","empty","corner","line","tee","empty"],
+        ["empty","line","empty","tee","line","cross","empty","line","empty","line","empty","empty","empty","line","empty"],
+        ["empty","corner","line","cross","empty","line","empty","corner","line","cross","line","line","corner","line","empty"],
+        ["empty","empty","empty","line","empty","corner","line","line","empty","line","empty","empty","line","tee","line"],
+        ["empty","empty","empty","corner","line","line","line","line","line","cross","line","line","line","line","end"]
     ];
 
-    let currentLevel = 0;
     let board = [];
     let moves = 0;
     let solved = false;
@@ -198,12 +198,16 @@
         });
     }
 
+    function sortedDirections(cell) {
+        return getConnections(cell).sort().join(",");
+    }
+
     function getSymbol(cell) {
         if (cell.type === "empty") return "";
         if (cell.type === "start") return "S";
         if (cell.type === "end") return "E";
 
-        const dirs = getConnections(cell).sort().join(",");
+        const dirs = sortedDirections(cell);
 
         if (cell.type === "line") {
             if (dirs === "left,right") return "━";
@@ -229,16 +233,12 @@
         return "?";
     }
 
-    function createBoard(levelIndex) {
-        const level = levels[levelIndex];
-
+    function createBoard() {
         board = level.map(row => {
             return row.map(type => {
                 return {
                     type: type,
-                    rotation: type === "empty" || type === "start" || type === "end"
-                        ? 0
-                        : Math.floor(Math.random() * 4),
+                    rotation: getRandomRotation(type),
                     powered: false
                 };
             });
@@ -246,9 +246,35 @@
 
         moves = 0;
         solved = false;
-        updateStats();
+
         checkCircuit();
         renderBoard();
+        updateStats();
+    }
+
+    function getRandomRotation(type) {
+        if (type === "empty" || type === "start" || type === "end" || type === "cross") {
+            return 0;
+        }
+
+        return Math.floor(Math.random() * 4);
+    }
+
+    function shuffleBoard() {
+        board.forEach(row => {
+            row.forEach(cell => {
+                if (cell.type !== "empty" && cell.type !== "start" && cell.type !== "end" && cell.type !== "cross") {
+                    cell.rotation = Math.floor(Math.random() * 4);
+                }
+            });
+        });
+
+        moves = 0;
+        solved = false;
+
+        checkCircuit();
+        renderBoard();
+        updateStats();
     }
 
     function findStart() {
@@ -275,6 +301,11 @@
         }
 
         const start = findStart();
+
+        if (!start) {
+            return;
+        }
+
         const queue = [start];
         const visited = new Set();
 
@@ -282,7 +313,9 @@
             const [row, col] = queue.shift();
             const key = `${row},${col}`;
 
-            if (visited.has(key)) continue;
+            if (visited.has(key)) {
+                continue;
+            }
 
             visited.add(key);
             board[row][col].powered = true;
@@ -295,7 +328,9 @@
                 const nextRow = row + dr;
                 const nextCol = col + dc;
 
-                if (!inBounds(nextRow, nextCol)) return;
+                if (!inBounds(nextRow, nextCol)) {
+                    return;
+                }
 
                 const nextCell = board[nextRow][nextCol];
                 const nextDirs = getConnections(nextCell);
@@ -315,7 +350,7 @@
 
     function updateStats() {
         moveCountElement.textContent = moves;
-        levelText.textContent = currentLevel + 1;
+        levelText.textContent = "1";
 
         if (solved) {
             lockStatus.textContent = "OPEN";
@@ -336,33 +371,40 @@
                 const tile = document.createElement("button");
 
                 tile.textContent = getSymbol(cell);
-                tile.style.width = "64px";
-                tile.style.height = "64px";
+
+                tile.style.width = "42px";
+                tile.style.height = "42px";
+                tile.style.padding = "0";
                 tile.style.background = cell.powered ? "#061f06" : "#050505";
                 tile.style.color = cell.powered ? "lime" : "#777";
                 tile.style.border = cell.powered ? "1px solid lime" : "1px solid rgba(255,255,255,0.1)";
-                tile.style.borderRadius = "10px";
-                tile.style.fontSize = cell.type === "start" || cell.type === "end" ? "1.4rem" : "2rem";
+                tile.style.borderRadius = "7px";
+                tile.style.fontSize = cell.type === "start" || cell.type === "end" ? "1rem" : "1.35rem";
                 tile.style.cursor = cell.type === "empty" || solved ? "default" : "pointer";
                 tile.style.fontFamily = "monospace";
-                tile.style.boxShadow = cell.powered ? "0 0 12px rgba(0,255,0,0.35)" : "none";
+                tile.style.boxShadow = cell.powered ? "0 0 10px rgba(0,255,0,0.35)" : "none";
+                tile.style.transition = "0.15s ease";
 
                 if (cell.type === "empty") {
-                    tile.style.opacity = "0.35";
+                    tile.style.opacity = "0.28";
                 }
 
                 if (cell.type === "start") {
                     tile.style.color = "lime";
                     tile.style.border = "1px solid lime";
+                    tile.style.fontWeight = "bold";
                 }
 
                 if (cell.type === "end") {
                     tile.style.color = solved ? "lime" : "red";
                     tile.style.border = solved ? "1px solid lime" : "1px solid red";
+                    tile.style.fontWeight = "bold";
                 }
 
                 tile.addEventListener("click", () => {
-                    if (cell.type === "empty" || solved) return;
+                    if (cell.type === "empty" || solved) {
+                        return;
+                    }
 
                     cell.rotation = (cell.rotation + 1) % 4;
                     moves++;
@@ -377,15 +419,14 @@
     }
 
     resetBtn.addEventListener("click", () => {
-        createBoard(currentLevel);
+        createBoard();
     });
 
-    nextBtn.addEventListener("click", () => {
-        currentLevel = (currentLevel + 1) % levels.length;
-        createBoard(currentLevel);
+    shuffleBtn.addEventListener("click", () => {
+        shuffleBoard();
     });
 
-    createBoard(currentLevel);
+    createBoard();
 </script>
 
 </body>
