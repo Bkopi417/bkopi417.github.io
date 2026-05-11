@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Firewall Ops | Kopi</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<header>
+    <div class="container">
+
+        <div class="logo-terminal" style="position: relative;">
+            <span class="terminal-arrow">➜</span>
+            <span class="terminal-path">~ cd /home/kopi/projects/firewall-ops</span>
+            <span class="terminal-cursor"></span>
+
+            <a href="index.html" class="terminal-link"></a>
+        </div>
+
+        <nav class="menu">
+            <ul>
+                <li><a href="about.html">About</a></li>
+                <li><a href="stuff.html">CTF Stuff</a></li>
+                <li><a href="projects.html">Projects</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <section style="text-align: center; margin-top: 4rem;">
+        <h1>Firewall Ops</h1>
+
+        <p style="margin-top: 1rem;">
+            Inspect packets, apply policy, and protect the network without blocking business traffic.
+        </p>
+
+        <p id="statusText" style="
+            margin-top: 1rem;
+            color: lime;
+            font-size: 0.95rem;
+        ">
+            FIREWALL ENGINE READY.
+        </p>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 3rem;
+    ">
+
+        <div class="terminal-box">
+            <p>SCORE</p>
+            <h2 id="scoreText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>PACKET</p>
+            <h2 id="packetText">1 / 1</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>ACCURACY</p>
+            <h2 id="accuracyText">100%</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>INCIDENTS</p>
+            <h2 id="incidentText">0</h2>
+        </div>
+
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+    ">
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 360px;
+            text-align: left;
+        ">
+            <h2 style="font-size: 1.2rem; color: lime;">
+                Security Policy
+            </h2>
+
+            <pre id="policyBox" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                line-height: 1.55;
+                margin-top: 1rem;
+                font-size: 0.9rem;
+            "></pre>
+        </div>
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 430px;
+            text-align: left;
+        ">
+            <h2 style="font-size: 1.2rem; color: lime;">
+                Packet Inspection
+            </h2>
+
+            <pre id="packetBox" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                line-height: 1.65;
+                margin-top: 1rem;
+                font-size: 0.95rem;
+            "></pre>
+
+            <div style="
+                display: flex;
+                justify-content: center;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+                margin-top: 1.5rem;
+            ">
+                <button id="allowBtn" style="
+                    background: black;
+                    color: lime;
+                    border: 1px solid lime;
+                    padding: 0.7rem 1rem;
+                    cursor: pointer;
+                    font-family: monospace;
+                ">
+                    ALLOW
+                </button>
+
+                <button id="denyBtn" style="
+                    background: black;
+                    color: red;
+                    border: 1px solid red;
+                    padding: 0.7rem 1rem;
+                    cursor: pointer;
+                    font-family: monospace;
+                ">
+                    DENY
+                </button>
+
+                <button id="quarantineBtn" style="
+                    background: black;
+                    color: orange;
+                    border: 1px solid orange;
+                    padding: 0.7rem 1rem;
+                    cursor: pointer;
+                    font-family: monospace;
+                ">
+                    QUARANTINE
+                </button>
+            </div>
+
+            <p style="
+                margin-top: 1rem;
+                color: #777;
+                font-size: 0.85rem;
+                line-height: 1.5;
+            ">
+                Tip: quarantine is for confirmed compromise, exfiltration, malware callbacks, or infected internal hosts.
+                Deny is for blocked but not necessarily infected traffic.
+            </p>
+        </div>
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 360px;
+            text-align: left;
+        ">
+            <h2 style="font-size: 1.2rem; color: lime;">
+                Audit Log
+            </h2>
+
+            <pre id="auditBox" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                line-height: 1.45;
+                margin-top: 1rem;
+                font-size: 0.85rem;
+                max-height: 420px;
+                overflow-y: auto;
+            "></pre>
+        </div>
+
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+    ">
+
+        <div class="terminal-box">
+            <p>ALLOWED</p>
+            <h2 id="allowedText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>DENIED</p>
+            <h2 id="deniedText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>QUARANTINED</p>
+            <h2 id="quarantineText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>MISTAKES</p>
+            <h2 id="mistakeText">0</h2>
+        </div>
+
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    ">
+        <button id="restartBtn" style="
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            font-family: monospace;
+        ">
+            RESTART SHIFT
+        </button>
+
+        <button id="explainBtn" style="
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            font-family: monospace;
+        ">
+            EXPLAIN CURRENT
+        </button>
+    </section>
+
+</main>
+
+<footer>
+    <p>LOGIC MODULE: FIREWALL OPS</p>
+</footer>
+
+<script>
+    const policyBox = document.getElementById("policyBox");
+    const packetBox = document.getElementById("packetBox");
+    const auditBox = document.getElementById("auditBox");
+
+    const statusText = document.getElementById("statusText");
+    const scoreText = document.getElementById("scoreText");
+    const packetText = document.getElementById("packetText");
+    const accuracyText = document.getElementById("accuracyText");
+    const incidentText = document.getElementById("incidentText");
+
+    const allowedText = document.getElementById("allowedText");
+    const deniedText = document.getElementById("deniedText");
+    const quarantineText = document.getElementById("quarantineText");
+    const mistakeText = document.getElementById("mistakeText");
+
+    const allowBtn = document.getElementById("allowBtn");
+    const denyBtn = document.getElementById("denyBtn");
+    const quarantineBtn = document.getElementById("quarantineBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const explainBtn = document.getElementById("explainBtn");
+
+    const policyText =
+`DEFAULT POLICY:
+- Default inbound from internet: DENY
+- Default outbound from internal LAN: ALLOW if normal service
+- Quarantine infected internal hosts
+- Quarantine confirmed exfiltration or malware C2
+- Deny suspicious scans, brute force, spoofing, and unauthorized admin access
+
+ALLOW:
+- TCP 80/443 from LAN to internet
+- TCP 443 inbound only to DMZ web server 172.16.10.20
+- UDP/TCP 53 only to approved DNS resolver 10.0.0.53
+- NTP UDP 123 only to approved time server 10.0.0.123
+- SSH TCP 22 only from admin subnet 10.0.10.0/24 to internal servers
+- ICMP echo inside LAN for diagnostics
+
+DENY:
+- External SSH/RDP/SMB to internal network
+- Port scans and brute force attempts
+- Spoofed private source IP from WAN
+- DNS to unknown external resolvers
+- Tor exit node inbound traffic
+- Suspicious geo-risk admin traffic
+- ICMP flood from WAN
+
+QUARANTINE:
+- Internal host contacting malware C2
+- Data exfiltration patterns
+- Known ransomware signature
+- Credential dump transfer
+- Beaconing to threat intel IP`;
+
+    const packets = [
+        {
+            id: "PKT-001",
+            src: "10.0.4.22",
+            dst: "93.184.216.34",
+            proto: "TCP",
+            port: 443,
+            direction: "OUTBOUND",
+            zone: "LAN -> INTERNET",
+            service: "HTTPS",
+            intel: "clean",
+            payload: "TLS client hello, normal SNI",
+            note: "Developer workstation browsing public documentation.",
+            correct: "ALLOW",
+            reason: "Normal outbound HTTPS from LAN is allowed."
+        },
+        {
+            id: "PKT-002",
+            src: "198.51.100.88",
+            dst: "10.0.4.31",
+            proto: "TCP",
+            port: 22,
+            direction: "INBOUND",
+            zone: "WAN -> LAN",
+            service: "SSH",
+            intel: "unknown external",
+            payload: "Repeated SSH login attempts",
+            note: "Internet host attempting SSH to internal workstation.",
+            correct: "DENY",
+            reason: "Inbound SSH from WAN to LAN is not authorized."
+        },
+        {
+            id: "PKT-003",
+            src: "10.0.8.44",
+            dst: "203.0.113.66",
+            proto: "TCP",
+            port: 443,
+            direction: "OUTBOUND",
+            zone: "LAN -> INTERNET",
+            service: "HTTPS",
+            intel: "known C2",
+            payload: "Periodic small POST requests every 60 seconds",
+            note: "Endpoint matches malware command-and-control beacon pattern.",
+            correct: "QUARANTINE",
+            reason: "Internal host is beaconing to known C2, so quarantine the host."
+        },
+        {
+            id: "PKT-004",
+            src: "10.0.12.7",
+            dst: "10.0.0.53",
+            proto: "UDP",
+            port: 53,
+            direction: "INTERNAL",
+            zone: "LAN -> DNS",
+            service: "DNS",
+            intel: "approved resolver",
+            payload: "Standard A record lookup",
+            note: "Client querying approved internal DNS resolver.",
+            correct: "ALLOW",
+            reason: "DNS to approved resolver is allowed."
+        },
+        {
+            id: "PKT-005",
+            src: "10.0.12.7",
+            dst: "8.8.8.8",
+            proto: "UDP",
+            port: 53,
+            direction: "OUTBOUND",
+            zone: "LAN -> INTERNET",
+            service: "DNS",
+            intel: "public resolver",
+            payload: "Direct DNS query bypassing corporate resolver",
+            note: "Policy requires DNS only to approved resolver.",
+            correct: "DENY",
+            reason: "DNS to unknown external resolver must be denied."
+        },
+        {
+            id: "PKT-006",
+            src: "10.0.10.15",
+            dst: "10.0.2.40",
+            proto: "TCP",
+            port: 22,
+            direction: "INTERNAL",
+            zone: "ADMIN -> SERVER",
+            service: "SSH",
+            intel: "admin subnet",
+            payload: "Interactive SSH session",
+            note: "Admin subnet accessing internal server over SSH.",
+            correct: "ALLOW",
+            reason: "SSH from admin subnet to internal servers is allowed."
+        },
+        {
+            id: "PKT-007",
+            src: "10.0.5.18",
+            dst: "10.0.2.40",
+            proto: "TCP",
+            port: 22,
+            direction: "INTERNAL",
+            zone: "USER LAN -> SERVER",
+            service: "SSH",
+            intel: "non-admin subnet",
+            payload: "SSH connection attempt",
+            note: "User subnet trying to SSH into server.",
+            correct: "DENY",
+            reason: "SSH is only allowed from admin subnet."
+        },
+        {
+            id: "PKT-008",
+            src: "203.0.113.99",
+            dst: "172.16.10.20",
+            proto: "TCP",
+            port: 443,
+            direction: "INBOUND",
+            zone: "WAN -> DMZ",
+            service: "HTTPS",
+            intel: "clean",
+            payload: "TLS request to public web application",
+            note: "Inbound HTTPS to DMZ web server.",
+            correct: "ALLOW",
+            reason: "Inbound TCP 443 to DMZ web server is explicitly allowed."
+        },
+        {
+            id: "PKT-009",
+            src: "203.0.113.99",
+            dst: "172.16.10.20",
+            proto: "TCP",
+            port: 3306,
+            direction: "INBOUND",
+            zone: "WAN -> DMZ",
+            service: "MySQL",
+            intel: "unknown external",
+            payload: "Database connection attempt",
+            note: "External host attempting direct DB access.",
+            correct: "DENY",
+            reason: "Database ports must not be exposed inbound from the internet."
+        },
+        {
+            id: "PKT-010",
+            src: "10.0.6.77",
+            dst: "185.220.101.44",
+            proto: "TCP",
+            port: 9001,
+            direction: "OUTBOUND",
+            zone: "LAN -> INTERNET",
+            service: "Tor",
+            intel: "tor node",
+            payload: "Long-lived encrypted tunnel",
+            note: "Workstation connecting to Tor relay.",
+            correct: "DENY",
+            reason: "Tor relay traffic is not normal business traffic and should be denied."
+        },
+        {
+            id: "PKT-011",
+            src: "10.0.9.25",
+            dst: "198.51.100.200",
+            proto: "TCP",
+            port: 443,
+            direction: "OUTBOUND",
+            zone: "LAN -> INTERNET",
+            service: "HTTPS",
+            intel: "exfil pattern",
+            payload: "Large encrypted upload, archive-like chunks, unusual midnight transfer",
+            note: "DLP marks this as possible credential dump exfiltration.",
+            correct: "QUARANTINE",
+            reason: "Confirmed exfiltration patterns require quarantine."
+        },
+        {
+            id: "PKT-012",
+            src: "10.0.3.41",
+            dst: "10.0.0.123",
+            proto: "UDP",
+            port: 123,
+            direction: "INTERNAL",
+            zone: "LAN -> NTP",
+            service: "NTP",
+            intel: "approved time server",
+            payload: "NTP sync request",
+            note: "Endpoint syncing time with approved internal NTP server.",
+            correct: "ALLOW",
+            reason: "NTP to approved internal time server is allowed."
+        },
+        {
+            id: "PKT-013",
+            src: "10.0.3.41",
+            dst: "129.6.15.28",
+            proto: "UDP",
+            port: 123,
+            direction: "OUTBOUND",
+            zone: "LAN -> INTERNET",
+            service: "NTP",
+            intel: "external time server",
+            payload: "Direct NTP request",
+            note: "Policy requires approved time server only.",
+            correct: "DENY",
+            reason: "NTP should only go to approved time server."
+        },
+        {
+            id: "PKT-014",
+            src: "10.0.7.90",
+            dst: "10.0.7.91",
+            proto: "ICMP",
+            port: "-",
+            direction: "INTERNAL",
+            zone: "LAN -> LAN",
+            service: "PING",
+            intel: "clean",
+            payload: "Single echo request",
+            note: "Internal diagnostic ping.",
+            correct: "ALLOW",
+            reason: "ICMP inside LAN is allowed for diagnostics."
+        },
+        {
+            id: "PKT-015",
+            src: "45.83.11.9",
+            dst: "203.0.113.10",
+            proto: "ICMP",
+            port: "-",
+            direction: "INBOUND",
+            zone: "WAN -> EDGE",
+            service: "PING",
+            intel: "flood pattern",
+            payload: "High-rate ICMP echo flood",
+            note: "Edge firewall sees abnormal ICMP rate.",
+            correct: "DENY",
+            reason: "ICMP flood from WAN should be denied."
+        },
+        {
+            id: "PKT-016",
+            src: "10.0.8.88",
+            dst: "198.51.100.77",
+            proto: "TCP",
+            port: 445,
+            direction: "OUTBOUND",
+            zone: "LAN -> INTERNET",
+            service: "SMB",
+            intel: "suspicious",
+            payload: "SMB session setup to internet host",
+            note: "SMB should not leave the LAN.",
+            correct: "DENY",
+            reason: "Outbound SMB to internet is suspicious and should be denied."
+        },
+        {
+            id: "PKT-017",
+            src: "10.0.8.88",
+            dst: "10.0.2.10",
+            proto: "TCP",
+            port: 445,
+            direction: "INTERNAL",
+            zone: "LAN -> FILESERVER",
+            service: "SMB",
+            intel: "clean",
+            payload: "File share access",
+            note: "Internal workstation accessing internal file server.",
+            correct: "ALLOW",
+            reason: "Internal SMB to file server is legitimate."
+        },
+        {
+            id: "PKT-018",
+            src: "172.16.10.20",
+            dst: "10.0.2.12",
+            proto: "TCP",
+            port: 5432,
+            direction: "INTERNAL",
+            zone: "DMZ -> DB",
+            service: "PostgreSQL",
+            intel: "approved app flow",
+            payload: "Web app database query",
+            note: "DMZ web server connecting to internal DB on approved flow.",
+            correct: "ALLOW",
+            reason: "Approved DMZ web-to-database flow is allowed."
+        },
+        {
+            id: "PKT-019",
+            src: "172.16.10.45",
+            dst: "10.0.2.12",
+            proto: "TCP",
+            port: 5432,
+            direction: "INTERNAL",
+            zone: "DMZ -> DB",
+            service: "PostgreSQL",
+            intel: "unknown DMZ host",
+            payload: "Database connection attempt",
+            note: "Unknown DMZ host attempting DB connection.",
+            correct: "DENY",
+            reason: "Only approved DMZ web server should reach DB."
+        },
+        {
+            id: "PKT-020",
+            src: "10.0.11.50",
+            dst: "198.51.100.19",
+            proto: "TCP",
+            port: 8080,
+            direction: "OUTBOUND",
+            zone: "LAN -> INTERNET",
+            service: "HTTP proxy",
+            intel: "malware signature",
+            payload: "Known ransomware staging payload hash observed",
+            note: "Endpoint fetching known ransomware payload.",
+            correct: "QUARANTINE",
+            reason: "Known ransomware signature from internal host requires quarantine."
+        },
+        {
+            id: "PKT-021",
+            src: "192.168.1.44",
+            dst: "10.0.4.20",
+            proto: "TCP",
+            port: 3389,
+            direction: "INBOUND",
+            zone: "WAN -> LAN",
+            service: "RDP",
+            intel: "spoofed private source",
+            payload: "RDP negotiation",
+            note: "Private source IP appears on WAN interface.",
+            correct: "DENY",
+            reason: "Spoofed private source IP from WAN must be denied."
+        },
+        {
+            id: "PKT-022",
+            src: "10.0.10.20",
+            dst: "10.0.2.44",
+            proto: "TCP",
+            port: 3389,
+            direction: "INTERNAL",
+            zone: "ADMIN -> SERVER",
+            service: "RDP",
+            intel: "admin subnet",
+            payload: "Remote desktop session",
+            note: "Admin subnet to server management session.",
+            correct: "ALLOW",
+            reason: "Admin subnet can perform internal server management."
+        },
+        {
+            id: "PKT-023",
+            src: "10.0.4.22",
+            dst: "10.0.0.53",
+            proto: "TCP",
+            port: 53,
+            direction: "INTERNAL",
+            zone: "LAN -> DNS",
+            service: "DNS TCP",
+            intel: "approved resolver",
+            payload: "Large DNS response retry over TCP",
+            note: "DNS over TCP to approved resolver.",
+            correct: "ALLOW",
+            reason: "UDP/TCP 53 to approved DNS resolver is allowed."
+        },
+        {
+            id: "PKT-024",
+            src: "203.0.113.77",
+            dst: "172.16.10.20",
+            proto: "TCP",
+            port: "1-1024",
+            direction: "INBOUND",
+            zone: "WAN -> DMZ",
+            service: "PORT SCAN",
+            intel: "scan pattern",
+            payload: "Sequential SYN probes against many ports",
+            note: "External reconnaissance against DMZ host.",
+            correct: "DENY",
+            reason: "Port scan traffic should be denied."
+        },
+        {
+            id: "PKT-025",
+            src: "10.0.15.9",
+            dst: "198.51.100.55",
+            proto: "UDP",
+            port: 1194,
+            direction: "OUTBOUND",
+            zone: "LAN -> INTERNET",
+            service: "VPN",
+            intel: "unknown tunnel",
+            payload: "Persistent encrypted UDP tunnel",
+            note: "Unapproved VPN tunnel from user endpoint.",
+            correct: "DENY",
+            reason: "Unapproved outbound tunnels should be denied."
+        },
+        {
+            id: "PKT-026",
+            src: "10.0.20.80",
+            dst: "10.0.2.50",
+            proto: "TCP",
+            port: 9100,
+            direction: "INTERNAL",
+            zone: "LAN -> PRINTER",
+            service: "Print",
+            intel: "clean",
+            payload: "Print job data",
+            note: "Client sending print job to printer VLAN.",
+            correct: "ALLOW",
+            reason: "Internal print traffic to printer service is allowed."
+        },
+        {
+            id: "PKT-027",
+            src: "198.51.100.66",
+            dst: "10.0.2.50",
+            proto: "TCP",
+            port: 9100,
+            direction: "INBOUND",
+            zone: "WAN -> PRINTER",
+            service: "Print",
+            intel: "unknown external",
+            payload: "External print port access attempt",
+            note: "Internet host attempting direct printer access.",
+            correct: "DENY",
+            reason: "Internal printer services must not be exposed to WAN."
+        },
+        {
+            id: "PKT-028",
+            src: "10.0.13.37",
+            dst: "203.0.113.250",
+            proto: "TCP",
+            port: 443,
+            direction: "OUTBOUND",
+            zone: "LAN -> INTERNET",
+            service: "HTTPS",
+            intel: "credential dump",
+            payload: "Archive upload named browser_passwords.zip",
+            note: "DLP flagged likely credential dump leaving network.",
+            correct: "QUARANTINE",
+            reason: "Credential dump exfiltration requires quarantine."
+        },
+        {
+            id: "PKT-029",
+            src: "10.0.30.10",
+            dst: "10.0.30.11",
+            proto: "UDP",
+            port: 161,
+            direction: "INTERNAL",
+            zone: "MONITORING -> NETWORK",
+            service: "SNMP",
+            intel: "approved monitoring",
+            payload: "SNMP polling",
+            note: "Monitoring server polling network device.",
+            correct: "ALLOW",
+            reason: "Approved internal monitoring flow is allowed."
+        },
+        {
+            id: "PKT-030",
+            src: "203.0.113.88",
+            dst: "10.0.30.11",
+            proto: "UDP",
+            port: 161,
+            direction: "INBOUND",
+            zone: "WAN -> NETWORK",
+            service: "SNMP",
+            intel: "unknown external",
+            payload: "SNMP community probe",
+            note: "External host probing SNMP.",
+            correct: "DENY",
+            reason: "SNMP from WAN must be denied."
+        }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let mistakes = 0;
+    let incidents = 0;
+    let allowed = 0;
+    let denied = 0;
+    let quarantined = 0;
+    let totalAnswered = 0;
+    let audit = [];
+
+    function renderPolicy() {
+        policyBox.textContent = policyText;
+    }
+
+    function renderPacket() {
+        if (currentIndex >= packets.length) {
+            finishGame();
+            return;
+        }
+
+        const packet = packets[currentIndex];
+
+        packetBox.textContent =
+`ID:        ${packet.id}
+SRC:       ${packet.src}
+DST:       ${packet.dst}
+PROTO:     ${packet.proto}
+PORT:      ${packet.port}
+SERVICE:   ${packet.service}
+DIRECTION: ${packet.direction}
+ZONE:      ${packet.zone}
+INTEL:     ${packet.intel}
+
+PAYLOAD:
+${packet.payload}
+
+CONTEXT:
+${packet.note}`;
+
+        packetText.textContent = `${currentIndex + 1} / ${packets.length}`;
+        updateStats();
+
+        statusText.style.color = "lime";
+        statusText.textContent = "INSPECT PACKET: apply firewall policy.";
+    }
+
+    function updateStats() {
+        scoreText.textContent = score;
+        incidentText.textContent = incidents;
+        allowedText.textContent = allowed;
+        deniedText.textContent = denied;
+        quarantineText.textContent = quarantined;
+        mistakeText.textContent = mistakes;
+
+        const accuracy = totalAnswered === 0
+            ? 100
+            : Math.round(((totalAnswered - mistakes) / totalAnswered) * 100);
+
+        accuracyText.textContent = `${accuracy}%`;
+    }
+
+    function addAudit(line) {
+        const time = new Date().toLocaleTimeString();
+        audit.unshift(`[${time}] ${line}`);
+
+        auditBox.textContent = audit.slice(0, 18).join("\n");
+    }
+
+    function handleDecision(decision) {
+        if (currentIndex >= packets.length) {
+            return;
+        }
+
+        const packet = packets[currentIndex];
+        totalAnswered++;
+
+        if (decision === "ALLOW") {
+            allowed++;
+        }
+
+        if (decision === "DENY") {
+            denied++;
+        }
+
+        if (decision === "QUARANTINE") {
+            quarantined++;
+        }
+
+        if (decision === packet.correct) {
+            const points = decision === "QUARANTINE" ? 15 : 10;
+            score += points;
+
+            if (decision === "QUARANTINE") {
+                incidents++;
+            }
+
+            statusText.style.color = "lime";
+            statusText.textContent = `CORRECT: ${packet.reason}`;
+            addAudit(`${packet.id} ${decision} OK | ${packet.reason}`);
+        } else {
+            mistakes++;
+            score -= 8;
+
+            if (score < 0) {
+                score = 0;
+            }
+
+            statusText.style.color = "red";
+            statusText.textContent = `WRONG: expected ${packet.correct}. ${packet.reason}`;
+            addAudit(`${packet.id} ${decision} WRONG | expected ${packet.correct}`);
+        }
+
+        currentIndex++;
+        updateStats();
+
+        setTimeout(() => {
+            renderPacket();
+        }, 850);
+    }
+
+    function explainCurrent() {
+        if (currentIndex >= packets.length) {
+            statusText.style.color = "lime";
+            statusText.textContent = "SHIFT COMPLETE: no current packet to explain.";
+            return;
+        }
+
+        const packet = packets[currentIndex];
+
+        statusText.style.color = "lime";
+        statusText.textContent = `EXPLAIN: correct action is ${packet.correct}. ${packet.reason}`;
+        addAudit(`${packet.id} EXPLAIN | correct action: ${packet.correct}`);
+    }
+
+    function finishGame() {
+        const accuracy = totalAnswered === 0
+            ? 100
+            : Math.round(((totalAnswered - mistakes) / totalAnswered) * 100);
+
+        packetBox.textContent =
+`SHIFT COMPLETE
+
+Packets processed: ${packets.length}
+Score:             ${score}
+Accuracy:          ${accuracy}%
+Mistakes:          ${mistakes}
+Incidents handled: ${incidents}
+Allowed:           ${allowed}
+Denied:            ${denied}
+Quarantined:       ${quarantined}
+
+RESULT:
+${getFinalRank(accuracy, score)}`;
+
+        packetText.textContent = `${packets.length} / ${packets.length}`;
+
+        statusText.style.color = "lime";
+        statusText.textContent = "FIREWALL SHIFT COMPLETE.";
+        addAudit(`SHIFT COMPLETE | score=${score} accuracy=${accuracy}%`);
+
+        disableDecisionButtons(true);
+        updateStats();
+    }
+
+    function getFinalRank(accuracy, finalScore) {
+        if (accuracy >= 95 && finalScore >= 280) {
+            return "SENIOR SOC ANALYST - suspiciously competent.";
+        }
+
+        if (accuracy >= 85) {
+            return "NETWORK DEFENDER - acceptable human output.";
+        }
+
+        if (accuracy >= 70) {
+            return "JUNIOR ANALYST - training recommended, naturally.";
+        }
+
+        return "INCIDENT GENERATOR - please step away from the firewall.";
+    }
+
+    function disableDecisionButtons(disabled) {
+        allowBtn.disabled = disabled;
+        denyBtn.disabled = disabled;
+        quarantineBtn.disabled = disabled;
+
+        allowBtn.style.opacity = disabled ? "0.45" : "1";
+        denyBtn.style.opacity = disabled ? "0.45" : "1";
+        quarantineBtn.style.opacity = disabled ? "0.45" : "1";
+    }
+
+    function restartGame() {
+        currentIndex = 0;
+        score = 0;
+        mistakes = 0;
+        incidents = 0;
+        allowed = 0;
+        denied = 0;
+        quarantined = 0;
+        totalAnswered = 0;
+        audit = [];
+
+        auditBox.textContent = "";
+        disableDecisionButtons(false);
+        updateStats();
+        renderPacket();
+
+        statusText.style.color = "lime";
+        statusText.textContent = "NEW SHIFT STARTED.";
+    }
+
+    allowBtn.addEventListener("click", () => handleDecision("ALLOW"));
+    denyBtn.addEventListener("click", () => handleDecision("DENY"));
+    quarantineBtn.addEventListener("click", () => handleDecision("QUARANTINE"));
+    restartBtn.addEventListener("click", restartGame);
+    explainBtn.addEventListener("click", explainCurrent);
+
+    renderPolicy();
+    restartGame();
+</script>
+
+</body>
+</html>
