@@ -1,232 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Asteroid Watch | Kopi</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Asteroids | Kopi</title>
+
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 <header>
-  <div class="container">
-    <div class="logo-terminal">
-      <span class="terminal-arrow">➜</span>
-      <span class="terminal-path">~ cd /home/kopi/projects/asteroid-watch</span>
-      <span class="terminal-cursor"></span>
-      <a class="terminal-link" href="index.html"></a>
+    <div class="container">
+
+        <div class="logo-terminal" style="position: relative;">
+            <span class="terminal-arrow">➜</span>
+            <span class="terminal-path">~ cd /home/kopi/asteroids</span>
+            <span class="terminal-cursor"></span>
+
+            <a href="index.html" class="terminal-link"></a>
+        </div>
+
+        <nav class="menu">
+            <ul>
+                <li><a href="about.html">About</a></li>
+                <li><a href="stuff.html">CTF Stuff</a></li>
+                <li><a href="projects.html">Projects</a></li>
+            </ul>
+        </nav>
     </div>
-    <nav class="menu">
-      <ul>
-        <li><a href="about.html">About</a></li>
-        <li><a href="stuff.html">CTF Stuff</a></li>
-        <li><a href="projects.html">Projects</a></li>
-      </ul>
-    </nav>
-  </div>
 </header>
 
-<main class="asteroid-page">
-  <section class="asteroid-hero">
-    <p class="terminal-line">[NASA NEO FEED] PLANETARY DEFENSE INTERFACE ONLINE</p>
-    <h1>ASTEROID WATCH</h1>
-    <p>Near-Earth objects approaching Earth today. Because apparently rocks also need appointment tracking.</p>
+<main class="container">
 
-    <div class="asteroid-controls">
-      <input id="dateInput" type="date" />
-      <button id="loadBtn">SCAN DATE</button>
-      <button id="todayBtn">TODAY</button>
-    </div>
+    <section style="text-align: center; margin-top: 4rem;">
+        <h1>Asteroid Watch</h1>
 
-    <p id="statusText" class="status-text">Initializing scan...</p>
-  </section>
+        <p style="margin-top: 1rem;">
+            Live Near-Earth object tracking powered by NASA NeoWs.
+        </p>
 
-  <section class="asteroid-stats">
-    <div class="neo-stat">
-      <span>TOTAL OBJECTS</span>
-      <strong id="totalCount">...</strong>
-    </div>
-    <div class="neo-stat danger">
-      <span>HAZARDOUS</span>
-      <strong id="hazardCount">...</strong>
-    </div>
-    <div class="neo-stat">
-      <span>CLOSEST MISS</span>
-      <strong id="closestMiss">...</strong>
-    </div>
-    <div class="neo-stat">
-      <span>FASTEST</span>
-      <strong id="fastestObject">...</strong>
-    </div>
-  </section>
+        <p id="statusText" style="
+            margin-top: 1rem;
+            color: lime;
+            font-size: 0.95rem;
+        ">
+            Initializing asteroid scan...
+        </p>
 
-  <section>
-    <h2 class="section-title">APPROACH VECTOR LOG</h2>
-    <div id="asteroidGrid" class="asteroid-grid"></div>
-  </section>
+        <div style="
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        ">
+            <input id="dateInput" type="date" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem;
+                font-family: monospace;
+            ">
+
+            <button id="loadBtn" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+            ">
+                SCAN DATE
+            </button>
+
+            <button id="todayBtn" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+            ">
+                TODAY
+            </button>
+        </div>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 3rem;
+    ">
+
+        <div class="terminal-box">
+            <p>TOTAL OBJECTS</p>
+            <h2 id="totalCount">...</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>HAZARDOUS</p>
+            <h2 id="hazardCount">...</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>CLOSEST MISS</p>
+            <h2 id="closestMiss">...</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>FASTEST</p>
+            <h2 id="fastestObject">...</h2>
+        </div>
+
+    </section>
+
+    <section style="margin-top: 4rem;">
+        <h2 style="text-align: center;">
+            Approach Vector Log
+        </h2>
+
+        <div id="asteroidGrid" style="
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        "></div>
+    </section>
+
 </main>
 
 <footer>
-  <p>DATA SOURCE: NASA NeoWs API</p>
+    <p>DATA SOURCE: NASA NeoWs API</p>
 </footer>
 
 <script>
-const API_KEY = "DEMO_KEY";
-const BASE_URL = "https://api.nasa.gov/neo/rest/v1/feed";
+    const API_KEY = "DEMO_KEY";
+    const BASE_URL = "https://api.nasa.gov/neo/rest/v1/feed";
 
-const dateInput = document.getElementById("dateInput");
-const loadBtn = document.getElementById("loadBtn");
-const todayBtn = document.getElementById("todayBtn");
-const statusText = document.getElementById("statusText");
-const asteroidGrid = document.getElementById("asteroidGrid");
+    const dateInput = document.getElementById("dateInput");
+    const loadBtn = document.getElementById("loadBtn");
+    const todayBtn = document.getElementById("todayBtn");
+    const statusText = document.getElementById("statusText");
+    const asteroidGrid = document.getElementById("asteroidGrid");
 
-const totalCount = document.getElementById("totalCount");
-const hazardCount = document.getElementById("hazardCount");
-const closestMiss = document.getElementById("closestMiss");
-const fastestObject = document.getElementById("fastestObject");
+    const totalCount = document.getElementById("totalCount");
+    const hazardCount = document.getElementById("hazardCount");
+    const closestMiss = document.getElementById("closestMiss");
+    const fastestObject = document.getElementById("fastestObject");
 
-function todayIso() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function formatKm(value) {
-  return Number(value).toLocaleString("en-US", { maximumFractionDigits: 0 }) + " km";
-}
-
-function formatSpeed(value) {
-  return Number(value).toLocaleString("en-US", { maximumFractionDigits: 0 }) + " km/h";
-}
-
-function getDiameterMeters(neo) {
-  const min = neo.estimated_diameter.meters.estimated_diameter_min;
-  const max = neo.estimated_diameter.meters.estimated_diameter_max;
-  return (min + max) / 2;
-}
-
-function getApproach(neo) {
-  return neo.close_approach_data && neo.close_approach_data[0]
-    ? neo.close_approach_data[0]
-    : null;
-}
-
-function threatLabel(neo) {
-  const approach = getApproach(neo);
-  if (!approach) return "UNKNOWN";
-
-  const missLunar = Number(approach.miss_distance.lunar);
-  const hazardous = neo.is_potentially_hazardous_asteroid;
-
-  if (hazardous && missLunar < 20) return "SEVERE";
-  if (hazardous) return "ELEVATED";
-  if (missLunar < 10) return "CLOSE";
-  return "LOW";
-}
-
-function threatClass(label) {
-  return label.toLowerCase();
-}
-
-async function loadAsteroids(date) {
-  statusText.textContent = "[SCAN] Contacting NASA NeoWs...";
-  asteroidGrid.innerHTML = "";
-
-  const cacheKey = `neo-${date}`;
-  const cached = localStorage.getItem(cacheKey);
-
-  if (cached) {
-    renderAsteroids(JSON.parse(cached), date, true);
-    return;
-  }
-
-  try {
-    const url = `${BASE_URL}?start_date=${date}&end_date=${date}&api_key=${API_KEY}`;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`NASA API error: ${response.status}`);
+    function todayIso() {
+        return new Date().toISOString().slice(0, 10);
     }
 
-    const data = await response.json();
-    localStorage.setItem(cacheKey, JSON.stringify(data));
-    renderAsteroids(data, date, false);
-  } catch (error) {
-    statusText.textContent = `[ERROR] ${error.message}`;
-    asteroidGrid.innerHTML = `<div class="asteroid-card">API link failed. The rocks remain mysterious.</div>`;
-  }
-}
+    function formatKm(value) {
+        return Number(value).toLocaleString("en-US", {
+            maximumFractionDigits: 0
+        }) + " km";
+    }
 
-function renderAsteroids(data, date, fromCache) {
-  const objects = data.near_earth_objects?.[date] || [];
+    function formatSpeed(value) {
+        return Number(value).toLocaleString("en-US", {
+            maximumFractionDigits: 0
+        }) + " km/h";
+    }
 
-  totalCount.textContent = objects.length;
+    function getDiameterMeters(neo) {
+        const min = neo.estimated_diameter.meters.estimated_diameter_min;
+        const max = neo.estimated_diameter.meters.estimated_diameter_max;
 
-  const hazardous = objects.filter(obj => obj.is_potentially_hazardous_asteroid);
-  hazardCount.textContent = hazardous.length;
+        return (min + max) / 2;
+    }
 
-  if (!objects.length) {
-    closestMiss.textContent = "N/A";
-    fastestObject.textContent = "N/A";
-    statusText.textContent = "[OK] No objects found for this date.";
-    asteroidGrid.innerHTML = `<div class="asteroid-card">No NEO records returned.</div>`;
-    return;
-  }
+    function getApproach(neo) {
+        if (neo.close_approach_data && neo.close_approach_data.length > 0) {
+            return neo.close_approach_data[0];
+        }
 
-  const sortedByDistance = [...objects].sort((a, b) => {
-    return Number(getApproach(a).miss_distance.kilometers) - Number(getApproach(b).miss_distance.kilometers);
-  });
+        return null;
+    }
 
-  const sortedBySpeed = [...objects].sort((a, b) => {
-    return Number(getApproach(b).relative_velocity.kilometers_per_hour) - Number(getApproach(a).relative_velocity.kilometers_per_hour);
-  });
+    function threatLabel(neo) {
+        const approach = getApproach(neo);
 
-  closestMiss.textContent = formatKm(getApproach(sortedByDistance[0]).miss_distance.kilometers);
-  fastestObject.textContent = formatSpeed(getApproach(sortedBySpeed[0]).relative_velocity.kilometers_per_hour);
+        if (!approach) {
+            return "UNKNOWN";
+        }
 
-  statusText.textContent = fromCache
-    ? `[CACHE] Loaded ${objects.length} objects for ${date}.`
-    : `[OK] Loaded ${objects.length} objects for ${date}.`;
+        const missLunar = Number(approach.miss_distance.lunar);
+        const hazardous = neo.is_potentially_hazardous_asteroid;
 
-  asteroidGrid.innerHTML = objects
-    .sort((a, b) => Number(getApproach(a).miss_distance.kilometers) - Number(getApproach(b).miss_distance.kilometers))
-    .map(neo => {
-      const approach = getApproach(neo);
-      const diameter = getDiameterMeters(neo);
-      const label = threatLabel(neo);
+        if (hazardous && missLunar < 20) {
+            return "SEVERE";
+        }
 
-      return `
-        <article class="asteroid-card ${neo.is_potentially_hazardous_asteroid ? "hazardous" : ""}">
-          <div class="asteroid-card-header">
-            <h3>${neo.name}</h3>
-            <span class="threat ${threatClass(label)}">${label}</span>
-          </div>
+        if (hazardous) {
+            return "ELEVATED";
+        }
 
-          <div class="orbit-visual">
-            <div class="earth-dot"></div>
-            <div class="asteroid-dot"></div>
-          </div>
+        if (missLunar < 10) {
+            return "CLOSE";
+        }
 
-          <div class="neo-data">
-            <p><span>Diameter:</span> ${diameter.toFixed(1)} m</p>
-            <p><span>Miss distance:</span> ${formatKm(approach.miss_distance.kilometers)}</p>
-            <p><span>Lunar distance:</span> ${Number(approach.miss_distance.lunar).toFixed(2)} LD</p>
-            <p><span>Velocity:</span> ${formatSpeed(approach.relative_velocity.kilometers_per_hour)}</p>
-            <p><span>Approach:</span> ${approach.close_approach_date_full || approach.close_approach_date}</p>
-          </div>
+        return "LOW";
+    }
 
-          <a class="neo-link" href="${neo.nasa_jpl_url}" target="_blank" rel="noopener">OPEN JPL RECORD</a>
-        </article>
-      `;
-    })
-    .join("");
-}
+    async function loadAsteroids(date) {
+        statusText.textContent = "[SCAN] Contacting NASA NeoWs...";
+        asteroidGrid.innerHTML = "";
 
-dateInput.value = todayIso();
-loadAsteroids(dateInput.value);
+        totalCount.textContent = "...";
+        hazardCount.textContent = "...";
+        closestMiss.textContent = "...";
+        fastestObject.textContent = "...";
 
-loadBtn.addEventListener("click", () => loadAsteroids(dateInput.value));
-todayBtn.addEventListener("click", () => {
-  dateInput.value = todayIso();
-  loadAsteroids(dateInput.value);
-});
+        const cacheKey = `neo-${date}`;
+        const cached = localStorage.getItem(cacheKey);
+
+        if (cached) {
+            renderAsteroids(JSON.parse(cached), date, true);
+            return;
+        }
+
+        try {
+            const url = `${BASE_URL}?start_date=${date}&end_date=${date}&api_key=${API_KEY}`;
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`NASA API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            localStorage.setItem(cacheKey, JSON.stringify(data));
+            renderAsteroids(data, date, false);
+        } catch (error) {
+            statusText.textContent = `[ERROR] ${error.message}`;
+
+            asteroidGrid.innerHTML = `
+                <div style="
+                    border: 1px solid red;
+                    border-radius: 12px;
+                    padding: 1.5rem;
+                    color: red;
+                    width: 300px;
+                    text-align: center;
+                ">
+                    API link failed. The rocks remain mysterious.
+                </div>
+            `;
+        }
+    }
+
+    function renderAsteroids(data, date, fromCache) {
+        const objects = data.near_earth_objects?.[date] || [];
+
+        totalCount.textContent = objects.length;
+
+        const hazardous = objects.filter(obj => obj.is_potentially_hazardous_asteroid);
+        hazardCount.textContent = hazardous.length;
+
+        if (!objects.length) {
+            closestMiss.textContent = "N/A";
+            fastestObject.textContent = "N/A";
+            statusText.textContent = "[OK] No objects found for this date.";
+
+            asteroidGrid.innerHTML = `
+                <div style="
+                    border: 1px solid rgba(255,255,255,0.1);
+                    border-radius: 12px;
+                    padding: 1.5rem;
+                    width: 300px;
+                    text-align: center;
+                ">
+                    No NEO records returned.
+                </div>
+            `;
+
+            return;
+        }
+
+        const validObjects = objects.filter(obj => getApproach(obj));
+
+        const sortedByDistance = [...validObjects].sort((a, b) => {
+            return Number(getApproach(a).miss_distance.kilometers) -
+                   Number(getApproach(b).miss_distance.kilometers);
+        });
+
+        const sortedBySpeed = [...validObjects].sort((a, b) => {
+            return Number(getApproach(b).relative_velocity.kilometers_per_hour) -
+                   Number(getApproach(a).relative_velocity.kilometers_per_hour);
+        });
+
+        closestMiss.textContent = formatKm(getApproach(sortedByDistance[0]).miss_distance.kilometers);
+        fastestObject.textContent = formatSpeed(getApproach(sortedBySpeed[0]).relative_velocity.kilometers_per_hour);
+
+        statusText.textContent = fromCache
+            ? `[CACHE] Loaded ${objects.length} objects for ${date}.`
+            : `[OK] Loaded ${objects.length} objects for ${date}.`;
+
+        asteroidGrid.innerHTML = validObjects
+            .sort((a, b) => {
+                return Number(getApproach(a).miss_distance.kilometers) -
+                       Number(getApproach(b).miss_distance.kilometers);
+            })
+            .map(neo => {
+                const approach = getApproach(neo);
+                const diameter = getDiameterMeters(neo);
+                const label = threatLabel(neo);
+                const isHazardous = neo.is_potentially_hazardous_asteroid;
+
+                return `
+                    <div style="
+                        width: 300px;
+                        border: 1px solid ${isHazardous ? "red" : "rgba(255,255,255,0.1)"};
+                        border-radius: 12px;
+                        padding: 1.5rem;
+                        background: #050505;
+                        text-align: left;
+                    ">
+
+                        <div style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            gap: 1rem;
+                        ">
+                            <h3 style="font-size: 1rem;">
+                                ${neo.name}
+                            </h3>
+
+                            <span style="
+                                color: ${isHazardous ? "red" : "lime"};
+                                border: 1px solid ${isHazardous ? "red" : "lime"};
+                                padding: 0.2rem 0.5rem;
+                                font-size: 0.7rem;
+                            ">
+                                ${label}
+                            </span>
+                        </div>
+
+                        <div style="
+                            margin-top: 1rem;
+                            font-size: 0.9rem;
+                            line-height: 1.8;
+                        ">
+                            <p>☄ Diameter: ${diameter.toFixed(1)} m</p>
+                            <p>🌍 Miss distance: ${formatKm(approach.miss_distance.kilometers)}</p>
+                            <p>🌕 Lunar distance: ${Number(approach.miss_distance.lunar).toFixed(2)} LD</p>
+                            <p>⚡ Velocity: ${formatSpeed(approach.relative_velocity.kilometers_per_hour)}</p>
+                            <p>🕒 Approach: ${approach.close_approach_date_full || approach.close_approach_date}</p>
+                        </div>
+
+                        <a href="${neo.nasa_jpl_url}"
+                           target="_blank"
+                           rel="noopener"
+                           style="
+                                display: inline-block;
+                                margin-top: 1rem;
+                                color: lime;
+                                text-decoration: none;
+                           ">
+                            OPEN NASA RECORD →
+                        </a>
+                    </div>
+                `;
+            })
+            .join("");
+    }
+
+    dateInput.value = todayIso();
+    loadAsteroids(dateInput.value);
+
+    loadBtn.addEventListener("click", () => {
+        loadAsteroids(dateInput.value);
+    });
+
+    todayBtn.addEventListener("click", () => {
+        dateInput.value = todayIso();
+        loadAsteroids(dateInput.value);
+    });
 </script>
+
 </body>
 </html>
