@@ -1,206 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Projects | Kopi</title>
-
-  <link rel="stylesheet" href="styles.css">
-
-  <style>
-    .projects-wrapper {
-      max-width: 900px;
-      margin: 80px auto;
-      padding: 0 20px;
-      text-align: center;
-    }
-
-    .projects-card {
-      border: 1px solid #111;
-      background: #050505;
-      padding: 40px 30px;
-      box-shadow: 0 0 14px rgba(0, 255, 120, 0.08);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .projects-title {
-      color: #00ffaa;
-      font-size: 34px;
-      margin-bottom: 18px;
-      letter-spacing: 2px;
-    }
-
-    .projects-subtitle {
-      color: #666;
-      font-size: 14px;
-      margin-bottom: 40px;
-      line-height: 1.8;
-    }
-
-    .construction {
-      font-size: 80px;
-      margin-bottom: 30px;
-      animation: pulse 2s infinite ease-in-out;
-      display: inline-block;
-    }
-
-    .scanlines {
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          rgba(255,255,255,0.02),
-          rgba(255,255,255,0.02) 1px,
-          transparent 1px,
-          transparent 3px
-        );
-      pointer-events: none;
-      opacity: 0.2;
-    }
-
-    .terminal-box {
-      border: 1px solid #111;
-      background: #020202;
-      padding: 20px;
-      margin-top: 30px;
-      text-align: left;
-      font-size: 13px;
-      line-height: 1.8;
-      color: #00ff88;
-    }
-
-    .terminal-line {
-      opacity: 0;
-      animation: fadeIn 0.5s forwards;
-    }
-
-    .terminal-line:nth-child(1) { animation-delay: 0.5s; }
-    .terminal-line:nth-child(2) { animation-delay: 1.2s; }
-    .terminal-line:nth-child(3) { animation-delay: 1.9s; }
-    .terminal-line:nth-child(4) { animation-delay: 2.6s; }
-    .terminal-line:nth-child(5) { animation-delay: 3.3s; }
-
-    .cursor {
-      display: inline-block;
-      width: 10px;
-      animation: blink 1s infinite;
-    }
-
-    .status {
-      margin-top: 30px;
-      color: #00ffaa;
-      font-size: 14px;
-      letter-spacing: 1px;
-    }
-
-    @keyframes blink {
-      50% {
-        opacity: 0;
-      }
-    }
-
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-        filter: drop-shadow(0 0 0px #00ff88);
-      }
-
-      50% {
-        transform: scale(1.08);
-        filter: drop-shadow(0 0 12px #00ff88);
-      }
-
-      100% {
-        transform: scale(1);
-        filter: drop-shadow(0 0 0px #00ff88);
-      }
-    }
-
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
-<header>
-  <div class="container">
+<nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="projects.html">Projects</a>
+    <a href="stuff.html">Stuff</a>
+</nav>
 
-    <div class="logo-terminal" style="position: relative;">
-      <span class="terminal-arrow">➜</span>
-      <span class="terminal-path">~ cd /home/kopi</span>
-      <span class="terminal-cursor"></span>
-      <a href="index.html" class="terminal-link"></a>
-    </div>
+<main>
 
-    <nav class="menu">
-      <ul>
-        <li><a href="about.html">About</a></li>
-					<li><a href="stuff.html">CTF Stuff</a></li>
-					<li><a href="projects.html">Projects</a></li>
-					<li><a href="iss.html">ISS</a></li>
-					<li><a href="earthquake.html">Earthquakes</a></li>
-					<li><a href="nuclear.html">Nuclear</a></li>
-      </ul>
-    </nav>
+    <h1>Projects</h1>
 
-  </div>
-</header>
+    <div style="
+        display:flex;
+        justify-content:center;
+        gap:30px;
+        flex-wrap:wrap;
+        margin-top:40px;
+    ">
 
-<main class="projects-wrapper">
+        <a href="iss.html" style="
+            text-decoration:none;
+            color:inherit;
+            text-align:center;
+        ">
+            <div style="font-size:80px;">🛰️</div>
+            <h2>ISS Tracker</h2>
+        </a>
 
-  <div class="projects-card">
+        <a href="earthquake.html" style="
+            text-decoration:none;
+            color:inherit;
+            text-align:center;
+        ">
+            <div style="font-size:80px;">🌍</div>
+            <h2>Earthquakes</h2>
+        </a>
 
-    <div class="scanlines"></div>
-
-    <div class="construction">
-      🚧
-    </div>
-
-    <div class="projects-title">
-      PROJECTS UNDER CONSTRUCTION
-    </div>
-
-    <div class="projects-subtitle">
-      Repository structures are being assembled.<br>
-      Telemetry pipelines remain unstable.<br>
-      Additional systems will be deployed soon.
-    </div>
-
-    <div class="terminal-box">
-
-      <div class="terminal-line">
-        [SYS] Initializing project containers...
-      </div>
-
-      <div class="terminal-line">
-        [NET] Synchronizing repositories...
-      </div>
-
-      <div class="terminal-line">
-        [CORE] Deploying dashboard modules...
-      </div>
-
-      <div class="terminal-line">
-        [WARN] Several components remain experimental.
-      </div>
-
-      <div class="terminal-line">
-        [OK] Awaiting further development<span class="cursor">_</span>
-      </div>
+        <a href="nuclear.html" style="
+            text-decoration:none;
+            color:inherit;
+            text-align:center;
+        ">
+            <div style="font-size:80px;">☢️</div>
+            <h2>Nuclear</h2>
+        </a>
 
     </div>
-
-    <div class="status">
-      STATUS: IN DEVELOPMENT
-    </div>
-
-  </div>
 
 </main>
 
