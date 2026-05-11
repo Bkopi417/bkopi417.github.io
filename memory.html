@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Memory Dump | Kopi</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<header>
+    <div class="container">
+
+        <div class="logo-terminal" style="position: relative;">
+            <span class="terminal-arrow">➜</span>
+            <span class="terminal-path">~ cd /home/kopi/memory-dump</span>
+            <span class="terminal-cursor"></span>
+
+            <a href="index.html" class="terminal-link"></a>
+        </div>
+
+        <nav class="menu">
+            <ul>
+                <li><a href="about.html">About</a></li>
+                <li><a href="stuff.html">CTF Stuff</a></li>
+                <li><a href="projects.html">Projects</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <section style="text-align: center; margin-top: 4rem;">
+        <h1>Memory Dump</h1>
+
+        <p style="margin-top: 1rem;">
+            Analyze the dump, decode the signature, and select the infected bytes.
+        </p>
+
+        <p id="statusText" style="
+            margin-top: 1rem;
+            color: lime;
+            font-size: 0.95rem;
+        ">
+            FORENSIC MODULE ONLINE.
+        </p>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 3rem;
+    ">
+
+        <div class="terminal-box">
+            <p>TIME</p>
+            <h2 id="timerText">00:00</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>ERRORS</p>
+            <h2 id="errorText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>SELECTED</p>
+            <h2 id="selectedText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>LEVEL</p>
+            <h2 id="levelText">1</h2>
+        </div>
+
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+    ">
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 320px;
+            text-align: left;
+        ">
+            <h2 style="font-size: 1.2rem; color: lime;">
+                Forensic Report
+            </h2>
+
+            <p style="margin-top: 1rem;">
+                RAW SIGNATURE
+            </p>
+
+            <pre id="rawSignature" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                margin-top: 0.5rem;
+            "></pre>
+
+            <p style="margin-top: 1rem;">
+                XOR KEY
+            </p>
+
+            <pre id="xorKey" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                margin-top: 0.5rem;
+            "></pre>
+
+            <p style="margin-top: 1rem;">
+                ENCODED SIGNATURE
+            </p>
+
+            <pre id="encodedSignature" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                margin-top: 0.5rem;
+            "></pre>
+
+            <p style="margin-top: 1rem;">
+                CHECKSUM
+            </p>
+
+            <pre id="checksumText" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                margin-top: 0.5rem;
+            "></pre>
+
+            <p style="margin-top: 1rem;">
+                HINT
+            </p>
+
+            <pre id="hintText" style="
+                color: #777;
+                white-space: pre-wrap;
+                margin-top: 0.5rem;
+                line-height: 1.5;
+            "></pre>
+        </div>
+
+        <div style="
+            overflow-x: auto;
+            max-width: 100%;
+            padding-bottom: 1rem;
+        ">
+            <div id="memoryGrid" style="
+                display: grid;
+                grid-template-columns: repeat(16, 42px);
+                gap: 5px;
+                min-width: max-content;
+            "></div>
+        </div>
+
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    ">
+        <button id="checkBtn" style="
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            font-family: monospace;
+        ">
+            VERIFY SELECTION
+        </button>
+
+        <button id="newBtn" style="
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            font-family: monospace;
+        ">
+            NEW DUMP
+        </button>
+
+        <button id="clearBtn" style="
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            font-family: monospace;
+        ">
+            CLEAR
+        </button>
+    </section>
+
+</main>
+
+<footer>
+    <p>LOGIC MODULE: MEMORY DUMP FORENSICS</p>
+</footer>
+
+<script>
+    const GRID_SIZE = 16;
+    const CELL_COUNT = GRID_SIZE * GRID_SIZE;
+
+    const memoryGrid = document.getElementById("memoryGrid");
+    const statusText = document.getElementById("statusText");
+    const timerText = document.getElementById("timerText");
+    const errorText = document.getElementById("errorText");
+    const selectedText = document.getElementById("selectedText");
+    const levelText = document.getElementById("levelText");
+
+    const rawSignature = document.getElementById("rawSignature");
+    const xorKey = document.getElementById("xorKey");
+    const encodedSignature = document.getElementById("encodedSignature");
+    const checksumText = document.getElementById("checksumText");
+    const hintText = document.getElementById("hintText");
+
+    const checkBtn = document.getElementById("checkBtn");
+    const newBtn = document.getElementById("newBtn");
+    const clearBtn = document.getElementById("clearBtn");
+
+    let memory = [];
+    let selected = new Set();
+    let targetIndexes = [];
+    let decoyIndexes = [];
+    let errors = 0;
+    let level = 1;
+    let seconds = 0;
+    let timer = null;
+
+    let currentRaw = [];
+    let currentEncoded = [];
+    let currentKey = 0;
+    let checksum = 0;
+
+    function randomByte() {
+        return Math.floor(Math.random() * 256);
+    }
+
+    function toHex(value) {
+        return value.toString(16).toUpperCase().padStart(2, "0");
+    }
+
+    function randomHexByte() {
+        return toHex(randomByte());
+    }
+
+    function formatTime(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+        const secs = (totalSeconds % 60).toString().padStart(2, "0");
+
+        return `${minutes}:${secs}`;
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        seconds = 0;
+        timerText.textContent = "00:00";
+
+        timer = setInterval(() => {
+            seconds++;
+            timerText.textContent = formatTime(seconds);
+        }, 1000);
+    }
+
+    function getDifficulty() {
+        return {
+            signatureLength: Math.min(5 + level, 12),
+            decoys: Math.min(3 + level, 10),
+            fragments: Math.min(2 + Math.floor(level / 2), 6)
+        };
+    }
+
+    function createSignature(length) {
+        const signature = [];
+
+        for (let i = 0; i < length; i++) {
+            signature.push(randomByte());
+        }
+
+        return signature;
+    }
+
+    function encodeSignature(signature, key) {
+        return signature.map(byte => byte ^ key);
+    }
+
+    function getChecksum(bytes) {
+        return bytes.reduce((sum, byte) => {
+            return (sum + byte) % 256;
+        }, 0);
+    }
+
+    function canPlaceHorizontal(startIndex, length) {
+        const startCol = startIndex % GRID_SIZE;
+        return startCol + length <= GRID_SIZE;
+    }
+
+    function canPlaceVertical(startIndex, length) {
+        const startRow = Math.floor(startIndex / GRID_SIZE);
+        return startRow + length <= GRID_SIZE;
+    }
+
+    function getLineIndexes(startIndex, length, direction) {
+        const indexes = [];
+
+        for (let i = 0; i < length; i++) {
+            if (direction === "horizontal") {
+                indexes.push(startIndex + i);
+            } else {
+                indexes.push(startIndex + i * GRID_SIZE);
+            }
+        }
+
+        return indexes;
+    }
+
+    function overlapsForbidden(indexes, forbidden) {
+        return indexes.some(index => forbidden.has(index));
+    }
+
+    function placeSequence(bytes, forbidden, allowFragments) {
+        let tries = 0;
+
+        while (tries < 1000) {
+            tries++;
+
+            const direction = Math.random() > 0.5 ? "horizontal" : "vertical";
+            const startIndex = Math.floor(Math.random() * CELL_COUNT);
+
+            if (direction === "horizontal" && !canPlaceHorizontal(startIndex, bytes.length)) {
+                continue;
+            }
+
+            if (direction === "vertical" && !canPlaceVertical(startIndex, bytes.length)) {
+                continue;
+            }
+
+            const indexes = getLineIndexes(startIndex, bytes.length, direction);
+
+            if (overlapsForbidden(indexes, forbidden)) {
+                continue;
+            }
+
+            indexes.forEach((index, i) => {
+                memory[index] = toHex(bytes[i]);
+                forbidden.add(index);
+            });
+
+            return indexes;
+        }
+
+        return [];
+    }
+
+    function placeDecoy(signature, forbidden) {
+        const decoy = [...signature];
+        const changeCount = Math.max(1, Math.floor(signature.length / 3));
+
+        for (let i = 0; i < changeCount; i++) {
+            const index = Math.floor(Math.random() * decoy.length);
+            decoy[index] = randomByte();
+        }
+
+        return placeSequence(decoy, forbidden, false);
+    }
+
+    function placeFragment(signature, forbidden) {
+        const fragmentLength = Math.max(3, Math.floor(signature.length / 2));
+        const start = Math.floor(Math.random() * (signature.length - fragmentLength + 1));
+        const fragment = signature.slice(start, start + fragmentLength);
+
+        return placeSequence(fragment, forbidden, true);
+    }
+
+    function createDump() {
+        const difficulty = getDifficulty();
+        const forbidden = new Set();
+
+        memory = Array.from({ length: CELL_COUNT }, () => randomHexByte());
+        selected.clear();
+        targetIndexes = [];
+        decoyIndexes = [];
+        errors = 0;
+
+        currentKey = randomByte();
+        currentRaw = createSignature(difficulty.signatureLength);
+        currentEncoded = encodeSignature(currentRaw, currentKey);
+        checksum = getChecksum(currentRaw);
+
+        targetIndexes = placeSequence(currentEncoded, forbidden, false);
+
+        for (let i = 0; i < difficulty.decoys; i++) {
+            const indexes = placeDecoy(currentEncoded, forbidden);
+            decoyIndexes.push(...indexes);
+        }
+
+        for (let i = 0; i < difficulty.fragments; i++) {
+            const indexes = placeFragment(currentEncoded, forbidden);
+            decoyIndexes.push(...indexes);
+        }
+
+        updateReport();
+        updateStats();
+        renderGrid();
+        startTimer();
+
+        statusText.textContent = "SCAN READY: locate the encoded signature in memory.";
+    }
+
+    function updateReport() {
+        rawSignature.textContent = currentRaw.map(toHex).join(" ");
+        xorKey.textContent = toHex(currentKey);
+        encodedSignature.textContent = currentEncoded.map(toHex).join(" ");
+        checksumText.textContent = `SUM MOD 256 = ${toHex(checksum)}`;
+
+        hintText.textContent =
+            "Target bytes are stored as RAW_BYTE XOR KEY.\n" +
+            "Select the full encoded signature in exact sequence.\n" +
+            "Beware of decoys and partial fragments.\n" +
+            "Because apparently malware also enjoys hide-and-seek.";
+    }
+
+    function updateStats() {
+        errorText.textContent = errors;
+        selectedText.textContent = selected.size;
+        levelText.textContent = level;
+    }
+
+    function renderGrid() {
+        memoryGrid.innerHTML = "";
+
+        memory.forEach((byte, index) => {
+            const cell = document.createElement("button");
+            const isSelected = selected.has(index);
+
+            cell.textContent = byte;
+
+            cell.style.width = "42px";
+            cell.style.height = "42px";
+            cell.style.padding = "0";
+            cell.style.background = isSelected ? "#061f06" : "#050505";
+            cell.style.color = isSelected ? "lime" : "#aaa";
+            cell.style.border = isSelected ? "1px solid lime" : "1px solid rgba(255,255,255,0.1)";
+            cell.style.borderRadius = "7px";
+            cell.style.fontSize = "0.9rem";
+            cell.style.cursor = "pointer";
+            cell.style.fontFamily = "monospace";
+            cell.style.boxShadow = isSelected ? "0 0 10px rgba(0,255,0,0.35)" : "none";
+            cell.style.transition = "0.12s ease";
+
+            cell.addEventListener("click", () => {
+                if (selected.has(index)) {
+                    selected.delete(index);
+                } else {
+                    selected.add(index);
+                }
+
+                updateStats();
+                renderGrid();
+            });
+
+            memoryGrid.appendChild(cell);
+        });
+    }
+
+    function arraysEqualAsSet(a, b) {
+        if (a.length !== b.length) {
+            return false;
+        }
+
+        const setA = new Set(a);
+
+        return b.every(item => setA.has(item));
+    }
+
+    function verifySelection() {
+        const selectedArray = Array.from(selected);
+
+        const correct = arraysEqualAsSet(selectedArray, targetIndexes);
+
+        if (correct) {
+            clearInterval(timer);
+
+            statusText.textContent = "MATCH CONFIRMED: infected signature isolated.";
+            statusText.style.color = "lime";
+
+            revealTarget(true);
+
+            setTimeout(() => {
+                level++;
+                createDump();
+            }, 1600);
+
+            return;
+        }
+
+        errors++;
+        statusText.textContent = "SIGNATURE MISMATCH: selected bytes do not match target.";
+        statusText.style.color = "red";
+
+        selected.clear();
+        updateStats();
+        renderGrid();
+    }
+
+    function revealTarget(success) {
+        memoryGrid.innerHTML = "";
+
+        memory.forEach((byte, index) => {
+            const cell = document.createElement("div");
+            const isTarget = targetIndexes.includes(index);
+            const isDecoy = decoyIndexes.includes(index);
+
+            cell.textContent = byte;
+
+            cell.style.width = "42px";
+            cell.style.height = "42px";
+            cell.style.display = "flex";
+            cell.style.justifyContent = "center";
+            cell.style.alignItems = "center";
+            cell.style.padding = "0";
+            cell.style.background = "#050505";
+            cell.style.color = "#777";
+            cell.style.border = "1px solid rgba(255,255,255,0.1)";
+            cell.style.borderRadius = "7px";
+            cell.style.fontSize = "0.9rem";
+            cell.style.fontFamily = "monospace";
+
+            if (isDecoy) {
+                cell.style.border = "1px solid rgba(255,255,0,0.25)";
+                cell.style.color = "#999";
+            }
+
+            if (isTarget) {
+                cell.style.background = "#061f06";
+                cell.style.color = "lime";
+                cell.style.border = "1px solid lime";
+                cell.style.boxShadow = "0 0 10px rgba(0,255,0,0.35)";
+            }
+
+            memoryGrid.appendChild(cell);
+        });
+    }
+
+    function clearSelection() {
+        selected.clear();
+        updateStats();
+        renderGrid();
+        statusText.textContent = "SELECTION CLEARED.";
+        statusText.style.color = "lime";
+    }
+
+    checkBtn.addEventListener("click", verifySelection);
+
+    newBtn.addEventListener("click", () => {
+        createDump();
+    });
+
+    clearBtn.addEventListener("click", clearSelection);
+
+    createDump();
+</script>
+
+</body>
+</html>
