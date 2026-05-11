@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Circuit Lock | Kopi</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<header>
+    <div class="container">
+
+        <div class="logo-terminal" style="position: relative;">
+            <span class="terminal-arrow">➜</span>
+            <span class="terminal-path">~ cd /home/kopi/circuit-lock</span>
+            <span class="terminal-cursor"></span>
+
+            <a href="index.html" class="terminal-link"></a>
+        </div>
+
+        <nav class="menu">
+            <ul>
+                <li><a href="about.html">About</a></li>
+                <li><a href="stuff.html">CTF Stuff</a></li>
+                <li><a href="projects.html">Projects</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <section style="text-align: center; margin-top: 4rem;">
+        <h1>Circuit Lock</h1>
+
+        <p style="margin-top: 1rem;">
+            Rotate the circuit pieces and connect START to END.
+        </p>
+
+        <p id="statusText" style="
+            margin-top: 1rem;
+            color: lime;
+            font-size: 0.95rem;
+        ">
+            SYSTEM LOCKED: signal path incomplete.
+        </p>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 3rem;
+    ">
+
+        <div class="terminal-box">
+            <p>MOVES</p>
+            <h2 id="moveCount">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>LEVEL</p>
+            <h2 id="levelText">1</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>STATUS</p>
+            <h2 id="lockStatus">LOCKED</h2>
+        </div>
+
+    </section>
+
+    <section style="text-align: center; margin-top: 3rem;">
+        <div id="gameBoard" style="
+            display: grid;
+            grid-template-columns: repeat(5, 64px);
+            grid-template-rows: repeat(5, 64px);
+            gap: 8px;
+            justify-content: center;
+            margin: 0 auto;
+        "></div>
+
+        <div style="
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        ">
+            <button id="resetBtn" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+            ">
+                RESET LEVEL
+            </button>
+
+            <button id="nextBtn" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+            ">
+                NEXT LEVEL
+            </button>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>LOGIC MODULE: CIRCUIT LOCK</p>
+</footer>
+
+<script>
+    const boardElement = document.getElementById("gameBoard");
+    const statusText = document.getElementById("statusText");
+    const moveCountElement = document.getElementById("moveCount");
+    const levelText = document.getElementById("levelText");
+    const lockStatus = document.getElementById("lockStatus");
+    const resetBtn = document.getElementById("resetBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    const SIZE = 5;
+
+    const levels = [
+        [
+            ["start", "line", "corner", "empty", "empty"],
+            ["empty", "empty", "line", "empty", "empty"],
+            ["empty", "empty", "corner", "line", "corner"],
+            ["empty", "empty", "empty", "empty", "line"],
+            ["empty", "empty", "empty", "empty", "end"]
+        ],
+        [
+            ["start", "corner", "empty", "empty", "empty"],
+            ["empty", "tee", "line", "corner", "empty"],
+            ["empty", "empty", "empty", "line", "empty"],
+            ["empty", "corner", "line", "corner", "empty"],
+            ["empty", "end", "empty", "empty", "empty"]
+        ],
+        [
+            ["start", "line", "corner", "empty", "empty"],
+            ["empty", "empty", "tee", "corner", "empty"],
+            ["empty", "empty", "empty", "line", "empty"],
+            ["empty", "corner", "line", "corner", "empty"],
+            ["empty", "end", "empty", "empty", "empty"]
+        ]
+    ];
+
+    let currentLevel = 0;
+    let board = [];
+    let moves = 0;
+    let solved = false;
+
+    const connections = {
+        empty: [],
+        start: ["right"],
+        end: ["up"],
+        line: ["left", "right"],
+        corner: ["up", "right"],
+        tee: ["left", "up", "right"],
+        cross: ["left", "up", "right", "down"]
+    };
+
+    const opposite = {
+        up: "down",
+        right: "left",
+        down: "up",
+        left: "right"
+    };
+
+    const delta = {
+        up: [-1, 0],
+        right: [0, 1],
+        down: [1, 0],
+        left: [0, -1]
+    };
+
+    function rotateDirection(direction, times) {
+        const order = ["up", "right", "down", "left"];
+        const index = order.indexOf(direction);
+
+        return order[(index + times) % 4];
+    }
+
+    function getConnections(cell) {
+        return connections[cell.type].map(direction => {
+            return rotateDirection(direction, cell.rotation);
+        });
+    }
+
+    function getSymbol(cell) {
+        if (cell.type === "empty") return "";
+        if (cell.type === "start") return "S";
+        if (cell.type === "end") return "E";
+
+        const dirs = getConnections(cell).sort().join(",");
+
+        if (cell.type === "line") {
+            if (dirs === "left,right") return "━";
+            return "┃";
+        }
+
+        if (cell.type === "corner") {
+            if (dirs === "right,up") return "┗";
+            if (dirs === "down,right") return "┏";
+            if (dirs === "down,left") return "┓";
+            if (dirs === "left,up") return "┛";
+        }
+
+        if (cell.type === "tee") {
+            if (dirs === "left,right,up") return "┻";
+            if (dirs === "down,left,right") return "┳";
+            if (dirs === "down,right,up") return "┣";
+            if (dirs === "down,left,up") return "┫";
+        }
+
+        if (cell.type === "cross") return "╋";
+
+        return "?";
+    }
+
+    function createBoard(levelIndex) {
+        const level = levels[levelIndex];
+
+        board = level.map(row => {
+            return row.map(type => {
+                return {
+                    type: type,
+                    rotation: type === "empty" || type === "start" || type === "end"
+                        ? 0
+                        : Math.floor(Math.random() * 4),
+                    powered: false
+                };
+            });
+        });
+
+        moves = 0;
+        solved = false;
+        updateStats();
+        checkCircuit();
+        renderBoard();
+    }
+
+    function findStart() {
+        for (let row = 0; row < SIZE; row++) {
+            for (let col = 0; col < SIZE; col++) {
+                if (board[row][col].type === "start") {
+                    return [row, col];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    function inBounds(row, col) {
+        return row >= 0 && row < SIZE && col >= 0 && col < SIZE;
+    }
+
+    function checkCircuit() {
+        for (let row = 0; row < SIZE; row++) {
+            for (let col = 0; col < SIZE; col++) {
+                board[row][col].powered = false;
+            }
+        }
+
+        const start = findStart();
+        const queue = [start];
+        const visited = new Set();
+
+        while (queue.length > 0) {
+            const [row, col] = queue.shift();
+            const key = `${row},${col}`;
+
+            if (visited.has(key)) continue;
+
+            visited.add(key);
+            board[row][col].powered = true;
+
+            const cell = board[row][col];
+            const dirs = getConnections(cell);
+
+            dirs.forEach(direction => {
+                const [dr, dc] = delta[direction];
+                const nextRow = row + dr;
+                const nextCol = col + dc;
+
+                if (!inBounds(nextRow, nextCol)) return;
+
+                const nextCell = board[nextRow][nextCol];
+                const nextDirs = getConnections(nextCell);
+
+                if (nextDirs.includes(opposite[direction])) {
+                    queue.push([nextRow, nextCol]);
+                }
+            });
+        }
+
+        solved = board.some(row => {
+            return row.some(cell => cell.type === "end" && cell.powered);
+        });
+
+        updateStats();
+    }
+
+    function updateStats() {
+        moveCountElement.textContent = moves;
+        levelText.textContent = currentLevel + 1;
+
+        if (solved) {
+            lockStatus.textContent = "OPEN";
+            lockStatus.style.color = "lime";
+            statusText.textContent = "ACCESS GRANTED: circuit path restored.";
+        } else {
+            lockStatus.textContent = "LOCKED";
+            lockStatus.style.color = "red";
+            statusText.textContent = "SYSTEM LOCKED: signal path incomplete.";
+        }
+    }
+
+    function renderBoard() {
+        boardElement.innerHTML = "";
+
+        board.forEach((row, rowIndex) => {
+            row.forEach((cell, colIndex) => {
+                const tile = document.createElement("button");
+
+                tile.textContent = getSymbol(cell);
+                tile.style.width = "64px";
+                tile.style.height = "64px";
+                tile.style.background = cell.powered ? "#061f06" : "#050505";
+                tile.style.color = cell.powered ? "lime" : "#777";
+                tile.style.border = cell.powered ? "1px solid lime" : "1px solid rgba(255,255,255,0.1)";
+                tile.style.borderRadius = "10px";
+                tile.style.fontSize = cell.type === "start" || cell.type === "end" ? "1.4rem" : "2rem";
+                tile.style.cursor = cell.type === "empty" || solved ? "default" : "pointer";
+                tile.style.fontFamily = "monospace";
+                tile.style.boxShadow = cell.powered ? "0 0 12px rgba(0,255,0,0.35)" : "none";
+
+                if (cell.type === "empty") {
+                    tile.style.opacity = "0.35";
+                }
+
+                if (cell.type === "start") {
+                    tile.style.color = "lime";
+                    tile.style.border = "1px solid lime";
+                }
+
+                if (cell.type === "end") {
+                    tile.style.color = solved ? "lime" : "red";
+                    tile.style.border = solved ? "1px solid lime" : "1px solid red";
+                }
+
+                tile.addEventListener("click", () => {
+                    if (cell.type === "empty" || solved) return;
+
+                    cell.rotation = (cell.rotation + 1) % 4;
+                    moves++;
+
+                    checkCircuit();
+                    renderBoard();
+                });
+
+                boardElement.appendChild(tile);
+            });
+        });
+    }
+
+    resetBtn.addEventListener("click", () => {
+        createBoard(currentLevel);
+    });
+
+    nextBtn.addEventListener("click", () => {
+        currentLevel = (currentLevel + 1) % levels.length;
+        createBoard(currentLevel);
+    });
+
+    createBoard(currentLevel);
+</script>
+
+</body>
+</html>
