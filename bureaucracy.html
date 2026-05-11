@@ -381,21 +381,18 @@
     <header class="terminal-topbar">
       <div class="terminal-logo">
         <span class="terminal-arrow">➜</span>
-        <span>~/projects/burokracia</span>
+        <span>~ cd /home/kopi/projects/burokracia</span>
         <span class="terminal-cursor"></span>
       </div>
       <nav class="terminal-nav" aria-label="Fő navigáció">
         <a href="index.html">About</a>
         <a href="stuff.html">CTF Stuff</a>
         <a href="projects.html">Projects</a>
-        <a href="iss.html">ISS</a>
-        <a href="earthquake.html">Earthquakes</a>
-        <a href="nuclear.html">Nuclear</a>
       </nav>
     </header>
 
     <section class="hero">
-      <h1>BüroKrácia</h1>
+      <h1>Bürokrácia szimulátor</h1>
       <p>
         Üdv a 27-B ablaknál. Ellenőrizd az ügyfelek dokumentumait, kövesd a napi szabályokat,
         és próbáld meg nem elrontani a modern közigazgatás törékeny, zölden villogó illúzióját.
@@ -611,7 +608,7 @@
           endGame(true);
           return;
         }
-        log("[SYS] Új nap indul. A szabályok frissültek, mert a stabilitás túl kényelmes lett volna.", "info");
+        log("[SYS] Új nap indul. A szabályok frissültek, mert ami állandó az szar.", "info");
         renderRules();
       }
       renderCase();
@@ -623,9 +620,9 @@
       sighBtn.disabled = true;
       gameOverBox.classList.add("show");
       if (won) {
-        gameOverBox.innerHTML = `<strong>[ELŐLÉPTETÉS]</strong><br>Végigvitted a műszakot. Pontszám: ${score}.<br>Új beosztásod: ideiglenes regionális formanyomtatvány-koordinátor helyettes-helyettes. Ez nem fizetésemelés, csak hosszabb titulus. Civilizáció.`;
+        gameOverBox.innerHTML = `<strong>[ELŐLÉPTETÉS]</strong><br>Végigvitted a műszakot. Pontszám: ${score}.<br>Új beosztásod: ideiglenes regionális formanyomtatvány-koordinátor helyettes-helyettes. Ez nem fizetésemelés, csak hosszabb és kimondhatatlan titulus.`;
       } else {
-        gameOverBox.innerHTML = `<strong>[MŰSZAK MEGSZAKÍTVA]</strong><br>Elfogyott a hibatűrés. Pontszám: ${score}.<br>A rendszer kötelező továbbképzésre küld: „Bevezetés a pecsét érzelmi életébe”.`;
+        gameOverBox.innerHTML = `<strong>[MŰSZAK MEGSZAKÍTVA]</strong><br>Elfogyott a hibatűrés. Pontszám: ${score}.<br>A rendszer kötelező továbbképzésre küld: „Hogyan ne legyünk kretének”.`;
       }
     }
 
@@ -633,9 +630,9 @@
       sighs += 1;
       const messages = [
         "[SÓHAJ] A levegő adminisztratív úton elhagyta a tüdőt.",
-        "[SÓHAJ] A rendszer ezt nem rögzíti, de valahol egy nyomtató megértően zümmög.",
-        "[SÓHAJ] A mély sóhaj nem döntés, de átmenetileg emberibbé teszi az ablakot.",
-        "[SÓHAJ] Három sóhaj után sem jár automatikus szünet. Próbálkozás szép volt."
+        "[SÓHAJ] Ezt nem hiszem el...",
+        "[SÓHAJ] Maga Ön?",
+        "[SÓHAJ] Nesze sánta itt egy púp.."
       ];
       log(messages[Math.min(sighs - 1, messages.length - 1)], "info");
     }
