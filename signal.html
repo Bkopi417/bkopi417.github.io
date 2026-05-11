@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Signal Hunt | Kopi</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<header>
+    <div class="container">
+
+        <div class="logo-terminal" style="position: relative;">
+            <span class="terminal-arrow">➜</span>
+            <span class="terminal-path">~ cd /home/kopi/projects/signal-hunt</span>
+            <span class="terminal-cursor"></span>
+
+            <a href="index.html" class="terminal-link"></a>
+        </div>
+
+        <nav class="menu">
+            <ul>
+                <li><a href="about.html">About</a></li>
+                <li><a href="stuff.html">CTF Stuff</a></li>
+                <li><a href="projects.html">Projects</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <section style="text-align: center; margin-top: 4rem;">
+        <h1>Signal Hunt</h1>
+
+        <p style="margin-top: 1rem;">
+            Scan the spectrum, isolate hostile transmissions, filter interference, and classify the signal.
+        </p>
+
+        <p id="statusText" style="
+            margin-top: 1rem;
+            color: lime;
+            font-size: 0.95rem;
+        ">
+            SPECTRUM RECEIVER ONLINE.
+        </p>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 3rem;
+    ">
+        <div class="terminal-box">
+            <p>SCORE</p>
+            <h2 id="scoreText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>SIGNAL</p>
+            <h2 id="signalText">1 / 1</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>ACCURACY</p>
+            <h2 id="accuracyText">100%</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>INTERFERENCE</p>
+            <h2 id="jamText">LOW</h2>
+        </div>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+    ">
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 360px;
+            text-align: left;
+        ">
+            <h2 style="font-size: 1.2rem; color: lime;">Spectrum Waterfall</h2>
+
+            <pre id="waterfallBox" style="
+                color: lime;
+                white-space: pre;
+                line-height: 1.25;
+                margin-top: 1rem;
+                font-size: 0.85rem;
+                overflow-x: auto;
+            "></pre>
+
+            <p style="margin-top: 1rem; color: #777; font-size: 0.85rem;">
+                Bright clusters indicate signal energy. Wide noisy bands suggest interference or decoys.
+            </p>
+        </div>
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 430px;
+            text-align: left;
+        ">
+            <h2 style="font-size: 1.2rem; color: lime;">Signal Analysis</h2>
+
+            <pre id="signalBox" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                line-height: 1.6;
+                margin-top: 1rem;
+                font-size: 0.95rem;
+            "></pre>
+
+            <div style="
+                display: flex;
+                justify-content: center;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+                margin-top: 1.5rem;
+            ">
+                <button id="scanBtn" style="
+                    background: black;
+                    color: lime;
+                    border: 1px solid lime;
+                    padding: 0.7rem 1rem;
+                    cursor: pointer;
+                    font-family: monospace;
+                ">SCAN</button>
+
+                <button id="filterBtn" style="
+                    background: black;
+                    color: orange;
+                    border: 1px solid orange;
+                    padding: 0.7rem 1rem;
+                    cursor: pointer;
+                    font-family: monospace;
+                ">APPLY FILTER</button>
+
+                <button id="decodeBtn" style="
+                    background: black;
+                    color: lime;
+                    border: 1px solid lime;
+                    padding: 0.7rem 1rem;
+                    cursor: pointer;
+                    font-family: monospace;
+                ">DECODE</button>
+            </div>
+
+            <pre id="decodedBox" style="
+                color: #777;
+                white-space: pre-wrap;
+                line-height: 1.5;
+                margin-top: 1.5rem;
+                font-size: 0.9rem;
+            ">DECODED OUTPUT: [not available]</pre>
+        </div>
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 360px;
+            text-align: left;
+        ">
+            <h2 style="font-size: 1.2rem; color: lime;">Operator Tasking</h2>
+
+            <pre id="taskBox" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                line-height: 1.5;
+                margin-top: 1rem;
+                font-size: 0.9rem;
+            "></pre>
+
+            <p style="margin-top: 1rem;">CLASSIFY SIGNAL</p>
+
+            <div style="
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                margin-top: 1rem;
+            ">
+                <button class="classBtn" data-choice="CIVILIAN" style="
+                    background: black;
+                    color: lime;
+                    border: 1px solid lime;
+                    padding: 0.7rem 1rem;
+                    cursor: pointer;
+                    font-family: monospace;
+                ">CIVILIAN</button>
+
+                <button class="classBtn" data-choice="FRIENDLY" style="
+                    background: black;
+                    color: lime;
+                    border: 1px solid lime;
+                    padding: 0.7rem 1rem;
+                    cursor: pointer;
+                    font-family: monospace;
+                ">FRIENDLY</button>
+
+                <button class="classBtn" data-choice="UNKNOWN" style="
+                    background: black;
+                    color: orange;
+                    border: 1px solid orange;
+                    padding: 0.7rem 1rem;
+                    cursor: pointer;
+                    font-family: monospace;
+                ">UNKNOWN</button>
+
+                <button class="classBtn" data-choice="HOSTILE" style="
+                    background: black;
+                    color: red;
+                    border: 1px solid red;
+                    padding: 0.7rem 1rem;
+                    cursor: pointer;
+                    font-family: monospace;
+                ">HOSTILE</button>
+            </div>
+        </div>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+    ">
+        <div class="terminal-box">
+            <p>SCANS</p>
+            <h2 id="scanCountText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>FILTERS</p>
+            <h2 id="filterCountText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>DECODED</p>
+            <h2 id="decodedCountText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>MISTAKES</p>
+            <h2 id="mistakeText">0</h2>
+        </div>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    ">
+        <button id="explainBtn" style="
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            font-family: monospace;
+        ">EXPLAIN CURRENT</button>
+
+        <button id="restartBtn" style="
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            font-family: monospace;
+        ">RESTART OPERATION</button>
+    </section>
+
+</main>
+
+<footer>
+    <p>LOGIC MODULE: SIGNAL HUNT</p>
+</footer>
+
+<script>
+    const waterfallBox = document.getElementById("waterfallBox");
+    const signalBox = document.getElementById("signalBox");
+    const taskBox = document.getElementById("taskBox");
+    const decodedBox = document.getElementById("decodedBox");
+    const statusText = document.getElementById("statusText");
+
+    const scoreText = document.getElementById("scoreText");
+    const signalText = document.getElementById("signalText");
+    const accuracyText = document.getElementById("accuracyText");
+    const jamText = document.getElementById("jamText");
+
+    const scanCountText = document.getElementById("scanCountText");
+    const filterCountText = document.getElementById("filterCountText");
+    const decodedCountText = document.getElementById("decodedCountText");
+    const mistakeText = document.getElementById("mistakeText");
+
+    const scanBtn = document.getElementById("scanBtn");
+    const filterBtn = document.getElementById("filterBtn");
+    const decodeBtn = document.getElementById("decodeBtn");
+    const explainBtn = document.getElementById("explainBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const classButtons = document.querySelectorAll(".classBtn");
+
+    const signals = [
+        {
+            id: "SIG-001",
+            freq: "118.700 MHz",
+            band: "VHF",
+            strength: "-54 dBm",
+            noise: "-91 dBm",
+            modulation: "AM voice",
+            pattern: "steady carrier",
+            interference: "LOW",
+            decoded: "Routine tower coordination. Clear civilian phraseology.",
+            clue: "Clean voice traffic, no hopping, no encryption markers.",
+            correct: "CIVILIAN",
+            reason: "Aviation-style civilian AM voice traffic with clean phraseology."
+        },
+        {
+            id: "SIG-002",
+            freq: "462.125 MHz",
+            band: "UHF",
+            strength: "-67 dBm",
+            noise: "-80 dBm",
+            modulation: "FM voice",
+            pattern: "short push-to-talk bursts",
+            interference: "MED",
+            decoded: "Logistics team reporting convoy fuel status.",
+            clue: "Structured call signs, but friendly logistics format.",
+            correct: "FRIENDLY",
+            reason: "Known friendly logistics format and non-hostile operational content."
+        },
+        {
+            id: "SIG-003",
+            freq: "433.920 MHz",
+            band: "ISM",
+            strength: "-72 dBm",
+            noise: "-78 dBm",
+            modulation: "FSK burst",
+            pattern: "repeated short packet",
+            interference: "MED",
+            decoded: "Device telemetry. Temperature and battery fields.",
+            clue: "Low power telemetry in ISM band, repetitive harmless structure.",
+            correct: "CIVILIAN",
+            reason: "ISM telemetry pattern is civilian device traffic."
+        },
+        {
+            id: "SIG-004",
+            freq: "149.350 MHz",
+            band: "VHF",
+            strength: "-61 dBm",
+            noise: "-82 dBm",
+            modulation: "narrowband FM",
+            pattern: "encrypted burst sequence",
+            interference: "HIGH",
+            decoded: "Encrypted tactical burst. Authentication marker invalid.",
+            clue: "Burst timing resembles friendly format, but authentication fails.",
+            correct: "HOSTILE",
+            reason: "Spoofed friendly-style transmission with invalid authentication marker."
+        },
+        {
+            id: "SIG-005",
+            freq: "7.042 MHz",
+            band: "HF",
+            strength: "-83 dBm",
+            noise: "-84 dBm",
+            modulation: "CW",
+            pattern: "weak intermittent morse",
+            interference: "HIGH",
+            decoded: "CQ CQ de amateur station. No tactical content.",
+            clue: "Weak signal, but decoded text is amateur radio style.",
+            correct: "CIVILIAN",
+            reason: "Amateur radio CQ traffic is civilian."
+        },
+        {
+            id: "SIG-006",
+            freq: "310.450 MHz",
+            band: "UHF",
+            strength: "-59 dBm",
+            noise: "-76 dBm",
+            modulation: "digital burst",
+            pattern: "frequency hopping",
+            interference: "MED",
+            decoded: "Hopping pattern matches friendly training profile.",
+            clue: "Frequency hopping alone is not hostile. Pattern database matters.",
+            correct: "FRIENDLY",
+            reason: "Known friendly training hopping profile."
+        },
+        {
+            id: "SIG-007",
+            freq: "401.200 MHz",
+            band: "UHF",
+            strength: "-70 dBm",
+            noise: "-73 dBm",
+            modulation: "wideband noise",
+            pattern: "broadband interference",
+            interference: "SEVERE",
+            decoded: "No readable payload. Wide noise source masking adjacent channels.",
+            clue: "This is not normal comms. It is deliberate interference behavior.",
+            correct: "HOSTILE",
+            reason: "Broadband interference masking channels indicates hostile jamming activity."
+        },
+        {
+            id: "SIG-008",
+            freq: "156.800 MHz",
+            band: "VHF",
+            strength: "-63 dBm",
+            noise: "-89 dBm",
+            modulation: "FM voice",
+            pattern: "marine safety channel",
+            interference: "LOW",
+            decoded: "Vessel reporting position and weather update.",
+            clue: "Marine safety frequency and benign position report.",
+            correct: "CIVILIAN",
+            reason: "Marine safety traffic is civilian unless paired with hostile clues."
+        },
+        {
+            id: "SIG-009",
+            freq: "255.700 MHz",
+            band: "UHF",
+            strength: "-64 dBm",
+            noise: "-87 dBm",
+            modulation: "AM voice",
+            pattern: "unknown call signs",
+            interference: "LOW",
+            decoded: "Unrecognized call signs. No hostile content. No database match.",
+            clue: "Unknown is not automatically hostile. Gorgeous concept, rarely understood by committees.",
+            correct: "UNKNOWN",
+            reason: "Unrecognized callsigns without hostile behavior should be classified unknown."
+        },
+        {
+            id: "SIG-010",
+            freq: "121.500 MHz",
+            band: "VHF",
+            strength: "-58 dBm",
+            noise: "-88 dBm",
+            modulation: "AM voice",
+            pattern: "distress channel",
+            interference: "LOW",
+            decoded: "Emergency beacon and distress voice transmission.",
+            clue: "Emergency channel, distress content, no hostile indicators.",
+            correct: "CIVILIAN",
+            reason: "Distress traffic is civilian emergency traffic."
+        },
+        {
+            id: "SIG-011",
+            freq: "171.900 MHz",
+            band: "VHF",
+            strength: "-66 dBm",
+            noise: "-79 dBm",
+            modulation: "digital packet",
+            pattern: "short repeating beacon",
+            interference: "MED",
+            decoded: "Beacon repeats every 30 seconds. Payload contains unknown grid reference.",
+            clue: "No known database match, suspicious but not confirmed hostile.",
+            correct: "UNKNOWN",
+            reason: "Suspicious unknown beacon lacks enough confirmation for hostile classification."
+        },
+        {
+            id: "SIG-012",
+            freq: "390.100 MHz",
+            band: "UHF",
+            strength: "-51 dBm",
+            noise: "-81 dBm",
+            modulation: "encrypted burst",
+            pattern: "rapid frequency hopping",
+            interference: "HIGH",
+            decoded: "Partial decode: target grid references and timing markers.",
+            clue: "Encrypted hopping plus targeting language. Lovely, in the least lovely way.",
+            correct: "HOSTILE",
+            reason: "Targeting markers and hostile tactical pattern indicate hostile signal."
+        },
+        {
+            id: "SIG-013",
+            freq: "162.550 MHz",
+            band: "VHF",
+            strength: "-48 dBm",
+            noise: "-92 dBm",
+            modulation: "FM voice",
+            pattern: "weather broadcast",
+            interference: "LOW",
+            decoded: "Automated weather broadcast.",
+            clue: "Continuous public weather information.",
+            correct: "CIVILIAN",
+            reason: "Weather broadcast is civilian public service traffic."
+        },
+        {
+            id: "SIG-014",
+            freq: "230.750 MHz",
+            band: "UHF",
+            strength: "-75 dBm",
+            noise: "-79 dBm",
+            modulation: "digital burst",
+            pattern: "fragmented packet",
+            interference: "HIGH",
+            decoded: "Decode incomplete. Header resembles friendly format, source unknown.",
+            clue: "Insufficient evidence. The adult answer is uncertainty, tragically.",
+            correct: "UNKNOWN",
+            reason: "Incomplete decode and source uncertainty require unknown classification."
+        },
+        {
+            id: "SIG-015",
+            freq: "315.000 MHz",
+            band: "UHF",
+            strength: "-69 dBm",
+            noise: "-83 dBm",
+            modulation: "OOK",
+            pattern: "garage remote-like burst",
+            interference: "LOW",
+            decoded: "Short consumer remote-control style burst.",
+            clue: "Consumer short-range pattern.",
+            correct: "CIVILIAN",
+            reason: "Consumer remote signal is civilian."
+        },
+        {
+            id: "SIG-016",
+            freq: "287.400 MHz",
+            band: "UHF",
+            strength: "-57 dBm",
+            noise: "-70 dBm",
+            modulation: "spread spectrum",
+            pattern: "spoofed friendly net",
+            interference: "MED",
+            decoded: "Call signs mimic friendly net. Time slot is invalid.",
+            clue: "Mimicry plus invalid timing is a spoofing indicator.",
+            correct: "HOSTILE",
+            reason: "Spoofed friendly net with invalid timing indicates hostile deception."
+        },
+        {
+            id: "SIG-017",
+            freq: "146.520 MHz",
+            band: "VHF",
+            strength: "-71 dBm",
+            noise: "-85 dBm",
+            modulation: "FM voice",
+            pattern: "simplex voice",
+            interference: "LOW",
+            decoded: "Local amateur operators discussing antenna repair.",
+            clue: "Classic amateur simplex traffic.",
+            correct: "CIVILIAN",
+            reason: "Amateur simplex voice traffic is civilian."
+        },
+        {
+            id: "SIG-018",
+            freq: "410.800 MHz",
+            band: "UHF",
+            strength: "-62 dBm",
+            noise: "-74 dBm",
+            modulation: "digital burst",
+            pattern: "short encrypted command packets",
+            interference: "MED",
+            decoded: "Repeated command token: ARM-SEQUENCE. Source untrusted.",
+            clue: "Untrusted command packets with weapon-like control language.",
+            correct: "HOSTILE",
+            reason: "Untrusted encrypted command packets with hostile command content."
+        },
+        {
+            id: "SIG-019",
+            freq: "225.300 MHz",
+            band: "UHF",
+            strength: "-60 dBm",
+            noise: "-88 dBm",
+            modulation: "AM voice",
+            pattern: "scheduled check-in",
+            interference: "LOW",
+            decoded: "Known friendly unit scheduled check-in.",
+            clue: "Known call sign, correct schedule, valid authentication.",
+            correct: "FRIENDLY",
+            reason: "Valid authentication and schedule match friendly traffic."
+        },
+        {
+            id: "SIG-020",
+            freq: "399.950 MHz",
+            band: "UHF",
+            strength: "-77 dBm",
+            noise: "-77 dBm",
+            modulation: "unknown",
+            pattern: "noise floor anomaly",
+            interference: "SEVERE",
+            decoded: "No payload. Only unstable noise spike.",
+            clue: "Could be environment, equipment, or interference. Not enough classification certainty.",
+            correct: "UNKNOWN",
+            reason: "Noise anomaly alone is insufficient for hostile classification."
+        }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let mistakes = 0;
+    let totalAnswered = 0;
+    let scans = 0;
+    let filters = 0;
+    let decodes = 0;
+
+    let scanned = false;
+    let filtered = false;
+    let decoded = false;
+    let waterfallTimer = null;
+
+    function generateWaterfall(intensity) {
+        const width = 34;
+        const height = 16;
+        const chars = [" ", ".", ":", "|", "█"];
+        let output = "";
+
+        for (let row = 0; row < height; row++) {
+            let line = "";
+
+            for (let col = 0; col < width; col++) {
+                const center = 8 + ((currentIndex * 5) % 18);
+                const distance = Math.abs(col - center);
+                let level = Math.random();
+
+                if (distance < 2) level += intensity;
+                if (distance < 5) level += intensity / 2;
+
+                if (filtered && distance > 8) level -= 0.25;
+
+                const index = Math.max(0, Math.min(chars.length - 1, Math.floor(level * chars.length)));
+                line += chars[index];
+            }
+
+            output += line + "\n";
+        }
+
+        return output;
+    }
+
+    function startWaterfall() {
+        clearInterval(waterfallTimer);
+
+        waterfallTimer = setInterval(() => {
+            const signal = signals[currentIndex] || signals[signals.length - 1];
+            const intensity = signal.interference === "SEVERE" ? 0.75 :
+                              signal.interference === "HIGH" ? 0.55 :
+                              signal.interference === "MED" ? 0.38 : 0.22;
+
+            waterfallBox.textContent = generateWaterfall(intensity);
+        }, 300);
+    }
+
+    function renderSignal() {
+        if (currentIndex >= signals.length) {
+            finishGame();
+            return;
+        }
+
+        const signal = signals[currentIndex];
+
+        scanned = false;
+        filtered = false;
+        decoded = false;
+
+        signalText.textContent = `${currentIndex + 1} / ${signals.length}`;
+        jamText.textContent = signal.interference;
+
+        signalBox.textContent =
+`ID:          ${signal.id}
+FREQUENCY:   [scan required]
+BAND:        [scan required]
+STRENGTH:    [scan required]
+NOISE:       [scan required]
+MODULATION:  [scan required]
+PATTERN:     [scan required]`;
+
+        taskBox.textContent =
+`TASK:
+1. Scan the signal.
+2. Apply filter if interference is high.
+3. Decode when possible.
+4. Classify correctly.
+
+RULES:
+- CIVILIAN: public, commercial, amateur, emergency, telemetry.
+- FRIENDLY: known authorized/authenticated operational traffic.
+- UNKNOWN: suspicious but not confirmed.
+- HOSTILE: spoofing, deliberate interference, hostile command traffic, targeting data.`;
+
+        decodedBox.textContent = "DECODED OUTPUT: [not available]";
+
+        statusText.style.color = "lime";
+        statusText.textContent = "NEW SIGNAL CAPTURED: begin analysis.";
+
+        updateStats();
+        startWaterfall();
+    }
+
+    function updateStats() {
+        scoreText.textContent = score;
+        scanCountText.textContent = scans;
+        filterCountText.textContent = filters;
+        decodedCountText.textContent = decodes;
+        mistakeText.textContent = mistakes;
+
+        const accuracy = totalAnswered === 0
+            ? 100
+            : Math.round(((totalAnswered - mistakes) / totalAnswered) * 100);
+
+        accuracyText.textContent = `${accuracy}%`;
+    }
+
+    function scanSignal() {
+        if (currentIndex >= signals.length) return;
+
+        const signal = signals[currentIndex];
+
+        scanned = true;
+        scans++;
+
+        signalBox.textContent =
+`ID:          ${signal.id}
+FREQUENCY:   ${signal.freq}
+BAND:        ${signal.band}
+STRENGTH:    ${signal.strength}
+NOISE:       ${signal.noise}
+MODULATION:  ${signal.modulation}
+PATTERN:     ${signal.pattern}
+
+CLUE:
+${signal.clue}`;
+
+        statusText.style.color = "lime";
+        statusText.textContent = "SCAN COMPLETE: signal metadata extracted.";
+        updateStats();
+    }
+
+    function applyFilter() {
+        if (currentIndex >= signals.length) return;
+
+        if (!scanned) {
+            statusText.style.color = "red";
+            statusText.textContent = "FILTER FAILED: scan signal first.";
+            return;
+        }
+
+        filtered = true;
+        filters++;
+
+        const signal = signals[currentIndex];
+
+        if (signal.interference === "LOW") {
+            statusText.style.color = "orange";
+            statusText.textContent = "FILTER APPLIED: little improvement, interference already low.";
+        } else {
+            statusText.style.color = "lime";
+            statusText.textContent = "FILTER APPLIED: interference reduced and signal contrast improved.";
+        }
+
+        updateStats();
+    }
+
+    function decodeSignal() {
+        if (currentIndex >= signals.length) return;
+
+        const signal = signals[currentIndex];
+
+        if (!scanned) {
+            statusText.style.color = "red";
+            statusText.textContent = "DECODE FAILED: scan signal first.";
+            return;
+        }
+
+        if ((signal.interference === "HIGH" || signal.interference === "SEVERE") && !filtered) {
+            decodedBox.textContent = "DECODED OUTPUT: [corrupted by interference]";
+            statusText.style.color = "red";
+            statusText.textContent = "DECODE DEGRADED: apply filter before decoding high-interference signals.";
+            return;
+        }
+
+        decoded = true;
+        decodes++;
+
+        decodedBox.textContent =
+`DECODED OUTPUT:
+${signal.decoded}`;
+
+        statusText.style.color = "lime";
+        statusText.textContent = "DECODE COMPLETE: message content recovered.";
+        updateStats();
+    }
+
+    function classify(choice) {
+        if (currentIndex >= signals.length) return;
+
+        const signal = signals[currentIndex];
+
+        if (!scanned) {
+            statusText.style.color = "red";
+            statusText.textContent = "CLASSIFICATION BLOCKED: scan before classifying.";
+            return;
+        }
+
+        totalAnswered++;
+
+        if (choice === signal.correct) {
+            let points = 10;
+
+            if (decoded) points += 5;
+            if (filtered && signal.interference !== "LOW") points += 3;
+
+            score += points;
+
+            statusText.style.color = "lime";
+            statusText.textContent = `CORRECT: ${signal.reason}`;
+        } else {
+            mistakes++;
+            score = Math.max(0, score - 8);
+
+            statusText.style.color = "red";
+            statusText.textContent = `WRONG: expected ${signal.correct}. ${signal.reason}`;
+        }
+
+        currentIndex++;
+        updateStats();
+
+        setTimeout(renderSignal, 950);
+    }
+
+    function explainCurrent() {
+        if (currentIndex >= signals.length) {
+            statusText.style.color = "lime";
+            statusText.textContent = "OPERATION COMPLETE: no active signal.";
+            return;
+        }
+
+        const signal = signals[currentIndex];
+
+        statusText.style.color = "lime";
+        statusText.textContent = `EXPLAIN: classify as ${signal.correct}. ${signal.reason}`;
+    }
+
+    function finishGame() {
+        clearInterval(waterfallTimer);
+
+        const accuracy = totalAnswered === 0
+            ? 100
+            : Math.round(((totalAnswered - mistakes) / totalAnswered) * 100);
+
+        signalBox.textContent =
+`OPERATION COMPLETE
+
+Signals processed: ${signals.length}
+Score:             ${score}
+Accuracy:          ${accuracy}%
+Mistakes:          ${mistakes}
+Scans:             ${scans}
+Filters:           ${filters}
+Decoded:           ${decodes}
+
+RANK:
+${getRank(accuracy, score)}`;
+
+        decodedBox.textContent = "DECODED OUTPUT: [operation finished]";
+        taskBox.textContent = "SPECTRUM CLEAR.\nNo active tasking.";
+
+        signalText.textContent = `${signals.length} / ${signals.length}`;
+        statusText.style.color = "lime";
+        statusText.textContent = "SIGNAL OPERATION COMPLETE.";
+
+        disableControls(true);
+        updateStats();
+    }
+
+    function getRank(accuracy, finalScore) {
+        if (accuracy >= 95 && finalScore >= 280) {
+            return "SPECTRUM MASTER - annoyingly competent.";
+        }
+
+        if (accuracy >= 85) {
+            return "SIGNAL ANALYST - solid operator.";
+        }
+
+        if (accuracy >= 70) {
+            return "JUNIOR MONITOR - needs more coffee and fewer assumptions.";
+        }
+
+        return "NOISE ENTHUSIAST - the spectrum deserved better.";
+    }
+
+    function disableControls(disabled) {
+        scanBtn.disabled = disabled;
+        filterBtn.disabled = disabled;
+        decodeBtn.disabled = disabled;
+
+        classButtons.forEach(button => {
+            button.disabled = disabled;
+            button.style.opacity = disabled ? "0.45" : "1";
+        });
+
+        scanBtn.style.opacity = disabled ? "0.45" : "1";
+        filterBtn.style.opacity = disabled ? "0.45" : "1";
+        decodeBtn.style.opacity = disabled ? "0.45" : "1";
+    }
+
+    function restartGame() {
+        currentIndex = 0;
+        score = 0;
+        mistakes = 0;
+        totalAnswered = 0;
+        scans = 0;
+        filters = 0;
+        decodes = 0;
+
+        disableControls(false);
+        updateStats();
+        renderSignal();
+    }
+
+    scanBtn.addEventListener("click", scanSignal);
+    filterBtn.addEventListener("click", applyFilter);
+    decodeBtn.addEventListener("click", decodeSignal);
+    explainBtn.addEventListener("click", explainCurrent);
+    restartBtn.addEventListener("click", restartGame);
+
+    classButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            classify(button.dataset.choice);
+        });
+    });
+
+    restartGame();
+</script>
+
+</body>
+</html>
