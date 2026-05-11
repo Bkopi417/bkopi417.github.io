@@ -233,10 +233,10 @@
     let hintRevealed = false;
 
     const levels = [
-        {
-            title: "XOR single-byte decode",
-            secret: "ROOT",
-            assembly:
+    {
+        title: "XOR single-byte decode",
+        secret: "ROOT",
+        assembly:
 `main:
     MOV R1, encoded_buffer
     MOV R2, 0x2A
@@ -256,18 +256,18 @@ success:
 
 fail:
     RET  0x00`,
-            encodedBytes: [0x78, 0x65, 0x65, 0x7E],
-            trace:
+        encodedBytes: [0x78, 0x65, 0x65, 0x7E],
+        trace:
 `encoded[i] XOR 0x2A = output[i]
 length = 4`,
-            hint:
+        hint:
 `XOR each byte with 0x2A.
 Then convert ASCII values to characters.`
-        },
-        {
-            title: "Reverse order buffer",
-            secret: "ADMIN",
-            assembly:
+    },
+    {
+        title: "Reverse order buffer",
+        secret: "ADMIN",
+        assembly:
 `main:
     MOV R1, input_buffer
     MOV R2, encoded_buffer
@@ -288,30 +288,26 @@ compare:
     CMP temp[3], input[1]
     CMP temp[4], input[0]
     RET`,
-            encodedBytes: [0x51, 0x4C, 0x50, 0x47, 0x44],
-            trace:
+        encodedBytes: [0x51, 0x4C, 0x50, 0x47, 0x44],
+        trace:
 `encoded[i] - 0x03 = temp[i]
 temp is compared against input in reverse order
 length = 5`,
-            hint:
+        hint:
 `First subtract 3 from every byte.
 Then reverse the decoded string.`
-        },
-        {
-            title: "Nibble swap",
-            secret: "CACHE",
-            assembly:
+    },
+    {
+        title: "Nibble swap",
+        secret: "CACHE",
+        assembly:
 `main:
     MOV R1, encoded_buffer
     MOV R2, 0x00
 
 loop:
     LOAD AL, [R1 + R2]
-    MOV  BL, AL
-    SHR  AL, 0x04
-    SHL  BL, 0x04
-    OR   AL, BL
-    AND  AL, 0xFF
+    SWAP_NIBBLE AL
     CMP  AL, expected[R2]
     JNE  fail
     INC  R2
@@ -323,19 +319,19 @@ success:
 
 fail:
     RET  0`,
-            encodedBytes: [0x34, 0x14, 0x34, 0x84, 0x54],
-            trace:
+        encodedBytes: [0x34, 0x14, 0x34, 0x84, 0x54],
+        trace:
 `swap high nibble and low nibble
 example: 0x41 becomes 0x14
 length = 5`,
-            hint:
+        hint:
 `Each byte has its two hex digits swapped.
 0x34 becomes 0x43, and 0x43 is ASCII C.`
-        },
-        {
-            title: "Offset ladder",
-            secret: "KERNEL",
-            assembly:
+    },
+    {
+        title: "Offset ladder",
+        secret: "KERNEL",
+        assembly:
 `main:
     MOV R1, encoded_buffer
     MOV R2, 0x00
@@ -355,21 +351,21 @@ success:
 
 fail:
     RET  0`,
-            encodedBytes: [0x5A, 0x55, 0x41, 0x5D, 0x50, 0x58],
-            trace:
+        encodedBytes: [0x5A, 0x55, 0x41, 0x5D, 0x50, 0x58],
+        trace:
 `output[i] = (encoded[i] - i) XOR 0x11
 indexes start at 0
 length = 6`,
-            hint:
+        hint:
 `For each byte:
 1. subtract its index
 2. XOR with 0x11
 3. convert to ASCII`
-        },
-        {
-            title: "Checksum gate",
-            secret: "LOGIN",
-            assembly:
+    },
+    {
+        title: "Checksum gate",
+        secret: "LOGIN",
+        assembly:
 `main:
     MOV R1, encoded_buffer
     MOV R2, 0x07
@@ -396,17 +392,189 @@ success:
 
 fail:
     RET 0`,
-            encodedBytes: [0x4B, 0x48, 0x40, 0x4E, 0x49],
-            trace:
+        encodedBytes: [0x4B, 0x48, 0x40, 0x4E, 0x49],
+        trace:
 `encoded[i] XOR 0x07 = decoded[i]
 checksum SUM(decoded) = 0x79
 length = 5`,
-            hint:
+        hint:
 `XOR each byte with 0x07.
 The checksum confirms the decoded answer.`
-        }
-    ];
+    },
+    {
+        title: "Caesar byte shift",
+        secret: "DEBUG",
+        assembly:
+`main:
+    MOV R1, encoded_buffer
+    MOV R2, 0x00
 
+loop:
+    LOAD AL, [R1 + R2]
+    SUB  AL, 0x04
+    CMP  AL, expected[R2]
+    JNE  fail
+    INC  R2
+    CMP  R2, 0x05
+    JL   loop
+
+success:
+    RET 1
+
+fail:
+    RET 0`,
+        encodedBytes: [0x48, 0x49, 0x46, 0x59, 0x4B],
+        trace:
+`output[i] = encoded[i] - 0x04
+length = 5`,
+        hint:
+`Subtract 4 from every byte.
+Then read the ASCII result.`
+    },
+    {
+        title: "Alternating XOR keys",
+        secret: "SYSTEM",
+        assembly:
+`main:
+    MOV R1, encoded_buffer
+    MOV R2, 0x00
+
+loop:
+    LOAD AL, [R1 + R2]
+    TEST R2, 0x01
+    JNZ  odd_key
+
+even_key:
+    XOR AL, 0x12
+    JMP compare
+
+odd_key:
+    XOR AL, 0x34
+
+compare:
+    CMP AL, expected[R2]
+    JNE fail
+    INC R2
+    CMP R2, 0x06
+    JL loop
+
+success:
+    RET 1
+
+fail:
+    RET 0`,
+        encodedBytes: [0x41, 0x6D, 0x41, 0x60, 0x57, 0x79],
+        trace:
+`even index: encoded[i] XOR 0x12
+odd index:  encoded[i] XOR 0x34
+length = 6`,
+        hint:
+`Index starts at 0.
+Use 0x12 for bytes 0,2,4 and 0x34 for bytes 1,3,5.`
+    },
+    {
+        title: "Bit rotate right",
+        secret: "VECTOR",
+        assembly:
+`main:
+    MOV R1, encoded_buffer
+    MOV R2, 0x00
+
+loop:
+    LOAD AL, [R1 + R2]
+    ROR  AL, 0x01
+    CMP  AL, expected[R2]
+    JNE  fail
+    INC  R2
+    CMP  R2, 0x06
+    JL   loop
+
+success:
+    RET 1
+
+fail:
+    RET 0`,
+        encodedBytes: [0xAC, 0x8A, 0x86, 0xA8, 0x9E, 0xA4],
+        trace:
+`output[i] = ROR(encoded[i], 1)
+8-bit rotate right
+length = 6`,
+        hint:
+`Rotate each encoded byte right by 1 bit.
+Example: 10000010 rotated right becomes 01000001.`
+    },
+    {
+        title: "Indexed addition trap",
+        secret: "BUFFER",
+        assembly:
+`main:
+    MOV R1, encoded_buffer
+    MOV R2, 0x00
+
+loop:
+    LOAD AL, [R1 + R2]
+    XOR  AL, 0x22
+    SUB  AL, R2
+    CMP  AL, expected[R2]
+    JNE  fail
+    INC  R2
+    CMP  R2, 0x06
+    JL   loop
+
+success:
+    RET 1
+
+fail:
+    RET 0`,
+        encodedBytes: [0x60, 0x76, 0x66, 0x63, 0x63, 0x75],
+        trace:
+`output[i] = (encoded[i] XOR 0x22) - i
+indexes start at 0
+length = 6`,
+        hint:
+`For every byte:
+1. XOR with 0x22
+2. subtract the byte index
+3. convert to ASCII`
+    },
+    {
+        title: "Final mixed transform",
+        secret: "EXPLOIT",
+        assembly:
+`main:
+    MOV R1, encoded_buffer
+    MOV R2, 0x00
+
+loop:
+    LOAD AL, [R1 + R2]
+    XOR  AL, 0x5A
+    SUB  AL, R2
+    CMP  AL, expected[R2]
+    JNE  fail
+    INC  R2
+    CMP  R2, 0x07
+    JL   loop
+
+gate:
+    CMP expected_len, 0x07
+    JE success
+
+success:
+    RET 1
+
+fail:
+    RET 0`,
+        encodedBytes: [0x1F, 0x03, 0x08, 0x15, 0x11, 0x16, 0x08],
+        trace:
+`output[i] = (encoded[i] XOR 0x5A) - i
+indexes start at 0
+length = 7`,
+        hint:
+`Last level:
+XOR each byte with 0x5A, subtract its index, then convert to ASCII.
+Tiny ritual. Big reward.`
+    }
+];
     function toHex(value) {
         return "0x" + value.toString(16).toUpperCase().padStart(2, "0");
     }
@@ -482,21 +650,21 @@ The checksum confirms the decoded answer.`
     }
 
     function nextLevel() {
-        currentLevel = (currentLevel + 1) % levels.length;
-        loadLevel(currentLevel);
+    if (!solved) {
+        statusText.style.color = "red";
+        statusText.textContent = "ACCESS DENIED: solve current level before moving on.";
+        return;
     }
 
-    checkBtn.addEventListener("click", checkAnswer);
-    hintBtn.addEventListener("click", revealHint);
-    nextBtn.addEventListener("click", nextLevel);
+    if (currentLevel >= levels.length - 1) {
+        statusText.style.color = "lime";
+        statusText.textContent = "ALL LEVELS COMPLETE: reverse lab cleared.";
+        return;
+    }
 
-    answerInput.addEventListener("keydown", event => {
-        if (event.key === "Enter") {
-            checkAnswer();
-        }
-    });
-
+    currentLevel++;
     loadLevel(currentLevel);
+}
 </script>
 
 </body>
