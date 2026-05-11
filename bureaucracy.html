@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BüroKrácia | Kopi Projects</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      --bg: #000;
+      --panel: #080808;
+      --panel-2: #101010;
+      --line: #1f1f1f;
+      --lime: #00ff00;
+      --lime-soft: rgba(0, 255, 0, 0.18);
+      --text: #ffffff;
+      --muted: #bdbdbd;
+      --warn: #ffb000;
+      --bad: #ff4d4d;
+      --good: #55ff55;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #071407 0%, #000 38%, #000 100%);
+      color: var(--text);
+      font-family: "Courier New", Courier, monospace;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; }
+
+    .game-shell {
+      width: min(1220px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .terminal-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 0;
+      border-bottom: 2px solid #333;
+      margin-bottom: 26px;
+    }
+
+    .terminal-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .terminal-arrow { color: var(--lime); }
+
+    .terminal-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1em;
+      background: #fff;
+      animation: blink 1s step-start infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .terminal-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: flex-end;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .terminal-nav a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .terminal-nav a:hover { text-decoration: underline; }
+
+    .hero {
+      border: 2px solid var(--lime);
+      box-shadow: 0 0 12px var(--lime), inset 0 0 18px rgba(0,255,0,.08);
+      border-radius: 12px;
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.78);
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 64px);
+      margin: 0 0 10px;
+      letter-spacing: 1px;
+    }
+
+    .hero p {
+      color: #ccc;
+      font-size: clamp(16px, 2vw, 22px);
+      max-width: 920px;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 22px 0;
+    }
+
+    .status-card,
+    .panel,
+    .document,
+    .manual,
+    .log-panel {
+      background: linear-gradient(180deg, rgba(20,20,20,.98), rgba(3,3,3,.98));
+      border: 1px solid #333;
+      border-radius: 12px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.65);
+    }
+
+    .status-card {
+      padding: 14px;
+      min-height: 78px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .status-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(0,255,0,.35);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+
+    .status-label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .status-value {
+      margin-top: 8px;
+      font-size: 24px;
+      color: var(--lime);
+      font-weight: bold;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1.1fr 1.35fr .95fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel,
+    .manual,
+    .log-panel { padding: 16px; }
+
+    .panel-title {
+      color: var(--lime);
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 8px;
+    }
+
+    .citizen-card {
+      border: 1px dashed #444;
+      border-radius: 10px;
+      padding: 14px;
+      background: #070707;
+      line-height: 1.55;
+    }
+
+    .citizen-name {
+      font-size: 22px;
+      color: #fff;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .dialogue {
+      color: #ccc;
+      margin-top: 12px;
+      font-size: 14px;
+      border-left: 3px solid var(--lime);
+      padding-left: 10px;
+    }
+
+    .document {
+      padding: 18px;
+      min-height: 415px;
+      color: #eaeaea;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .document::after {
+      content: "FORM-27B";
+      position: absolute;
+      right: -18px;
+      bottom: 18px;
+      color: rgba(0,255,0,.08);
+      font-size: 56px;
+      transform: rotate(-14deg);
+      font-weight: bold;
+      pointer-events: none;
+    }
+
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .doc-title {
+      color: var(--lime);
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .stamp {
+      border: 2px solid var(--lime);
+      color: var(--lime);
+      padding: 5px 8px;
+      transform: rotate(-4deg);
+      font-size: 12px;
+      text-align: center;
+      box-shadow: 0 0 8px var(--lime-soft);
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      font-size: 15px;
+    }
+
+    .field span:first-child { color: #aaa; }
+    .field span:last-child { color: #fff; }
+
+    .manual ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .manual li {
+      border: 1px solid #2c2c2c;
+      border-left: 3px solid var(--lime);
+      padding: 10px;
+      background: #070707;
+      color: #d7d7d7;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: 2px solid #444;
+      background: #060606;
+      color: #fff;
+      padding: 13px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: var(--lime);
+      box-shadow: 0 0 10px var(--lime-soft);
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .approve { border-color: rgba(0,255,0,.7); }
+    .reject { border-color: rgba(255,77,77,.75); }
+    .sigh { grid-column: 1 / -1; color: #ccc; }
+
+    .log-list {
+      display: grid;
+      gap: 9px;
+      max-height: 320px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .log-item {
+      font-size: 13px;
+      color: #ccc;
+      border-left: 3px solid #444;
+      background: #070707;
+      padding: 9px;
+      line-height: 1.4;
+    }
+
+    .log-good { border-left-color: var(--good); }
+    .log-bad { border-left-color: var(--bad); }
+    .log-info { border-left-color: var(--warn); }
+
+    .day-briefing {
+      margin: 16px 0;
+      padding: 14px;
+      border: 1px solid rgba(0,255,0,.35);
+      border-radius: 10px;
+      background: rgba(0,255,0,.04);
+      color: #ddd;
+      line-height: 1.5;
+    }
+
+    .game-over {
+      display: none;
+      margin-top: 16px;
+      padding: 16px;
+      border: 2px solid var(--lime);
+      box-shadow: 0 0 12px var(--lime-soft);
+      border-radius: 12px;
+      background: #060606;
+      line-height: 1.5;
+    }
+
+    .game-over.show { display: block; }
+
+    .footer-note {
+      color: #888;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 26px;
+    }
+
+    @media (max-width: 980px) {
+      .workspace { grid-template-columns: 1fr; }
+      .status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 620px) {
+      .terminal-topbar { align-items: flex-start; flex-direction: column; }
+      .terminal-nav { justify-content: flex-start; }
+      .status-grid { grid-template-columns: 1fr; }
+      .field { grid-template-columns: 1fr; gap: 2px; }
+      .actions { grid-template-columns: 1fr; }
+      .sigh { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-shell">
+    <header class="terminal-topbar">
+      <div class="terminal-logo">
+        <span class="terminal-arrow">➜</span>
+        <span>~/projects/burokracia</span>
+        <span class="terminal-cursor"></span>
+      </div>
+      <nav class="terminal-nav" aria-label="Fő navigáció">
+        <a href="index.html">About</a>
+        <a href="stuff.html">CTF Stuff</a>
+        <a href="projects.html">Projects</a>
+        <a href="iss.html">ISS</a>
+        <a href="earthquake.html">Earthquakes</a>
+        <a href="nuclear.html">Nuclear</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <h1>BüroKrácia</h1>
+      <p>
+        Üdv a 27-B ablaknál. Ellenőrizd az ügyfelek dokumentumait, kövesd a napi szabályokat,
+        és próbáld meg nem elrontani a modern közigazgatás törékeny, zölden villogó illúzióját.
+      </p>
+    </section>
+
+    <section class="status-grid" aria-label="Játék állapota">
+      <div class="status-card"><div class="status-label">Nap</div><div class="status-value" id="dayValue">1</div></div>
+      <div class="status-card"><div class="status-label">Ügyfél</div><div class="status-value"><span id="caseValue">1</span>/6</div></div>
+      <div class="status-card"><div class="status-label">Pontszám</div><div class="status-value" id="scoreValue">0</div></div>
+      <div class="status-card"><div class="status-label">Hibatűrés</div><div class="status-value" id="mistakeValue">3</div></div>
+    </section>
+
+    <div class="day-briefing" id="briefingBox">[SYS] Napi közlöny betöltése...</div>
+
+    <main class="workspace">
+      <section class="panel" aria-label="Ügyfél adatai">
+        <div class="panel-title">Ügyfél terminál</div>
+        <div class="citizen-card">
+          <div class="citizen-name" id="citizenName">Betöltés...</div>
+          <div id="citizenMeta"></div>
+          <div class="dialogue" id="citizenDialogue"></div>
+        </div>
+        <div class="actions">
+          <button class="approve" id="approveBtn">ELFOGAD</button>
+          <button class="reject" id="rejectBtn">ELUTASÍT</button>
+          <button class="sigh" id="sighBtn">MÉLY SÓHAJ</button>
+        </div>
+      </section>
+
+      <section class="document" aria-label="Dokumentum">
+        <div class="doc-header">
+          <div>
+            <div class="doc-title" id="docType">Dokumentum</div>
+            <div style="color:#aaa; font-size:13px; margin-top:5px;">Központi Űrlapfeldolgozó Egység</div>
+          </div>
+          <div class="stamp" id="stampBox">PECSÉT<br />ELLENŐRZÉS</div>
+        </div>
+        <div id="documentFields"></div>
+      </section>
+
+      <aside class="manual" aria-label="Szabálykönyv">
+        <div class="panel-title">Mai szabálykönyv</div>
+        <ul id="rulesList"></ul>
+      </aside>
+    </main>
+
+    <section class="log-panel" style="margin-top:16px;">
+      <div class="panel-title">Hivatali napló</div>
+      <div class="log-list" id="logList"></div>
+      <div class="game-over" id="gameOverBox"></div>
+    </section>
+
+    <div class="footer-note">[OK] A papírmentes ügyintézéshez ezt az oldalt szükség esetén nyomtasd ki. Nyilván.</div>
+  </div>
+
+  <script>
+    const days = [
+      {
+        briefing: "[KÖZLÖNY] 1. nap: Alapellenőrzés. A hatóság ma még úgy tesz, mintha a rendszer érthető lenne.",
+        rules: [
+          "Az okmány nem lehet lejárt.",
+          "Az ügyfél neve egyezzen az igazolványon és a kérelmen.",
+          "A kérelemhez legalább egy érvényes pecsét szükséges. A pecsét azért kell, mert pecsét nélkül honnan tudnánk, hogy pecsételtek?"
+        ],
+        cases: [
+          { name: "Kovács Lilla", age: 29, city: "Budapest", dialogue: "Mindent kitöltöttem, még azt is, amit nem kérdeztek. Biztos, ami biztos.", doc: { type: "Lakossági mozgási engedély", requestName: "Kovács Lilla", idName: "Kovács Lilla", expiry: "2027-04-12", stamps: ["LAK"], ink: "kék", form: "27-B", photoGlasses: false, wearingGlasses: false, priority: false }, valid: true, reason: "Minden alapadat rendben van. Ilyen is van, bár gyanús." },
+          { name: "Nagy Elemér", age: 54, city: "Szeged", dialogue: "A dátum csak egy társadalmi konstrukció. A portán ezt nem értékelték.", doc: { type: "Ideiglenes sorbanállási igazolás", requestName: "Nagy Elemér", idName: "Nagy Elemér", expiry: "2024-11-03", stamps: ["SOR"], ink: "kék", form: "27-B", photoGlasses: false, wearingGlasses: false, priority: false }, valid: false, reason: "Az okmány lejárt. A társadalmi konstrukciók sajnos bekerültek az adatbázisba." },
+          { name: "Tóth Mira", age: 38, city: "Pécs", dialogue: "A kérelmet a férjem töltötte ki, ő csak egyszer téveszti el a nevem évente.", doc: { type: "Lakcím-átjárhatósági kérvény", requestName: "Tóth Míra", idName: "Tóth Mira", expiry: "2028-02-09", stamps: ["LAK"], ink: "kék", form: "27-B", photoGlasses: false, wearingGlasses: false, priority: false }, valid: false, reason: "A név nem egyezik pontosan. Az ékezet a rendszer szemében külön állampolgár." },
+          { name: "Farkas Béla", age: 61, city: "Győr", dialogue: "A pecsétért három emeletet másztam. Lift csak engedéllyel használható.", doc: { type: "Kapcsolt ablakhasználati engedély", requestName: "Farkas Béla", idName: "Farkas Béla", expiry: "2027-09-18", stamps: [], ink: "kék", form: "27-B", photoGlasses: true, wearingGlasses: true, priority: false }, valid: false, reason: "Hiányzik a pecsét. A hősi lépcsőzés nem hitelesítési forma." },
+          { name: "Szabó Hanna", age: 24, city: "Miskolc", dialogue: "Hoztam pecsétet, dátumot, nevet, és egy kis reményt. Az utóbbira nem találtam mezőt.", doc: { type: "Belföldi ügyfélfrissítési lap", requestName: "Szabó Hanna", idName: "Szabó Hanna", expiry: "2026-12-01", stamps: ["ÜGY"], ink: "kék", form: "27-B", photoGlasses: false, wearingGlasses: false, priority: false }, valid: true, reason: "Érvényes dokumentum. A remény nem kötelező melléklet, de aranyos próbálkozás." },
+          { name: "Pintér Ottó", age: 47, city: "Debrecen", dialogue: "A régi formanyomtatványt adták a földszinten. Ott azt mondták, ez az új.", doc: { type: "Általános kompatibilitási kérelem", requestName: "Pintér Ottó", idName: "Pintér Ottó", expiry: "2027-06-22", stamps: ["KOMP"], ink: "kék", form: "26-A", photoGlasses: false, wearingGlasses: false, priority: false }, valid: true, reason: "Az 1. napon még nincs formaverzió-szabály, tehát elfogadható. Micsoda szabadság." }
+        ]
+      },
+      {
+        briefing: "[KÖZLÖNY] 2. nap: Digitális modernizáció. A papírmentes reform miatt ma több papír kell.",
+        rules: [
+          "Minden űrlap csak 27-B verzióban fogadható el.",
+          "Gyorsított ügyintézésnél kell LOG és ÜGY pecsét is, mert a gyorsaságot két osztálynak kell lassítania.",
+          "A zöld tintával kitöltött kérelem csak környezetvédelmi ügyben érvényes. Más esetben túl optimistának minősül."
+        ],
+        cases: [
+          { name: "Veres Dénes", age: 34, city: "Veszprém", dialogue: "Gyorsított eljárást kértem, ezért tegnap óta várok.", doc: { type: "Gyorsított költözési beadvány", requestName: "Veres Dénes", idName: "Veres Dénes", expiry: "2027-01-13", stamps: ["LOG", "ÜGY"], ink: "kék", form: "27-B", photoGlasses: false, wearingGlasses: false, priority: true }, valid: true, reason: "Gyorsított ügy, mindkét pecséttel. A lassított gyorsítás rendben." },
+          { name: "Horváth Eszter", age: 42, city: "Eger", dialogue: "A zöld tollat a fenntarthatósági tréningen kaptam. Hiba volt bízni benne.", doc: { type: "Családi névfrissítési kérelem", requestName: "Horváth Eszter", idName: "Horváth Eszter", expiry: "2028-08-21", stamps: ["ÜGY"], ink: "zöld", form: "27-B", photoGlasses: false, wearingGlasses: false, priority: false }, valid: false, reason: "Zöld tinta nem környezetvédelmi ügyben. A lelkesedés formai hiba." },
+          { name: "Lakatos Márk", age: 31, city: "Kaposvár", dialogue: "A 26-A-t ma reggel nyomtattam az új rendszerből. Megnyugtató, nem?", doc: { type: "Adatkompatibilitási lap", requestName: "Lakatos Márk", idName: "Lakatos Márk", expiry: "2029-03-10", stamps: ["KOMP"], ink: "kék", form: "26-A", photoGlasses: false, wearingGlasses: false, priority: false }, valid: false, reason: "Csak 27-B verzió fogadható el. Az új rendszer régi űrlapot adott, ami szinte költészet." },
+          { name: "Bíró Nóra", age: 27, city: "Szolnok", dialogue: "Nem gyorsított, nem zöld, nem régi. Furcsa érzés, hogy csak simán működik.", doc: { type: "Általános lakossági igazolás", requestName: "Bíró Nóra", idName: "Bíró Nóra", expiry: "2027-11-30", stamps: ["ÜGY"], ink: "kék", form: "27-B", photoGlasses: true, wearingGlasses: true, priority: false }, valid: true, reason: "Minden mai szabálynak megfelel. Ne szokjunk hozzá." },
+          { name: "Sipos Áron", age: 45, city: "Tatabánya", dialogue: "Csak egy pecsétet kértek. Igaz, ezt négy különböző ember mondta egyszerre.", doc: { type: "Gyorsított ablakváltási engedély", requestName: "Sipos Áron", idName: "Sipos Áron", expiry: "2027-05-04", stamps: ["LOG"], ink: "kék", form: "27-B", photoGlasses: false, wearingGlasses: false, priority: true }, valid: false, reason: "Gyorsított ügyhöz LOG és ÜGY pecsét is kell. Egy pecsét csak normál lassúságra jogosít." },
+          { name: "Molnár Júlia", age: 36, city: "Nyíregyháza", dialogue: "Környezetvédelmi ügy, zöld toll, zöld mappa, zöld pulóver. A mappát külön soron kérik?", doc: { type: "Környezetvédelmi tárolási kérelem", requestName: "Molnár Júlia", idName: "Molnár Júlia", expiry: "2028-10-19", stamps: ["ZÖLD"], ink: "zöld", form: "27-B", photoGlasses: false, wearingGlasses: false, priority: false }, valid: true, reason: "Környezetvédelmi ügyben a zöld tinta elfogadott. A pulóver túlteljesítés." }
+        ]
+      },
+      {
+        briefing: "[KÖZLÖNY] 3. nap: Arcképes egyezőségi rendelet. A fotón szereplő állapotnak ügyintézéskor is fenn kell állnia, mert a valóság auditálható.",
+        rules: [
+          "Ha az igazolványképen szemüveg van, az ügyfélnek az ablaknál is szemüveget kell viselnie.",
+          "A 60 év feletti ügyfeleknek nyugdíjas elsőbbségi pecsét kell: NYF.",
+          "A gyorsított ügyekhez továbbra is LOG és ÜGY pecsét szükséges. A reform sikeres volt, ezért megmarad."
+        ],
+        cases: [
+          { name: "Rácz Ilona", age: 67, city: "Sopron", dialogue: "A NYF pecsétet külön ablaknál adták, miután igazoltam, hogy szeretek külön ablakokhoz menni.", doc: { type: "Nyugdíjas lakcímigazolási kérelem", requestName: "Rácz Ilona", idName: "Rácz Ilona", expiry: "2027-07-07", stamps: ["ÜGY", "NYF"], ink: "kék", form: "27-B", photoGlasses: true, wearingGlasses: true, priority: false }, valid: true, reason: "Szemüveg egyezik, NYF pecsét megvan. A rendszer elégedetten kattog." },
+          { name: "Kiss Tamás", age: 33, city: "Baja", dialogue: "A képen szemüveges vagyok, de ma kontaktlencse van rajtam. Ez technikailag fejlődés.", doc: { type: "Személyazonossági frissítés", requestName: "Kiss Tamás", idName: "Kiss Tamás", expiry: "2028-01-01", stamps: ["ÜGY"], ink: "kék", form: "27-B", photoGlasses: true, wearingGlasses: false, priority: false }, valid: false, reason: "A fotón szemüveg van, az ügyfélen nincs. A valóság nem kompatibilis az archívummal." },
+          { name: "Papp Gergő", age: 64, city: "Kecskemét", dialogue: "A nyugdíjas pecsétet nem kértem, mert nem tudtam, hogy a korom adminisztratív funkció.", doc: { type: "Általános utazási igazolás", requestName: "Papp Gergő", idName: "Papp Gergő", expiry: "2027-12-12", stamps: ["ÜGY"], ink: "kék", form: "27-B", photoGlasses: false, wearingGlasses: false, priority: false }, valid: false, reason: "60 felett NYF pecsét kell. Az életkor itt workflow-trigger." },
+          { name: "Varga Réka", age: 22, city: "Dunaújváros", dialogue: "Gyorsított ügy, dupla pecsét, 27-B. A hivatali bingo majdnem teljes.", doc: { type: "Gyorsított lakhatási igazolás", requestName: "Varga Réka", idName: "Varga Réka", expiry: "2027-09-09", stamps: ["LOG", "ÜGY"], ink: "kék", form: "27-B", photoGlasses: false, wearingGlasses: false, priority: true }, valid: true, reason: "Gyorsított ügyhöz minden pecsét megvan. A bürokrácia ma sportos cipőt vett." },
+          { name: "Balogh Imre", age: 72, city: "Szekszárd", dialogue: "Hoztam minden pecsétet, mert a múltkor a hiányzó pecsét hiányát is lepecsételték.", doc: { type: "Elsőbbségi átvezetési lap", requestName: "Balogh Imre", idName: "Balogh Imre", expiry: "2029-02-02", stamps: ["ÜGY", "NYF", "ARCH"], ink: "kék", form: "27-B", photoGlasses: false, wearingGlasses: false, priority: false }, valid: true, reason: "NYF pecsét rendben, alapadatok rendben. A plusz ARCH pecsét nem hiba, csak díszítő trauma." },
+          { name: "Takács Petra", age: 41, city: "Zalaegerszeg", dialogue: "A nevem a kérelmen régi, de én már megszoktam az újat. A rendszer még gyászol.", doc: { type: "Családi állapot átvezetése", requestName: "Takács Péter", idName: "Takács Petra", expiry: "2027-04-18", stamps: ["ÜGY"], ink: "kék", form: "27-B", photoGlasses: true, wearingGlasses: true, priority: false }, valid: false, reason: "A név nem egyezik. A rendszer nem tudja értelmezni az emberi élet eseményeit, csak a mezőket." }
+        ]
+      }
+    ];
+
+    let dayIndex = 0;
+    let caseIndex = 0;
+    let score = 0;
+    let mistakesLeft = 3;
+    let sighs = 0;
+
+    const dayValue = document.getElementById("dayValue");
+    const caseValue = document.getElementById("caseValue");
+    const scoreValue = document.getElementById("scoreValue");
+    const mistakeValue = document.getElementById("mistakeValue");
+    const briefingBox = document.getElementById("briefingBox");
+    const rulesList = document.getElementById("rulesList");
+    const citizenName = document.getElementById("citizenName");
+    const citizenMeta = document.getElementById("citizenMeta");
+    const citizenDialogue = document.getElementById("citizenDialogue");
+    const docType = document.getElementById("docType");
+    const documentFields = document.getElementById("documentFields");
+    const stampBox = document.getElementById("stampBox");
+    const logList = document.getElementById("logList");
+    const gameOverBox = document.getElementById("gameOverBox");
+    const approveBtn = document.getElementById("approveBtn");
+    const rejectBtn = document.getElementById("rejectBtn");
+    const sighBtn = document.getElementById("sighBtn");
+
+    function currentDay() { return days[dayIndex]; }
+    function currentCase() { return currentDay().cases[caseIndex]; }
+
+    function renderRules() {
+      rulesList.innerHTML = "";
+      currentDay().rules.forEach((rule, idx) => {
+        const li = document.createElement("li");
+        li.textContent = `${idx + 1}. ${rule}`;
+        rulesList.appendChild(li);
+      });
+    }
+
+    function renderCase() {
+      const c = currentCase();
+      dayValue.textContent = dayIndex + 1;
+      caseValue.textContent = caseIndex + 1;
+      scoreValue.textContent = score;
+      mistakeValue.textContent = mistakesLeft;
+      briefingBox.textContent = currentDay().briefing;
+      citizenName.textContent = c.name;
+      citizenMeta.innerHTML = `Kor: ${c.age}<br>Város: ${c.city}`;
+      citizenDialogue.textContent = `„${c.dialogue}”`;
+      docType.textContent = c.doc.type;
+      stampBox.innerHTML = c.doc.stamps.length ? c.doc.stamps.join("<br>") : "NINCS<br>PECSÉT";
+
+      const fields = [
+        ["Kérelmező neve", c.doc.requestName],
+        ["Igazolvány neve", c.doc.idName],
+        ["Lejárat", c.doc.expiry],
+        ["Űrlapverzió", c.doc.form],
+        ["Tinta", c.doc.ink],
+        ["Pecsétek", c.doc.stamps.length ? c.doc.stamps.join(", ") : "hiányzik"],
+        ["Fotón szemüveg", c.doc.photoGlasses ? "igen" : "nem"],
+        ["Ablaknál szemüveg", c.doc.wearingGlasses ? "igen" : "nem"],
+        ["Eljárás", c.doc.priority ? "gyorsított" : "normál"]
+      ];
+
+      documentFields.innerHTML = "";
+      fields.forEach(([label, value]) => {
+        const row = document.createElement("div");
+        row.className = "field";
+        row.innerHTML = `<span>${label}</span><span>${value}</span>`;
+        documentFields.appendChild(row);
+      });
+    }
+
+    function log(message, type = "info") {
+      const item = document.createElement("div");
+      item.className = `log-item log-${type}`;
+      item.textContent = message;
+      logList.prepend(item);
+    }
+
+    function decide(approved) {
+      const c = currentCase();
+      const correct = approved === c.valid;
+
+      if (correct) {
+        score += 100;
+        log(`[OK] Helyes döntés: ${approved ? "elfogadva" : "elutasítva"}. ${c.reason}`, "good");
+      } else {
+        score -= 75;
+        mistakesLeft -= 1;
+        log(`[HIBA] Rossz döntés. Helyes lett volna: ${c.valid ? "elfogadni" : "elutasítani"}. ${c.reason}`, "bad");
+      }
+
+      if (mistakesLeft <= 0) {
+        endGame(false);
+        return;
+      }
+
+      nextCase();
+    }
+
+    function nextCase() {
+      caseIndex += 1;
+      if (caseIndex >= currentDay().cases.length) {
+        dayIndex += 1;
+        caseIndex = 0;
+        if (dayIndex >= days.length) {
+          endGame(true);
+          return;
+        }
+        log("[SYS] Új nap indul. A szabályok frissültek, mert a stabilitás túl kényelmes lett volna.", "info");
+        renderRules();
+      }
+      renderCase();
+    }
+
+    function endGame(won) {
+      approveBtn.disabled = true;
+      rejectBtn.disabled = true;
+      sighBtn.disabled = true;
+      gameOverBox.classList.add("show");
+      if (won) {
+        gameOverBox.innerHTML = `<strong>[ELŐLÉPTETÉS]</strong><br>Végigvitted a műszakot. Pontszám: ${score}.<br>Új beosztásod: ideiglenes regionális formanyomtatvány-koordinátor helyettes-helyettes. Ez nem fizetésemelés, csak hosszabb titulus. Civilizáció.`;
+      } else {
+        gameOverBox.innerHTML = `<strong>[MŰSZAK MEGSZAKÍTVA]</strong><br>Elfogyott a hibatűrés. Pontszám: ${score}.<br>A rendszer kötelező továbbképzésre küld: „Bevezetés a pecsét érzelmi életébe”.`;
+      }
+    }
+
+    function deepSigh() {
+      sighs += 1;
+      const messages = [
+        "[SÓHAJ] A levegő adminisztratív úton elhagyta a tüdőt.",
+        "[SÓHAJ] A rendszer ezt nem rögzíti, de valahol egy nyomtató megértően zümmög.",
+        "[SÓHAJ] A mély sóhaj nem döntés, de átmenetileg emberibbé teszi az ablakot.",
+        "[SÓHAJ] Három sóhaj után sem jár automatikus szünet. Próbálkozás szép volt."
+      ];
+      log(messages[Math.min(sighs - 1, messages.length - 1)], "info");
+    }
+
+    approveBtn.addEventListener("click", () => decide(true));
+    rejectBtn.addEventListener("click", () => decide(false));
+    sighBtn.addEventListener("click", deepSigh);
+
+    renderRules();
+    renderCase();
+    log("[BOOT] BüroKrácia modul betöltve. A várakozás feldolgozása sikeresen várakozik.", "info");
+  </script>
+</body>
+</html>
