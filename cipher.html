@@ -296,7 +296,7 @@ Field note:
             hint:
 `Shift every letter 3 positions back.
 D -> A, E -> B, F -> C.`,
-            answer: "MEET AT DARE NINE"
+            answerHash: "2fb1e0af9a20d83815cdc55d9abb63ce4de56f0959df77ce3ca7324df9915ce8"
         },
         {
             title: "LEVEL 02: Number Station",
@@ -315,7 +315,7 @@ A1Z26
 A=1, B=2, C=3... apparently alphabets need invoices now.`,
             hint:
 `Convert each number into its matching alphabet letter.`,
-            answer: "NORTH DOCK AT MIDNIGHT"
+            answerHash: "69dd5cfb26b7be983171e06b7776c67a4ecfce3f4963881fdd588e354ebe67e1"
         },
         {
             title: "LEVEL 03: Reversed Courier",
@@ -334,7 +334,7 @@ REVERSE TEXT
 No substitution. Just direction.`,
             hint:
 `Read the entire line from right to left.`,
-            answer: "SET SUN AFTER THE SAFE HOUSE"
+            answerHash: "da9ff3a44149cb1be89a7260ca1345082956e5c94254034639bcbf6d7f0b2719"
         },
         {
             title: "LEVEL 04: Morse Burst",
@@ -356,7 +356,7 @@ Slash separates words.`,
 - = T
 .- = A
 -.-- = Y`,
-            answer: "STAY QUIET"
+            answerHash: "6a1ccc0f2312980a9cb2cc2a96a7204e4c06f15a0c8cd044cc89e941b67a16b1"
         },
         {
             title: "LEVEL 05: Vigenere Desk",
@@ -380,7 +380,7 @@ Keyword repeats over the encrypted text.`,
             hint:
 `Classic example pattern.
 Use key LEMON repeated over the cipher text.`,
-            answer: "ATTACKATDAWN"
+            answerHash: "393dfae2845abf5cb0d599ccd1189f57ef56b3fa104e0ae71844d78bccd4e5d2"
         },
         {
             title: "LEVEL 06: Coordinate Phrase",
@@ -404,8 +404,7 @@ Read each coordinate as column+row.`,
 `B2 = F
 A1 = A
 D4 = P`,
-            answer: "FAP KALL NA",
-            accepted: ["FAP KALL NA", "FAP KALL NA"]
+            answerHash: "adf2c6f5050824cebb9afdc00ba2fb5478cfb9df11bcce85a8f051891b959140"
         },
         {
             title: "LEVEL 07: Keyword Shift",
@@ -426,7 +425,7 @@ ORCHID = 6 letters`,
             hint:
 `The keyword length is the Caesar shift.
 Shift 6 letters backward.`,
-            answer: "THIS IS A TEST"
+            answerHash: "f6b51a03debf680bdcc215f429eed499ef5933e759614da25ed44513e918561d"
         },
         {
             title: "LEVEL 08: Layered Field Note",
@@ -435,23 +434,20 @@ Shift 6 letters backward.`,
 ERA: Compromised courier route
 PRIORITY: CRITICAL
 
-Message seems reversed first, then shifted.`,
+Message seems shifted first, then interpreted as final plaintext.`,
             intercept:
-`HJXFWYJ YMJ UQFS`,
+`HJFXJ YMJ UQFS`,
             clue:
-`Two-stage cipher:
-1. Caesar shift
-2. Then reverse meaning was applied during handling
+`Cipher type suspected:
+CAESAR SHIFT
 
 Field clue:
-"Five steps, then mirror."`,
+"Five steps back."`,
             hint:
-`First shift letters 5 back:
+`Shift letters 5 back:
 H -> C
-J -> E
-
-Then inspect the decoded phrase.`,
-            answer: "CEASE THE PLAN"
+J -> E`,
+            answerHash: "f40d9c09feba20632661c1c58dc7acdcd2eb4041cedcef8cbf3059fead0cf87f"
         },
         {
             title: "LEVEL 09: Broken Transmission",
@@ -471,7 +467,7 @@ Courier route includes OLD TOWER as known landmark.`,
             hint:
 `The missing letters form:
 R and T.`,
-            answer: "DROP AT OLD TOWER"
+            answerHash: "6093fb92afc04b0e1bd886504a146e7203a0d2964d978a7014dd26f4a17234f0"
         },
         {
             title: "LEVEL 10: Final Dead Drop",
@@ -498,12 +494,12 @@ PART C = reverse text
 
 Combine all parts in order.`,
             hint:
-`PART A decodes to TRAIN.
-PART B ROT13 gives THE CODEBOOK.
-PART C reversed gives EXIT FROM BASE.
+`PART A decodes to a transport method.
+PART B ROT13 gives an object.
+PART C reversed gives the extraction direction.
 
-Final answer is all three combined.`,
-            answer: "TRAIN THE CODEBOOK EXIT FROM BASE"
+Combine all three parts.`,
+            answerHash: "9ab570669e1307edf8dc901e670d5a2b98fea8e6c6cdd92cbcf4b9feda51f815"
         }
     ];
 
@@ -518,6 +514,16 @@ Final answer is all three combined.`,
             .toUpperCase()
             .replace(/[.,!?]/g, "")
             .replace(/\s+/g, " ");
+    }
+
+    async function sha256(text) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+
+        return Array.from(new Uint8Array(hashBuffer))
+            .map(byte => byte.toString(16).padStart(2, "0"))
+            .join("");
     }
 
     function loadLevel(index) {
@@ -553,21 +559,19 @@ Final answer is all three combined.`,
         statusText.textContent = `${level.title} loaded.`;
     }
 
-    function checkAnswer() {
+    async function checkAnswer() {
         if (solved) {
             return;
         }
 
         const level = levels[currentLevel];
         const userAnswer = normalize(answerInput.value);
+        const userHash = await sha256(userAnswer);
 
         attempts++;
         attemptText.textContent = attempts;
 
-        const validAnswers = level.accepted || [level.answer];
-        const isCorrect = validAnswers.some(answer => normalize(answer) === userAnswer);
-
-        if (isCorrect) {
+        if (userHash === level.answerHash) {
             solved = true;
 
             lockText.textContent = "OPEN";
@@ -581,7 +585,7 @@ Final answer is all three combined.`,
 Correct.
 
 Recovered message:
-${level.answer}`;
+[classified]`;
 
             answerInput.disabled = true;
             checkBtn.disabled = true;
