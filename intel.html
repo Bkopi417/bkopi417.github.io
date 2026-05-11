@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Intel Desk | Kopi</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<header>
+    <div class="container">
+
+        <div class="logo-terminal" style="position: relative;">
+            <span class="terminal-arrow">➜</span>
+            <span class="terminal-path">~ cd /home/kopi/projects/intel</span>
+            <span class="terminal-cursor"></span>
+
+            <a href="index.html" class="terminal-link"></a>
+        </div>
+
+        <nav class="menu">
+            <ul>
+                <li><a href="about.html">About</a></li>
+                <li><a href="stuff.html">CTF Stuff</a></li>
+                <li><a href="projects.html">Projects</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <section style="text-align: center; margin-top: 4rem;">
+        <h1>Intel Desk</h1>
+
+        <p style="margin-top: 1rem;">
+            Review sources, judge reliability, make an assessment, and brief command.
+        </p>
+
+        <p id="statusText" style="
+            margin-top: 1rem;
+            color: lime;
+            font-size: 0.95rem;
+        ">
+            ANALYST CONSOLE ONLINE.
+        </p>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 3rem;
+    ">
+        <div class="terminal-box">
+            <p>SCORE</p>
+            <h2 id="scoreText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>CASE</p>
+            <h2 id="caseText">1 / 1</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>ACCURACY</p>
+            <h2 id="accuracyText">100%</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>MISTAKES</p>
+            <h2 id="mistakeText">0</h2>
+        </div>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+    ">
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 330px;
+            text-align: left;
+        ">
+            <h2 style="font-size: 1.2rem; color: lime;">
+                Source List
+            </h2>
+
+            <div id="sourceButtons" style="
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                margin-top: 1rem;
+            "></div>
+
+            <p style="
+                margin-top: 1rem;
+                color: #777;
+                font-size: 0.85rem;
+                line-height: 1.5;
+            ">
+                Reliability: A is strongest, D is weakest. Credibility describes this specific report.
+                Naturally, both can still ruin your day.
+            </p>
+        </div>
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 460px;
+            text-align: left;
+        ">
+            <h2 id="caseTitle" style="font-size: 1.2rem; color: lime;">
+                Case File
+            </h2>
+
+            <pre id="sourceContent" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                line-height: 1.55;
+                margin-top: 1rem;
+                font-size: 0.92rem;
+            "></pre>
+
+            <button id="briefBtn" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+                margin-top: 1rem;
+            ">
+                ANALYST BRIEF
+            </button>
+
+            <pre id="briefBox" style="
+                color: #777;
+                white-space: pre-wrap;
+                line-height: 1.5;
+                margin-top: 1rem;
+                font-size: 0.88rem;
+            ">BRIEF: [not generated]</pre>
+        </div>
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 360px;
+            text-align: left;
+        ">
+            <h2 style="font-size: 1.2rem; color: lime;">
+                Assessment Panel
+            </h2>
+
+            <p style="margin-top: 1rem;">
+                MOST LIKELY ASSESSMENT
+            </p>
+
+            <select id="assessmentSelect" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem;
+                font-family: monospace;
+                width: 100%;
+                margin-top: 0.5rem;
+            "></select>
+
+            <p style="margin-top: 1rem;">
+                CONFIDENCE
+            </p>
+
+            <select id="confidenceSelect" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem;
+                font-family: monospace;
+                width: 100%;
+                margin-top: 0.5rem;
+            ">
+                <option value="LOW">LOW</option>
+                <option value="MEDIUM" selected>MEDIUM</option>
+                <option value="HIGH">HIGH</option>
+            </select>
+
+            <p style="margin-top: 1rem;">
+                RECOMMENDED ACTION
+            </p>
+
+            <select id="actionSelect" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem;
+                font-family: monospace;
+                width: 100%;
+                margin-top: 0.5rem;
+            "></select>
+
+            <button id="submitBtn" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+                width: 100%;
+                margin-top: 1.5rem;
+            ">
+                SUBMIT ASSESSMENT
+            </button>
+
+            <button id="nextBtn" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+                width: 100%;
+                margin-top: 0.75rem;
+            ">
+                NEXT CASE
+            </button>
+
+            <button id="restartBtn" style="
+                background: black;
+                color: lime;
+                border: 1px solid lime;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                font-family: monospace;
+                width: 100%;
+                margin-top: 0.75rem;
+            ">
+                RESTART DESK
+            </button>
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>LOGIC MODULE: INTEL DESK</p>
+</footer>
+
+<script>
+    const sourceButtons = document.getElementById("sourceButtons");
+    const sourceContent = document.getElementById("sourceContent");
+    const briefBox = document.getElementById("briefBox");
+    const caseTitle = document.getElementById("caseTitle");
+
+    const statusText = document.getElementById("statusText");
+    const scoreText = document.getElementById("scoreText");
+    const caseText = document.getElementById("caseText");
+    const accuracyText = document.getElementById("accuracyText");
+    const mistakeText = document.getElementById("mistakeText");
+
+    const assessmentSelect = document.getElementById("assessmentSelect");
+    const confidenceSelect = document.getElementById("confidenceSelect");
+    const actionSelect = document.getElementById("actionSelect");
+
+    const submitBtn = document.getElementById("submitBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const briefBtn = document.getElementById("briefBtn");
+
+    const assessments = [
+        "ROUTINE_ACTIVITY",
+        "EXERCISE_OR_DRILL",
+        "IMMINENT_OPERATION",
+        "MISINFORMATION",
+        "LOGISTICS_BUILDUP",
+        "INTERNAL_SECURITY_INCIDENT",
+        "ECONOMIC_PRESSURE",
+        "LOW_CONFIDENCE_NOISE"
+    ];
+
+    const actions = [
+        "MONITOR_ONLY",
+        "REQUEST_MORE_COLLECTION",
+        "ESCALATE_TO_COMMAND",
+        "PREPARE_CONTINGENCY",
+        "DISMISS_AS_NOISE",
+        "ISSUE_WARNING",
+        "PROTECT_CRITICAL_ASSETS"
+    ];
+
+    const cases = [
+        {
+            title: "CASE 01: BORDER MOVEMENT",
+            correctAssessment: "LOGISTICS_BUILDUP",
+            correctConfidence: "HIGH",
+            correctAction: "ESCALATE_TO_COMMAND",
+            brief:
+`Multiple independent sources indicate a real logistics buildup near Sector 7.
+The strongest evidence is rail movement plus fuel shortage plus matching SIGINT timing.
+Assessment: logistics buildup with high confidence.`,
+            sources: [
+                {
+                    id: "LOGISTICS-02",
+                    reliability: "A",
+                    credibility: "CONFIRMED",
+                    text:
+`Rail cargo increased by 240% near Sector 7 over 72 hours.
+Observed cargo types: fuel containers, engineering vehicles, field kitchens.
+Pattern is consistent with sustained forward staging, not routine rotation.`
+                },
+                {
+                    id: "OSINT-19",
+                    reliability: "B",
+                    credibility: "PLAUSIBLE",
+                    text:
+`Local media reports fuel shortages and temporary road closures near the northern corridor.
+Photos show long vehicle queues near two depots.`
+                },
+                {
+                    id: "SIGINT-04",
+                    reliability: "B",
+                    credibility: "PLAUSIBLE",
+                    text:
+`Intercepted phrase: "delivery before dawn, route seven remains priority."
+No direct hostile language, but timing aligns with rail movement.`
+                },
+                {
+                    id: "HUMINT-12",
+                    reliability: "C",
+                    credibility: "WEAK",
+                    text:
+`Source claims "something big" will happen soon.
+No specific unit, time, or objective provided. Helpful, in the way fog is helpful.`
+                }
+            ]
+        },
+        {
+            title: "CASE 02: MARKET PANIC",
+            correctAssessment: "MISINFORMATION",
+            correctConfidence: "MEDIUM",
+            correctAction: "ISSUE_WARNING",
+            brief:
+`The viral claim is not supported by credible reporting. Weak social media amplification and manipulated images suggest misinformation.
+Assessment: misinformation with medium confidence.`,
+            sources: [
+                {
+                    id: "OSINT-03",
+                    reliability: "C",
+                    credibility: "WEAK",
+                    text:
+`Viral posts claim a major banking collapse within 24 hours.
+Most accounts posting the claim were created in the last 10 days.`
+                },
+                {
+                    id: "FININT-11",
+                    reliability: "A",
+                    credibility: "CONFIRMED",
+                    text:
+`No abnormal liquidity movement detected.
+Interbank activity remains within normal weekly bands.`
+                },
+                {
+                    id: "MEDIA-07",
+                    reliability: "B",
+                    credibility: "PLAUSIBLE",
+                    text:
+`Several images used in viral posts are from an unrelated protest two years ago.`
+                },
+                {
+                    id: "HUMINT-20",
+                    reliability: "D",
+                    credibility: "WEAK",
+                    text:
+`Anonymous source says "the panic is real."
+No corroborating details. Truly inspirational levels of uselessness.`
+                }
+            ]
+        },
+        {
+            title: "CASE 03: PORT DISRUPTION",
+            correctAssessment: "INTERNAL_SECURITY_INCIDENT",
+            correctConfidence: "HIGH",
+            correctAction: "PROTECT_CRITICAL_ASSETS",
+            brief:
+`Multiple port systems show access anomalies, badge failures, and cargo routing disruption.
+Assessment: internal security incident affecting critical logistics infrastructure.`,
+            sources: [
+                {
+                    id: "CYBER-08",
+                    reliability: "A",
+                    credibility: "CONFIRMED",
+                    text:
+`Port scheduling system generated 3,400 failed authentication attempts overnight.
+Two privileged accounts accessed routing tables outside maintenance window.`
+                },
+                {
+                    id: "LOGISTICS-14",
+                    reliability: "A",
+                    credibility: "CONFIRMED",
+                    text:
+`Container routing delays increased by 71%.
+Manual overrides observed in cargo priority queue.`
+                },
+                {
+                    id: "SECURITY-01",
+                    reliability: "B",
+                    credibility: "PLAUSIBLE",
+                    text:
+`Badge logs show two employees entering restricted office space after midnight.
+One employee was not scheduled.`
+                },
+                {
+                    id: "OSINT-22",
+                    reliability: "C",
+                    credibility: "WEAK",
+                    text:
+`Social media users complain about delayed shipments.
+Useful, if one enjoys measuring chaos through angry comments.`
+                }
+            ]
+        },
+        {
+            title: "CASE 04: QUIET EMBASSY",
+            correctAssessment: "ROUTINE_ACTIVITY",
+            correctConfidence: "MEDIUM",
+            correctAction: "MONITOR_ONLY",
+            brief:
+`Embassy movements are unusual but explainable by scheduled staff rotation and public holiday logistics.
+Assessment: routine activity, medium confidence.`,
+            sources: [
+                {
+                    id: "DIPLO-06",
+                    reliability: "B",
+                    credibility: "PLAUSIBLE",
+                    text:
+`Three embassy vehicles left the compound before sunrise.
+Destination appears to be airport diplomatic terminal.`
+                },
+                {
+                    id: "OSINT-12",
+                    reliability: "B",
+                    credibility: "PLAUSIBLE",
+                    text:
+`Public holiday begins tomorrow. Local traffic restrictions expected near diplomatic district.`
+                },
+                {
+                    id: "TRAVEL-04",
+                    reliability: "A",
+                    credibility: "CONFIRMED",
+                    text:
+`Scheduled staff rotation flight departed at 07:40.
+Passenger manifest includes administrative staff.`
+                },
+                {
+                    id: "RUMOR-91",
+                    reliability: "D",
+                    credibility: "WEAK",
+                    text:
+`Online rumor claims evacuation.
+No images, no official notice, no secondary confirmation. Classic internet soup.`
+                }
+            ]
+        },
+        {
+            title: "CASE 05: ENERGY GRID STRAIN",
+            correctAssessment: "ECONOMIC_PRESSURE",
+            correctConfidence: "HIGH",
+            correctAction: "PREPARE_CONTINGENCY",
+            brief:
+`Energy shortages, price spikes, and industrial shutdowns indicate broad economic pressure rather than a single security event.
+Assessment: economic pressure with high confidence.`,
+            sources: [
+                {
+                    id: "ENERGY-02",
+                    reliability: "A",
+                    credibility: "CONFIRMED",
+                    text:
+`Grid reserve margin fell below 6% for the third consecutive day.
+Emergency imports requested from neighboring suppliers.`
+                },
+                {
+                    id: "FININT-05",
+                    reliability: "A",
+                    credibility: "CONFIRMED",
+                    text:
+`Electricity futures rose 38% in 48 hours.
+Industrial gas purchases also increased sharply.`
+                },
+                {
+                    id: "OSINT-28",
+                    reliability: "B",
+                    credibility: "PLAUSIBLE",
+                    text:
+`Three large factories announced temporary production pauses due to power uncertainty.`
+                },
+                {
+                    id: "SIGINT-18",
+                    reliability: "C",
+                    credibility: "WEAK",
+                    text:
+`Fragment mentions "rationing plan" but source chain is incomplete.`
+                }
+            ]
+        }
+    ];
+
+    let currentCase = 0;
+    let score = 0;
+    let mistakes = 0;
+    let totalAnswered = 0;
+    let solvedCurrent = false;
+
+    function fillSelect(select, values) {
+        select.innerHTML = "";
+
+        values.forEach(value => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = value.replaceAll("_", " ");
+            select.appendChild(option);
+        });
+    }
+
+    function loadCase(index) {
+        const item = cases[index];
+
+        solvedCurrent = false;
+
+        caseTitle.textContent = item.title;
+        sourceContent.textContent = "Select a source from the left panel.";
+        briefBox.textContent = "BRIEF: [not generated]";
+
+        caseText.textContent = `${index + 1} / ${cases.length}`;
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+
+        nextBtn.textContent = index === cases.length - 1 ? "FINALIZE DESK" : "NEXT CASE";
+
+        sourceButtons.innerHTML = "";
+
+        item.sources.forEach((source, sourceIndex) => {
+            const button = document.createElement("button");
+
+            button.textContent = `${source.id} | REL ${source.reliability} | ${source.credibility}`;
+            button.style.background = "black";
+            button.style.color = "lime";
+            button.style.border = "1px solid lime";
+            button.style.padding = "0.7rem";
+            button.style.cursor = "pointer";
+            button.style.fontFamily = "monospace";
+            button.style.textAlign = "left";
+
+            button.addEventListener("click", () => {
+                sourceContent.textContent =
+`SOURCE ID: ${source.id}
+RELIABILITY: ${source.reliability}
+CREDIBILITY: ${source.credibility}
+
+REPORT:
+${source.text}`;
+            });
+
+            sourceButtons.appendChild(button);
+
+            if (sourceIndex === 0) {
+                sourceContent.textContent =
+`SOURCE ID: ${source.id}
+RELIABILITY: ${source.reliability}
+CREDIBILITY: ${source.credibility}
+
+REPORT:
+${source.text}`;
+            }
+        });
+
+        statusText.style.color = "lime";
+        statusText.textContent = "CASE LOADED: review sources and submit assessment.";
+
+        updateStats();
+    }
+
+    function updateStats() {
+        scoreText.textContent = score;
+        mistakeText.textContent = mistakes;
+
+        const accuracy = totalAnswered === 0
+            ? 100
+            : Math.round(((totalAnswered - mistakes) / totalAnswered) * 100);
+
+        accuracyText.textContent = `${accuracy}%`;
+    }
+
+    function submitAssessment() {
+        if (solvedCurrent) {
+            statusText.style.color = "orange";
+            statusText.textContent = "ASSESSMENT ALREADY SUBMITTED: move to next case.";
+            return;
+        }
+
+        const item = cases[currentCase];
+
+        const assessment = assessmentSelect.value;
+        const confidence = confidenceSelect.value;
+        const action = actionSelect.value;
+
+        totalAnswered++;
+
+        let caseScore = 0;
+        let wrong = false;
+
+        if (assessment === item.correctAssessment) {
+            caseScore += 15;
+        } else {
+            wrong = true;
+        }
+
+        if (confidence === item.correctConfidence) {
+            caseScore += 7;
+        } else if (confidence === "HIGH" && item.correctConfidence !== "HIGH") {
+            caseScore -= 6;
+        } else {
+            caseScore -= 2;
+        }
+
+        if (action === item.correctAction) {
+            caseScore += 10;
+        } else {
+            wrong = true;
+            caseScore -= 5;
+        }
+
+        if (caseScore < 0) {
+            caseScore = 0;
+        }
+
+        score += caseScore;
+
+        if (wrong) {
+            mistakes++;
+            statusText.style.color = "red";
+            statusText.textContent =
+                `PARTIAL/WRONG: expected ${item.correctAssessment.replaceAll("_", " ")} / ${item.correctConfidence} / ${item.correctAction.replaceAll("_", " ")}.`;
+        } else {
+            statusText.style.color = "lime";
+            statusText.textContent = `CORRECT ASSESSMENT: +${caseScore} points.`;
+        }
+
+        solvedCurrent = true;
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = "0.45";
+
+        briefBox.textContent = item.brief;
+        updateStats();
+    }
+
+    function nextCase() {
+        if (!solvedCurrent) {
+            statusText.style.color = "red";
+            statusText.textContent = "ACCESS DENIED: submit assessment before moving on.";
+            return;
+        }
+
+        if (currentCase >= cases.length - 1) {
+            finishDesk();
+            return;
+        }
+
+        currentCase++;
+        loadCase(currentCase);
+    }
+
+    function generateBrief() {
+        const item = cases[currentCase];
+
+        briefBox.textContent =
+`ANALYST BRIEF PREVIEW:
+Review strongest sources first.
+Look for corroboration across independent channels.
+Avoid overconfidence when weak HUMINT or rumor dominates.
+Correct final brief unlocks after submission.
+
+Yes, this is basically paperwork with consequences. Humanity peaked.`;
+    }
+
+    function finishDesk() {
+        const accuracy = totalAnswered === 0
+            ? 100
+            : Math.round(((totalAnswered - mistakes) / totalAnswered) * 100);
+
+        sourceContent.textContent =
+`INTEL DESK COMPLETE
+
+Cases reviewed: ${cases.length}
+Score:          ${score}
+Accuracy:       ${accuracy}%
+Mistakes:       ${mistakes}
+
+RANK:
+${getRank(accuracy, score)}`;
+
+        briefBox.textContent = "BRIEF: all case files closed.";
+        statusText.style.color = "lime";
+        statusText.textContent = "DESK COMPLETE: final intelligence package submitted.";
+
+        submitBtn.disabled = true;
+        nextBtn.disabled = true;
+
+        submitBtn.style.opacity = "0.45";
+        nextBtn.style.opacity = "0.45";
+    }
+
+    function getRank(accuracy, finalScore) {
+        if (accuracy >= 90 && finalScore >= 140) {
+            return "SENIOR ANALYST - painfully competent.";
+        }
+
+        if (accuracy >= 75) {
+            return "FIELD ANALYST - useful under supervision.";
+        }
+
+        if (accuracy >= 60) {
+            return "JUNIOR DESK OFFICER - reads documents, occasionally survives them.";
+        }
+
+        return "CONFIDENCE HAZARD - please step away from the briefing room.";
+    }
+
+    function restartDesk() {
+        currentCase = 0;
+        score = 0;
+        mistakes = 0;
+        totalAnswered = 0;
+        solvedCurrent = false;
+
+        submitBtn.disabled = false;
+        nextBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+        nextBtn.style.opacity = "1";
+
+        loadCase(currentCase);
+    }
+
+    fillSelect(assessmentSelect, assessments);
+    fillSelect(actionSelect, actions);
+
+    submitBtn.addEventListener("click", submitAssessment);
+    nextBtn.addEventListener("click", nextCase);
+    restartBtn.addEventListener("click", restartDesk);
+    briefBtn.addEventListener("click", generateBrief);
+
+    restartDesk();
+</script>
+
+</body>
+</html>
