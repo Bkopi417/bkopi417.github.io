@@ -1,62 +1,162 @@
 <!DOCTYPE html>
-<html lang="hu">
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Projects | Kopi</title>
+
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
+<header>
+    <div class="container">
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="projects.html">Projects</a>
-    <a href="stuff.html">Stuff</a>
-</nav>
+        <!-- Terminal-style logo -->
+        <div class="logo-terminal" style="position: relative;">
+            <span class="terminal-arrow">➜</span>
+            <span class="terminal-path">~ cd /home/kopi/projects</span>
+            <span class="terminal-cursor"></span>
 
-<main>
+            <!-- Hidden clickable overlay -->
+            <a href="index.html" class="terminal-link"></a>
+        </div>
 
-    <h1>Projects</h1>
+        <!-- Navigation menu -->
+        <nav class="menu">
+            <ul>
+                <li><a href="about.html">About</a></li>
+                <li><a href="stuff.html">CTF Stuff</a></li>
+                <li><a href="projects.html">Projects</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
 
-    <div style="
-        display:flex;
-        justify-content:center;
-        gap:30px;
-        flex-wrap:wrap;
-        margin-top:40px;
+<main class="container">
+
+    <section style="text-align: center; margin-top: 4rem;">
+        <h1>Projects</h1>
+
+        <p style="margin-top: 1rem;">
+            Some random stuff with many data.
+        </p>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-top: 4rem;
     ">
 
+        <!-- ISS -->
         <a href="iss.html" style="
-            text-decoration:none;
-            color:inherit;
-            text-align:center;
-        ">
-            <div style="font-size:80px;">🛰️</div>
-            <h2>ISS Tracker</h2>
+            text-decoration: none;
+            color: inherit;
+            text-align: center;
+            padding: 2rem;
+            width: 220px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            transition: 0.2s ease;
+        "
+        onmouseover="this.style.transform='translateY(-5px)'"
+        onmouseout="this.style.transform='translateY(0px)'">
+
+            <div style="font-size: 5rem;">
+                🛰️
+            </div>
+
+            <h2 style="margin-top: 1rem;">
+                ISS Tracker
+            </h2>
+
+            <p style="margin-top: 0.5rem;">
+                Track the International Space Station live.
+            </p>
         </a>
 
+        <!-- Earthquake -->
         <a href="earthquake.html" style="
-            text-decoration:none;
-            color:inherit;
-            text-align:center;
-        ">
-            <div style="font-size:80px;">🌍</div>
-            <h2>Earthquakes</h2>
+            text-decoration: none;
+            color: inherit;
+            text-align: center;
+            padding: 2rem;
+            width: 220px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            transition: 0.2s ease;
+        "
+        onmouseover="this.style.transform='translateY(-5px)'"
+        onmouseout="this.style.transform='translateY(0px)'">
+
+            <div style="font-size: 5rem;">
+                🌍
+            </div>
+
+            <h2 style="margin-top: 1rem;">
+                Earthquakes
+            </h2>
+
+            <p style="margin-top: 0.5rem;">
+                Live earthquake data and monitoring.
+            </p>
         </a>
 
+        <!-- Nuclear -->
         <a href="nuclear.html" style="
-            text-decoration:none;
-            color:inherit;
-            text-align:center;
-        ">
-            <div style="font-size:80px;">☢️</div>
-            <h2>Nuclear</h2>
+            text-decoration: none;
+            color: inherit;
+            text-align: center;
+            padding: 2rem;
+            width: 220px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            transition: 0.2s ease;
+        "
+        onmouseover="this.style.transform='translateY(-5px)'"
+        onmouseout="this.style.transform='translateY(0px)'">
+
+            <div style="font-size: 5rem;">
+                ☢️
+            </div>
+
+            <h2 style="margin-top: 1rem;">
+                Nuclear
+            </h2>
+
+            <p style="margin-top: 0.5rem;">
+                Nuclear monitoring related project.
+            </p>
         </a>
 
-    </div>
+    </section>
 
 </main>
+
+<script>
+    // Back to top button
+    const backToTopButton = document.getElementById("backToTop");
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+            backToTopButton.style.display = "block";
+        } else {
+            backToTopButton.style.display = "none";
+        }
+    });
+
+    backToTopButton.addEventListener("click", () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    });
+</script>
 
 </body>
 </html>
