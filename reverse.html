@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Reverse Lab | Kopi</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<header>
+    <div class="container">
+
+        <div class="logo-terminal" style="position: relative;">
+            <span class="terminal-arrow">➜</span>
+            <span class="terminal-path">~ cd /home/kopi/projects/reverse-lab</span>
+            <span class="terminal-cursor"></span>
+
+            <a href="index.html" class="terminal-link"></a>
+        </div>
+
+        <nav class="menu">
+            <ul>
+                <li><a href="about.html">About</a></li>
+                <li><a href="stuff.html">CTF Stuff</a></li>
+                <li><a href="projects.html">Projects</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <section style="text-align: center; margin-top: 4rem;">
+        <h1>Reverse Lab</h1>
+
+        <p style="margin-top: 1rem;">
+            Analyze pseudo-assembly, decode the hidden output, and recover the secret.
+        </p>
+
+        <p id="statusText" style="
+            margin-top: 1rem;
+            color: lime;
+            font-size: 0.95rem;
+        ">
+            DISASSEMBLER READY.
+        </p>
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 3rem;
+    ">
+
+        <div class="terminal-box">
+            <p>LEVEL</p>
+            <h2 id="levelText">1</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>ATTEMPTS</p>
+            <h2 id="attemptText">0</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>STATUS</p>
+            <h2 id="solveStatus">LOCKED</h2>
+        </div>
+
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+    ">
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 420px;
+            text-align: left;
+        ">
+            <h2 style="font-size: 1.2rem; color: lime;">
+                Disassembly
+            </h2>
+
+            <pre id="assemblyBox" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                line-height: 1.6;
+                margin-top: 1rem;
+                overflow-x: auto;
+            "></pre>
+        </div>
+
+        <div style="
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #050505;
+            width: 420px;
+            text-align: left;
+        ">
+            <h2 style="font-size: 1.2rem; color: lime;">
+                Memory / Output
+            </h2>
+
+            <p style="margin-top: 1rem;">
+                ENCODED BYTES
+            </p>
+
+            <pre id="encodedBox" style="
+                color: #aaa;
+                white-space: pre-wrap;
+                margin-top: 0.5rem;
+                line-height: 1.6;
+            "></pre>
+
+            <p style="margin-top: 1rem;">
+                TRACE
+            </p>
+
+            <pre id="traceBox" style="
+                color: #777;
+                white-space: pre-wrap;
+                margin-top: 0.5rem;
+                line-height: 1.6;
+            "></pre>
+
+            <p style="margin-top: 1rem;">
+                HINT
+            </p>
+
+            <pre id="hintBox" style="
+                color: #777;
+                white-space: pre-wrap;
+                margin-top: 0.5rem;
+                line-height: 1.6;
+            "></pre>
+        </div>
+
+    </section>
+
+    <section style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    ">
+
+        <input id="answerInput" type="text" placeholder="enter recovered secret" style="
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 0.7rem;
+            font-family: monospace;
+            width: 280px;
+        ">
+
+        <button id="checkBtn" style="
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            font-family: monospace;
+        ">
+            RUN CHECK
+        </button>
+
+        <button id="hintBtn" style="
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            font-family: monospace;
+        ">
+            REVEAL HINT
+        </button>
+
+        <button id="nextBtn" style="
+            background: black;
+            color: lime;
+            border: 1px solid lime;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            font-family: monospace;
+        ">
+            NEXT LEVEL
+        </button>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>LOGIC MODULE: REVERSE LAB</p>
+</footer>
+
+<script>
+    const assemblyBox = document.getElementById("assemblyBox");
+    const encodedBox = document.getElementById("encodedBox");
+    const traceBox = document.getElementById("traceBox");
+    const hintBox = document.getElementById("hintBox");
+
+    const statusText = document.getElementById("statusText");
+    const levelText = document.getElementById("levelText");
+    const attemptText = document.getElementById("attemptText");
+    const solveStatus = document.getElementById("solveStatus");
+
+    const answerInput = document.getElementById("answerInput");
+    const checkBtn = document.getElementById("checkBtn");
+    const hintBtn = document.getElementById("hintBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let currentLevel = 0;
+    let attempts = 0;
+    let solved = false;
+    let hintRevealed = false;
+
+    const levels = [
+        {
+            title: "XOR single-byte decode",
+            secret: "ROOT",
+            assembly:
+`main:
+    MOV R1, encoded_buffer
+    MOV R2, 0x2A
+    MOV R3, 0x00
+
+loop:
+    LOAD AL, [R1 + R3]
+    XOR  AL, R2
+    CMP  AL, expected[R3]
+    JNE  fail
+    INC  R3
+    CMP  R3, 0x04
+    JL   loop
+
+success:
+    RET  0x01
+
+fail:
+    RET  0x00`,
+            encodedBytes: [0x78, 0x65, 0x65, 0x7E],
+            trace:
+`encoded[i] XOR 0x2A = output[i]
+length = 4`,
+            hint:
+`XOR each byte with 0x2A.
+Then convert ASCII values to characters.`
+        },
+        {
+            title: "Reverse order buffer",
+            secret: "ADMIN",
+            assembly:
+`main:
+    MOV R1, input_buffer
+    MOV R2, encoded_buffer
+    MOV R3, 0x00
+
+decode:
+    LOAD AL, [R2 + R3]
+    SUB  AL, 0x03
+    STORE [temp + R3], AL
+    INC  R3
+    CMP  R3, 0x05
+    JL   decode
+
+compare:
+    CMP temp[0], input[4]
+    CMP temp[1], input[3]
+    CMP temp[2], input[2]
+    CMP temp[3], input[1]
+    CMP temp[4], input[0]
+    RET`,
+            encodedBytes: [0x51, 0x4C, 0x50, 0x47, 0x44],
+            trace:
+`encoded[i] - 0x03 = temp[i]
+temp is compared against input in reverse order
+length = 5`,
+            hint:
+`First subtract 3 from every byte.
+Then reverse the decoded string.`
+        },
+        {
+            title: "Nibble swap",
+            secret: "CACHE",
+            assembly:
+`main:
+    MOV R1, encoded_buffer
+    MOV R2, 0x00
+
+loop:
+    LOAD AL, [R1 + R2]
+    MOV  BL, AL
+    SHR  AL, 0x04
+    SHL  BL, 0x04
+    OR   AL, BL
+    AND  AL, 0xFF
+    CMP  AL, expected[R2]
+    JNE  fail
+    INC  R2
+    CMP  R2, 0x05
+    JL   loop
+
+success:
+    RET  1
+
+fail:
+    RET  0`,
+            encodedBytes: [0x34, 0x14, 0x34, 0x84, 0x54],
+            trace:
+`swap high nibble and low nibble
+example: 0x41 becomes 0x14
+length = 5`,
+            hint:
+`Each byte has its two hex digits swapped.
+0x34 becomes 0x43, and 0x43 is ASCII C.`
+        },
+        {
+            title: "Offset ladder",
+            secret: "KERNEL",
+            assembly:
+`main:
+    MOV R1, encoded_buffer
+    MOV R2, 0x00
+
+loop:
+    LOAD AL, [R1 + R2]
+    SUB  AL, R2
+    XOR  AL, 0x11
+    CMP  AL, expected[R2]
+    JNE  fail
+    INC  R2
+    CMP  R2, 0x06
+    JL   loop
+
+success:
+    RET  1
+
+fail:
+    RET  0`,
+            encodedBytes: [0x5A, 0x55, 0x41, 0x5D, 0x50, 0x58],
+            trace:
+`output[i] = (encoded[i] - i) XOR 0x11
+indexes start at 0
+length = 6`,
+            hint:
+`For each byte:
+1. subtract its index
+2. XOR with 0x11
+3. convert to ASCII`
+        },
+        {
+            title: "Checksum gate",
+            secret: "LOGIN",
+            assembly:
+`main:
+    MOV R1, encoded_buffer
+    MOV R2, 0x07
+    MOV R3, 0x00
+    MOV SUM, 0x00
+
+loop:
+    LOAD AL, [R1 + R3]
+    XOR  AL, R2
+    ADD  SUM, AL
+    STORE [decoded + R3], AL
+    INC  R3
+    CMP  R3, 0x05
+    JL   loop
+
+gate:
+    CMP SUM, 0x79
+    JNE fail
+    CMP decoded, input
+    JE  success
+
+success:
+    RET 1
+
+fail:
+    RET 0`,
+            encodedBytes: [0x4B, 0x48, 0x40, 0x4E, 0x49],
+            trace:
+`encoded[i] XOR 0x07 = decoded[i]
+checksum SUM(decoded) = 0x79
+length = 5`,
+            hint:
+`XOR each byte with 0x07.
+The checksum confirms the decoded answer.`
+        }
+    ];
+
+    function toHex(value) {
+        return "0x" + value.toString(16).toUpperCase().padStart(2, "0");
+    }
+
+    function bytesToText(bytes) {
+        return bytes.map(byte => toHex(byte)).join(" ");
+    }
+
+    function loadLevel(index) {
+        const level = levels[index];
+
+        attempts = 0;
+        solved = false;
+        hintRevealed = false;
+
+        levelText.textContent = index + 1;
+        attemptText.textContent = attempts;
+        solveStatus.textContent = "LOCKED";
+        solveStatus.style.color = "red";
+
+        assemblyBox.textContent = level.assembly;
+        encodedBox.textContent = bytesToText(level.encodedBytes);
+        traceBox.textContent = level.trace;
+        hintBox.textContent = "[hidden] press REVEAL HINT if your brain starts filing complaints.";
+
+        answerInput.value = "";
+        answerInput.disabled = false;
+
+        statusText.style.color = "lime";
+        statusText.textContent = `LOADED: ${level.title}`;
+    }
+
+    function normalizeAnswer(value) {
+        return value.trim().toUpperCase();
+    }
+
+    function checkAnswer() {
+        if (solved) {
+            return;
+        }
+
+        const level = levels[currentLevel];
+        const answer = normalizeAnswer(answerInput.value);
+
+        attempts++;
+        attemptText.textContent = attempts;
+
+        if (answer === level.secret) {
+            solved = true;
+
+            solveStatus.textContent = "OPEN";
+            solveStatus.style.color = "lime";
+            statusText.style.color = "lime";
+            statusText.textContent = "ACCESS GRANTED: secret recovered.";
+            answerInput.disabled = true;
+
+            return;
+        }
+
+        solveStatus.textContent = "LOCKED";
+        solveStatus.style.color = "red";
+        statusText.style.color = "red";
+        statusText.textContent = "CHECK FAILED: recovered secret is incorrect.";
+    }
+
+    function revealHint() {
+        const level = levels[currentLevel];
+
+        hintRevealed = true;
+        hintBox.textContent = level.hint;
+        statusText.style.color = "lime";
+        statusText.textContent = "HINT REVEALED: dignity slightly reduced, progress improved.";
+    }
+
+    function nextLevel() {
+        currentLevel = (currentLevel + 1) % levels.length;
+        loadLevel(currentLevel);
+    }
+
+    checkBtn.addEventListener("click", checkAnswer);
+    hintBtn.addEventListener("click", revealHint);
+    nextBtn.addEventListener("click", nextLevel);
+
+    answerInput.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            checkAnswer();
+        }
+    });
+
+    loadLevel(currentLevel);
+</script>
+
+</body>
+</html>
