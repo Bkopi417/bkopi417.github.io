@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Cold War Command | Kopi</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+
+        <div class="logo-terminal" style="position: relative;">
+            <span class="terminal-arrow">➜</span>
+            <span class="terminal-path">~ cd /home/kopi/cold-war-command</span>
+            <span class="terminal-cursor"></span>
+
+            <a href="index.html" class="terminal-link"></a>
+        </div>
+
+        <nav class="menu">
+            <ul>
+                <li><a href="about.html">About</a></li>
+                <li><a href="stuff.html">CTF Stuff</a></li>
+                <li><a href="projects.html">Projects</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <section style="text-align:center; margin-top:4rem;">
+        <h1>Cold War Command</h1>
+
+        <p style="margin-top:1rem;">
+            Survive five chapters of global tension, proxy conflicts, intelligence failures, and nuclear paranoia.
+        </p>
+
+        <p id="statusText" style="
+            margin-top:1rem;
+            color:lime;
+            font-size:0.95rem;
+        ">
+            STRATEGIC COMMAND ONLINE.
+        </p>
+    </section>
+
+    <section style="
+        display:flex;
+        justify-content:center;
+        flex-wrap:wrap;
+        gap:1rem;
+        margin-top:3rem;
+    ">
+
+        <div class="terminal-box">
+            <p>TURN</p>
+            <h2 id="turnText">1</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>CHAPTER</p>
+            <h2 id="chapterText">1 / 5</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>DEFCON</p>
+            <h2 id="defconText">5</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>GDP</p>
+            <h2 id="gdpText">100</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>STABILITY</p>
+            <h2 id="stabilityText">100%</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>TENSION</p>
+            <h2 id="tensionText">15%</h2>
+        </div>
+
+    </section>
+
+    <section style="
+        display:flex;
+        justify-content:center;
+        flex-wrap:wrap;
+        gap:1rem;
+        margin-top:2rem;
+    ">
+
+        <div class="terminal-box">
+            <p>OIL</p>
+            <h2 id="oilText">80</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>PUBLIC SUPPORT</p>
+            <h2 id="supportText">70%</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>INTEL</p>
+            <h2 id="intelText">40</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>READINESS</p>
+            <h2 id="readinessText">45%</h2>
+        </div>
+
+        <div class="terminal-box">
+            <p>INFLUENCE</p>
+            <h2 id="influenceText">50</h2>
+        </div>
+
+    </section>
+
+    <section style="
+        display:flex;
+        justify-content:center;
+        align-items:flex-start;
+        flex-wrap:wrap;
+        gap:2rem;
+        margin-top:3rem;
+    ">
+
+        <div style="
+            width:340px;
+            background:#050505;
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:12px;
+            padding:1.5rem;
+            text-align:left;
+        ">
+
+            <h2 style="color:lime;">Campaign Status</h2>
+
+            <pre id="campaignBox" style="
+                color:#aaa;
+                white-space:pre-wrap;
+                line-height:1.55;
+                margin-top:1rem;
+                font-size:0.9rem;
+            "></pre>
+
+            <h3 style="color:lime; margin-top:1.5rem;">Regions</h3>
+
+            <pre id="regionBox" style="
+                color:#777;
+                white-space:pre-wrap;
+                line-height:1.5;
+                margin-top:1rem;
+                font-size:0.88rem;
+            "></pre>
+
+        </div>
+
+        <div style="
+            width:440px;
+            background:#050505;
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:12px;
+            padding:1.5rem;
+            text-align:left;
+        ">
+
+            <h2 style="color:lime;">Strategic Briefing</h2>
+
+            <pre id="briefingBox" style="
+                color:#aaa;
+                white-space:pre-wrap;
+                line-height:1.6;
+                margin-top:1rem;
+                font-size:0.92rem;
+            "></pre>
+
+            <h3 style="color:lime; margin-top:1.5rem;">Arsenal</h3>
+
+            <pre id="arsenalBox" style="
+                color:#777;
+                white-space:pre-wrap;
+                line-height:1.5;
+                margin-top:1rem;
+                font-size:0.9rem;
+            "></pre>
+
+            <h3 style="color:lime; margin-top:1.5rem;">Research</h3>
+
+            <pre id="researchBox" style="
+                color:#777;
+                white-space:pre-wrap;
+                line-height:1.5;
+                margin-top:1rem;
+                font-size:0.9rem;
+            "></pre>
+
+        </div>
+
+        <div style="
+            width:380px;
+            background:#050505;
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:12px;
+            padding:1.5rem;
+            text-align:left;
+        ">
+
+            <h2 style="color:lime;">Command Actions</h2>
+
+            <div style="
+                display:flex;
+                flex-direction:column;
+                gap:0.8rem;
+                margin-top:1rem;
+            ">
+
+                <button class="actionBtn" data-action="summit">DIPLOMATIC SUMMIT</button>
+                <button class="actionBtn" data-action="buildup">MILITARY BUILDUP</button>
+                <button class="actionBtn" data-action="spies">EXPAND SPY NETWORK</button>
+                <button class="actionBtn" data-action="aid">FOREIGN AID PACKAGE</button>
+                <button class="actionBtn" data-action="sanctions">ECONOMIC SANCTIONS</button>
+                <button class="actionBtn" data-action="research">FUND RESEARCH</button>
+                <button class="actionBtn" data-action="propaganda">PROPAGANDA CAMPAIGN</button>
+                <button class="actionBtn" data-action="deescalate">BACKCHANNEL DE-ESCALATION</button>
+                <button class="actionBtn" data-action="proxy">SUPPORT PROXY ALLY</button>
+                <button class="actionBtn" data-action="verify">VERIFY INTELLIGENCE</button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section style="
+        display:flex;
+        justify-content:center;
+        align-items:flex-start;
+        flex-wrap:wrap;
+        gap:2rem;
+        margin-top:3rem;
+    ">
+
+        <div style="
+            width:520px;
+            background:#050505;
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:12px;
+            padding:1.5rem;
+            text-align:left;
+        ">
+
+            <h2 style="color:lime;">Pending Consequences</h2>
+
+            <pre id="pendingBox" style="
+                color:#aaa;
+                white-space:pre-wrap;
+                line-height:1.55;
+                margin-top:1rem;
+                font-size:0.9rem;
+                max-height:250px;
+                overflow:auto;
+            "></pre>
+
+        </div>
+
+        <div style="
+            width:520px;
+            background:#050505;
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:12px;
+            padding:1.5rem;
+            text-align:left;
+        ">
+
+            <h2 style="color:lime;">Command Log</h2>
+
+            <pre id="logBox" style="
+                color:#aaa;
+                white-space:pre-wrap;
+                line-height:1.45;
+                margin-top:1rem;
+                font-size:0.86rem;
+                max-height:250px;
+                overflow:auto;
+            "></pre>
+
+        </div>
+
+    </section>
+
+    <section style="
+        display:flex;
+        justify-content:center;
+        gap:1rem;
+        margin-top:3rem;
+        flex-wrap:wrap;
+    ">
+
+        <button id="nextTurnBtn" style="
+            background:black;
+            color:lime;
+            border:1px solid lime;
+            padding:0.9rem 1.5rem;
+            font-family:monospace;
+            cursor:pointer;
+        ">
+            NEXT TURN
+        </button>
+
+        <button id="restartBtn" style="
+            background:black;
+            color:orange;
+            border:1px solid orange;
+            padding:0.9rem 1.5rem;
+            font-family:monospace;
+            cursor:pointer;
+        ">
+            RESTART CAMPAIGN
+        </button>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>STRATEGIC SIMULATION MODULE</p>
+</footer>
+
+<script>
+    const campaignBox = document.getElementById("campaignBox");
+    const briefingBox = document.getElementById("briefingBox");
+    const arsenalBox = document.getElementById("arsenalBox");
+    const researchBox = document.getElementById("researchBox");
+    const regionBox = document.getElementById("regionBox");
+    const logBox = document.getElementById("logBox");
+    const pendingBox = document.getElementById("pendingBox");
+
+    const turnText = document.getElementById("turnText");
+    const chapterText = document.getElementById("chapterText");
+    const defconText = document.getElementById("defconText");
+    const gdpText = document.getElementById("gdpText");
+    const stabilityText = document.getElementById("stabilityText");
+    const tensionText = document.getElementById("tensionText");
+    const oilText = document.getElementById("oilText");
+    const supportText = document.getElementById("supportText");
+    const intelText = document.getElementById("intelText");
+    const readinessText = document.getElementById("readinessText");
+    const influenceText = document.getElementById("influenceText");
+    const statusText = document.getElementById("statusText");
+
+    const nextTurnBtn = document.getElementById("nextTurnBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const actionButtons = document.querySelectorAll(".actionBtn");
+
+    const chapters = [
+        {
+            name: "CHAPTER I: Post-war Reconstruction",
+            range: "1947-1955",
+            goal: "Build influence while keeping tension below 45%.",
+            endTurn: 8
+        },
+        {
+            name: "CHAPTER II: Proxy Conflicts",
+            range: "1956-1965",
+            goal: "Maintain stability above 55% while handling regional crises.",
+            endTurn: 16
+        },
+        {
+            name: "CHAPTER III: Arms Race",
+            range: "1966-1975",
+            goal: "Develop deterrence without triggering DEFCON 1.",
+            endTurn: 24
+        },
+        {
+            name: "CHAPTER IV: Economic Strain",
+            range: "1976-1984",
+            goal: "Prevent economic collapse and domestic unrest.",
+            endTurn: 32
+        },
+        {
+            name: "CHAPTER V: Final Crisis",
+            range: "1985-1991",
+            goal: "End the Cold War without thermonuclear exchange.",
+            endTurn: 40
+        }
+    ];
+
+    const crisisEvents = [
+        {
+            title: "Border crisis escalates in divided territory.",
+            tension: 8,
+            stability: -2,
+            intel: 2,
+            log: "Border crisis increased global tension."
+        },
+        {
+            title: "Proxy militia requests covert support.",
+            tension: 5,
+            influence: 4,
+            gdp: -2,
+            log: "Proxy conflict created strategic opportunity and risk."
+        },
+        {
+            title: "Oil shipping lanes disrupted.",
+            oil: -10,
+            gdp: -4,
+            stability: -3,
+            log: "Oil disruption damaged economic output."
+        },
+        {
+            title: "Missile test detected by early warning systems.",
+            tension: 10,
+            readiness: 4,
+            log: "Missile test raised military readiness and tension."
+        },
+        {
+            title: "Mass protests in allied capital.",
+            stability: -7,
+            influence: -3,
+            log: "Allied unrest reduced regional influence."
+        },
+        {
+            title: "Spy network compromised abroad.",
+            intel: -8,
+            tension: 4,
+            log: "Counterintelligence failure reduced intelligence capability."
+        },
+        {
+            title: "Arms control proposal reaches diplomatic channel.",
+            tension: -7,
+            influence: 3,
+            log: "Arms control proposal reduced tension."
+        },
+        {
+            title: "False missile warning reported by sensor network.",
+            tension: 6,
+            readiness: 3,
+            log: "False warning increased strategic panic."
+        },
+        {
+            title: "Food shortage threatens domestic support.",
+            stability: -5,
+            support: -8,
+            gdp: -2,
+            log: "Shortages reduced public support."
+        },
+        {
+            title: "Neutral state asks for development funding.",
+            gdp: -3,
+            influence: 6,
+            tension: -2,
+            log: "Development funding expanded influence."
+        }
+    ];
+
+    let game;
+
+    function restartGame() {
+        game = {
+            turn: 1,
+            chapter: 0,
+
+            defcon: 5,
+            gdp: 100,
+            stability: 85,
+            tension: 18,
+            oil: 80,
+            support: 70,
+            intel: 40,
+            readiness: 45,
+            influence: 50,
+
+            icbm: 12,
+            slbm: 4,
+            bombers: 16,
+
+            researchPoints: 0,
+            tech: {
+                satelliteRecon: false,
+                earlyWarning: false,
+                missileDefense: false,
+                secureHotline: false,
+                economicPlanning: false
+            },
+
+            regions: {
+                EUROPE: "TENSE",
+                ASIA: "NEUTRAL",
+                AFRICA: "UNSTABLE",
+                AMERICAS: "ALLIED",
+                MIDDLE_EAST: "VOLATILE"
+            },
+
+            pending: [],
+            log: [],
+            gameOver: false
+        };
+
+        enableControls();
+        addLog("Campaign restarted. Strategic command authority transferred.");
+        updateUI();
+    }
+
+    function clampStats() {
+        game.gdp = Math.max(0, Math.min(160, game.gdp));
+        game.stability = Math.max(0, Math.min(100, game.stability));
+        game.tension = Math.max(0, Math.min(100, game.tension));
+        game.oil = Math.max(0, Math.min(120, game.oil));
+        game.support = Math.max(0, Math.min(100, game.support));
+        game.intel = Math.max(0, Math.min(120, game.intel));
+        game.readiness = Math.max(0, Math.min(100, game.readiness));
+        game.influence = Math.max(0, Math.min(120, game.influence));
+
+        if (game.tension >= 85) {
+            game.defcon = 1;
+        } else if (game.tension >= 70) {
+            game.defcon = 2;
+        } else if (game.tension >= 52) {
+            game.defcon = 3;
+        } else if (game.tension >= 32) {
+            game.defcon = 4;
+        } else {
+            game.defcon = 5;
+        }
+    }
+
+    function addLog(text) {
+        game.log.unshift(`[TURN ${game.turn}] ${text}`);
+
+        if (game.log.length > 20) {
+            game.log.pop();
+        }
+    }
+
+    function scheduleConsequence(delay, text, effects) {
+        game.pending.push({
+            due: game.turn + delay,
+            text,
+            effects
+        });
+
+        addLog(`Delayed consequence scheduled: ${text}`);
+    }
+
+    function applyEffects(effects) {
+        Object.entries(effects).forEach(([key, value]) => {
+            if (typeof game[key] === "number") {
+                game[key] += value;
+            }
+        });
+
+        clampStats();
+    }
+
+    function processPending() {
+        const dueNow = game.pending.filter(item => item.due <= game.turn);
+        game.pending = game.pending.filter(item => item.due > game.turn);
+
+        dueNow.forEach(item => {
+            applyEffects(item.effects);
+            addLog(`Consequence triggered: ${item.text}`);
+        });
+    }
+
+    function getCurrentChapter() {
+        return chapters[game.chapter];
+    }
+
+    function updateChapter() {
+        if (game.chapter < chapters.length - 1 && game.turn > chapters[game.chapter].endTurn) {
+            game.chapter++;
+            addLog(`New chapter entered: ${chapters[game.chapter].name}`);
+            statusText.style.color = "lime";
+            statusText.textContent = chapters[game.chapter].name;
+        }
+    }
+
+    function performAction(action) {
+        if (game.gameOver) return;
+
+        switch (action) {
+            case "summit":
+                game.tension -= 8;
+                game.influence += 3;
+                game.gdp -= 1;
+                scheduleConsequence(3, "Summit improved long-term diplomatic channels.", {
+                    tension: -5,
+                    influence: 4
+                });
+                addLog("Diplomatic summit initiated.");
+                break;
+
+            case "buildup":
+                game.tension += 9;
+                game.readiness += 8;
+                game.icbm += 2;
+                game.gdp -= 3;
+                scheduleConsequence(4, "Arms buildup created economic strain.", {
+                    gdp: -5,
+                    support: -4
+                });
+                addLog("Military buildup ordered.");
+                break;
+
+            case "spies":
+                game.intel += 10;
+                game.tension += 2;
+                game.gdp -= 2;
+                scheduleConsequence(5, "Spy network risked exposure abroad.", {
+                    tension: 5,
+                    intel: -3
+                });
+                addLog("Spy network expanded.");
+                break;
+
+            case "aid":
+                game.gdp -= 5;
+                game.influence += 8;
+                game.tension -= 3;
+                game.support -= 2;
+                addLog("Foreign aid package approved.");
+                break;
+
+            case "sanctions":
+                game.tension += 7;
+                game.gdp += 3;
+                game.influence -= 2;
+                scheduleConsequence(3, "Sanctions triggered retaliatory trade pressure.", {
+                    gdp: -6,
+                    oil: -5
+                });
+                addLog("Economic sanctions imposed.");
+                break;
+
+            case "research":
+                game.gdp -= 6;
+                game.researchPoints += 8;
+                game.readiness += 2;
+                unlockResearch();
+                addLog("Research budget expanded.");
+                break;
+
+            case "propaganda":
+                game.support += 8;
+                game.stability += 3;
+                game.tension += 3;
+                scheduleConsequence(4, "Propaganda fatigue damaged credibility.", {
+                    support: -6,
+                    stability: -3
+                });
+                addLog("Propaganda campaign launched.");
+                break;
+
+            case "deescalate":
+                game.tension -= 12;
+                game.readiness -= 4;
+                game.influence += 1;
+                addLog("Backchannel de-escalation activated.");
+                break;
+
+            case "proxy":
+                game.tension += 8;
+                game.influence += 7;
+                game.gdp -= 4;
+                scheduleConsequence(4, "Proxy ally caused regional blowback.", {
+                    tension: 8,
+                    stability: -4
+                });
+                addLog("Proxy ally supported.");
+                break;
+
+            case "verify":
+                if (game.intel >= 8) {
+                    game.intel -= 8;
+                    game.tension -= 5;
+                    game.readiness -= 2;
+                    addLog("Intelligence verification reduced uncertainty.");
+                } else {
+                    game.tension += 3;
+                    addLog("Verification failed: insufficient intelligence resources.");
+                }
+                break;
+        }
+
+        clampStats();
+        checkLossConditions();
+        updateUI();
+    }
+
+    function unlockResearch() {
+        if (game.researchPoints >= 10 && !game.tech.satelliteRecon) {
+            game.tech.satelliteRecon = true;
+            addLog("TECH UNLOCKED: Satellite Recon.");
+        }
+
+        if (game.researchPoints >= 20 && !game.tech.earlyWarning) {
+            game.tech.earlyWarning = true;
+            addLog("TECH UNLOCKED: Early Warning Systems.");
+        }
+
+        if (game.researchPoints >= 32 && !game.tech.secureHotline) {
+            game.tech.secureHotline = true;
+            addLog("TECH UNLOCKED: Secure Hotline.");
+        }
+
+        if (game.researchPoints >= 45 && !game.tech.economicPlanning) {
+            game.tech.economicPlanning = true;
+            addLog("TECH UNLOCKED: Economic Planning.");
+        }
+
+        if (game.researchPoints >= 60 && !game.tech.missileDefense) {
+            game.tech.missileDefense = true;
+            addLog("TECH UNLOCKED: Missile Defense.");
+        }
+    }
+
+    function nextTurn() {
+        if (game.gameOver) return;
+
+        game.turn++;
+
+        processPending();
+        randomCrisis();
+        passiveEconomy();
+        updateChapter();
+        clampStats();
+
+        checkLossConditions();
+
+        if (!game.gameOver && game.turn > chapters[chapters.length - 1].endTurn) {
+            winGame();
+            return;
+        }
+
+        updateUI();
+    }
+
+    function passiveEconomy() {
+        if (game.oil < 35) {
+            game.gdp -= 4;
+            game.stability -= 2;
+            addLog("Low oil reserves damaged the economy.");
+        } else {
+            game.gdp += game.tech.economicPlanning ? 3 : 1;
+        }
+
+        if (game.support < 35) {
+            game.stability -= 4;
+            addLog("Low public support reduced domestic stability.");
+        }
+
+        if (game.defcon <= 2) {
+            game.support -= 3;
+            game.gdp -= 2;
+            addLog("High alert posture strained society and economy.");
+        }
+    }
+
+    function randomCrisis() {
+        let chance = 0.38;
+
+        if (game.chapter >= 1) chance += 0.08;
+        if (game.chapter >= 3) chance += 0.08;
+        if (game.tension > 60) chance += 0.10;
+
+        if (Math.random() > chance) {
+            statusText.style.color = "lime";
+            statusText.textContent = "Strategic systems stable this turn.";
+            return;
+        }
+
+        const event = crisisEvents[Math.floor(Math.random() * crisisEvents.length)];
+
+        game.gdp += event.gdp || 0;
+        game.stability += event.stability || 0;
+        game.tension += event.tension || 0;
+        game.oil += event.oil || 0;
+        game.support += event.support || 0;
+        game.intel += event.intel || 0;
+        game.readiness += event.readiness || 0;
+        game.influence += event.influence || 0;
+
+        if (game.tech.satelliteRecon && event.tension > 0) {
+            game.tension -= 2;
+        }
+
+        if (game.tech.earlyWarning && event.title.includes("warning")) {
+            game.tension -= 4;
+        }
+
+        if (game.tech.secureHotline && game.tension > 55) {
+            game.tension -= 2;
+        }
+
+        statusText.style.color = "orange";
+        statusText.textContent = event.title;
+        addLog(event.log);
+    }
+
+    function checkLossConditions() {
+        if (game.tension >= 100 || game.defcon <= 1 && game.readiness > 85 && game.tension > 88) {
+            gameOver("GLOBAL THERMONUCLEAR EXCHANGE DETECTED");
+            return;
+        }
+
+        if (game.stability <= 0) {
+            gameOver("STATE COLLAPSE");
+            return;
+        }
+
+        if (game.gdp <= 0) {
+            gameOver("ECONOMIC COLLAPSE");
+            return;
+        }
+
+        if (game.support <= 0) {
+            gameOver("GOVERNMENT LEGITIMACY FAILURE");
+            return;
+        }
+    }
+
+    function gameOver(reason) {
+        game.gameOver = true;
+
+        statusText.style.color = "red";
+        statusText.textContent = reason;
+
+        addLog(`SIMULATION FAILURE: ${reason}`);
+
+        briefingBox.textContent =
+`SIMULATION TERMINATED
+
+CAUSE:
+${reason}
+
+FINAL TURN: ${game.turn}
+FINAL CHAPTER: ${getCurrentChapter().name}
+GDP: ${game.gdp}
+STABILITY: ${game.stability}%
+PUBLIC SUPPORT: ${game.support}%
+GLOBAL TENSION: ${game.tension}%
+DEFCON: ${game.defcon}
+
+The committee has concluded that things went poorly.
+A bold finding, given the smoking crater where policy used to be.`;
+
+        disableControls();
+        updateUI();
+    }
+
+    function winGame() {
+        game.gameOver = true;
+
+        let ending = "UNCERTAIN PEACE";
+
+        if (game.tension < 35 && game.stability > 60 && game.gdp > 70) {
+            ending = "PEACEFUL DE-ESCALATION";
+        } else if (game.gdp < 45) {
+            ending = "EXHAUSTED SURVIVAL";
+        } else if (game.tension > 65) {
+            ending = "FROZEN STALEMATE";
+        }
+
+        statusText.style.color = "lime";
+        statusText.textContent = `CAMPAIGN COMPLETE: ${ending}`;
+
+        briefingBox.textContent =
+`COLD WAR CAMPAIGN COMPLETE
+
+ENDING:
+${ending}
+
+FINAL TURN: ${game.turn}
+GDP: ${game.gdp}
+STABILITY: ${game.stability}%
+PUBLIC SUPPORT: ${game.support}%
+GLOBAL TENSION: ${game.tension}%
+INFLUENCE: ${game.influence}
+INTELLIGENCE: ${game.intel}
+
+You avoided total annihilation.
+A depressingly high bar, historically speaking.`;
+
+        addLog(`Campaign completed: ${ending}`);
+        disableControls();
+        updateUI();
+    }
+
+    function disableControls() {
+        nextTurnBtn.disabled = true;
+        nextTurnBtn.style.opacity = "0.4";
+
+        actionButtons.forEach(button => {
+            button.disabled = true;
+            button.style.opacity = "0.4";
+        });
+    }
+
+    function enableControls() {
+        nextTurnBtn.disabled = false;
+        nextTurnBtn.style.opacity = "1";
+
+        actionButtons.forEach(button => {
+            button.disabled = false;
+            button.style.opacity = "1";
+        });
+    }
+
+    function updateUI() {
+        const chapter = getCurrentChapter();
+
+        turnText.textContent = game.turn;
+        chapterText.textContent = `${game.chapter + 1} / ${chapters.length}`;
+        defconText.textContent = game.defcon;
+        gdpText.textContent = game.gdp;
+        stabilityText.textContent = `${game.stability}%`;
+        tensionText.textContent = `${game.tension}%`;
+        oilText.textContent = game.oil;
+        supportText.textContent = `${game.support}%`;
+        intelText.textContent = game.intel;
+        readinessText.textContent = `${game.readiness}%`;
+        influenceText.textContent = game.influence;
+
+        campaignBox.textContent =
+`${chapter.name}
+YEARS: ${chapter.range}
+
+OBJECTIVE:
+${chapter.goal}
+
+CAMPAIGN ENDS AFTER TURN:
+${chapter.endTurn}
+
+CURRENT DOCTRINE:
+${getDoctrineText()}`;
+
+        briefingBox.textContent =
+`STRATEGIC ASSESSMENT
+
+Global tension is ${game.tension}%.
+Domestic stability is ${game.stability}%.
+Public support is ${game.support}%.
+Economic index is ${game.gdp}.
+Oil reserves are ${game.oil}.
+
+RISK NOTES:
+${getRiskNotes()}`;
+
+        arsenalBox.textContent =
+`ICBM SILOS: ${game.icbm}
+SLBM SYSTEMS: ${game.slbm}
+STRATEGIC BOMBERS: ${game.bombers}
+
+READINESS: ${game.readiness}%
+SECOND STRIKE CAPABILITY:
+${game.icbm + game.slbm >= 28 ? "SECURE" : "LIMITED"}
+
+NUCLEAR POSTURE:
+${game.defcon <= 2 ? "MAXIMUM ALERT" : "STANDARD ALERT"}`;
+
+        researchBox.textContent =
+`RESEARCH POINTS: ${game.researchPoints}
+
+[${game.tech.satelliteRecon ? "X" : " "}] Satellite Recon
+[${game.tech.earlyWarning ? "X" : " "}] Early Warning Systems
+[${game.tech.secureHotline ? "X" : " "}] Secure Hotline
+[${game.tech.economicPlanning ? "X" : " "}] Economic Planning
+[${game.tech.missileDefense ? "X" : " "}] Missile Defense`;
+
+        regionBox.textContent = Object.entries(game.regions)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join("\n");
+
+        pendingBox.textContent = game.pending.length
+            ? game.pending
+                .map(item => `DUE TURN ${item.due}: ${item.text}`)
+                .join("\n\n")
+            : "No delayed consequences pending. Suspiciously peaceful.";
+
+        logBox.textContent = game.log.join("\n\n");
+
+        updateColors();
+    }
+
+    function getDoctrineText() {
+        if (game.defcon <= 2) {
+            return "CRISIS DETERRENCE";
+        }
+
+        if (game.influence > 75) {
+            return "GLOBAL CONTAINMENT";
+        }
+
+        if (game.gdp < 50) {
+            return "ECONOMIC SURVIVAL";
+        }
+
+        if (game.tension < 30) {
+            return "CONTROLLED DE-ESCALATION";
+        }
+
+        return "BALANCED PRESSURE";
+    }
+
+    function getRiskNotes() {
+        const notes = [];
+
+        if (game.tension > 70) notes.push("- Nuclear escalation risk is severe.");
+        if (game.gdp < 45) notes.push("- Economic base is dangerously weak.");
+        if (game.stability < 45) notes.push("- Domestic stability is deteriorating.");
+        if (game.support < 40) notes.push("- Public support is close to collapse.");
+        if (game.oil < 35) notes.push("- Energy shortage threatens industry.");
+        if (game.intel < 20) notes.push("- Intelligence coverage is dangerously thin.");
+        if (notes.length === 0) notes.push("- Situation is tense but manageable. Which is how disasters introduce themselves.");
+
+        return notes.join("\n");
+    }
+
+    function updateColors() {
+        defconText.style.color = game.defcon <= 2 ? "red" : game.defcon === 3 ? "orange" : "lime";
+        tensionText.style.color = game.tension > 70 ? "red" : game.tension > 45 ? "orange" : "lime";
+        stabilityText.style.color = game.stability < 35 ? "red" : game.stability < 60 ? "orange" : "lime";
+        gdpText.style.color = game.gdp < 35 ? "red" : game.gdp < 60 ? "orange" : "lime";
+        supportText.style.color = game.support < 35 ? "red" : game.support < 55 ? "orange" : "lime";
+        oilText.style.color = game.oil < 30 ? "red" : game.oil < 50 ? "orange" : "lime";
+    }
+
+    actionButtons.forEach(button => {
+        button.style.background = "black";
+        button.style.color = "lime";
+        button.style.border = "1px solid lime";
+        button.style.padding = "0.8rem";
+        button.style.fontFamily = "monospace";
+        button.style.cursor = "pointer";
+
+        button.addEventListener("click", () => {
+            performAction(button.dataset.action);
+        });
+    });
+
+    nextTurnBtn.addEventListener("click", nextTurn);
+
+    restartBtn.addEventListener("click", () => {
+        statusText.style.color = "lime";
+        statusText.textContent = "CAMPAIGN RESTARTED.";
+        restartGame();
+    });
+
+    restartGame();
+</script>
+
+</body>
+</html>
