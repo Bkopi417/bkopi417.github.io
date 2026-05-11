@@ -15,7 +15,7 @@
 
         <div class="logo-terminal" style="position: relative;">
             <span class="terminal-arrow">➜</span>
-            <span class="terminal-path">~ cd /home/kopi/memory-dump</span>
+            <span class="terminal-path">~ cd /home/kopi/projects/memory</span>
             <span class="terminal-cursor"></span>
 
             <a href="index.html" class="terminal-link"></a>
@@ -96,60 +96,107 @@
             width: 320px;
             text-align: left;
         ">
+
+            <div style="margin-bottom: 1.5rem;">
+                <label for="assistMode" style="
+                    display: block;
+                    margin-bottom: 0.5rem;
+                    color: lime;
+                ">
+                    Assist Mode
+                </label>
+
+                <select id="assistMode" style="
+                    background: black;
+                    color: lime;
+                    border: 1px solid lime;
+                    padding: 0.6rem;
+                    font-family: monospace;
+                    width: 100%;
+                ">
+                    <option value="easy">EASY - Full forensic report</option>
+                    <option value="normal" selected>NORMAL - Useful clues</option>
+                    <option value="hard">HARD - Minimal metadata</option>
+                    <option value="nightmare">NIGHTMARE - No mercy</option>
+                </select>
+            </div>
+
             <h2 style="font-size: 1.2rem; color: lime;">
                 Forensic Report
             </h2>
 
-            <p style="margin-top: 1rem;">
-                RAW SIGNATURE
-            </p>
+            <div id="rawBlock">
+                <p style="margin-top: 1rem;">
+                    RAW SIGNATURE
+                </p>
 
-            <pre id="rawSignature" style="
-                color: #aaa;
-                white-space: pre-wrap;
-                margin-top: 0.5rem;
-            "></pre>
+                <pre id="rawSignature" style="
+                    color: #aaa;
+                    white-space: pre-wrap;
+                    margin-top: 0.5rem;
+                "></pre>
+            </div>
 
-            <p style="margin-top: 1rem;">
-                XOR KEY
-            </p>
+            <div id="xorBlock">
+                <p style="margin-top: 1rem;">
+                    XOR KEY
+                </p>
 
-            <pre id="xorKey" style="
-                color: #aaa;
-                white-space: pre-wrap;
-                margin-top: 0.5rem;
-            "></pre>
+                <pre id="xorKey" style="
+                    color: #aaa;
+                    white-space: pre-wrap;
+                    margin-top: 0.5rem;
+                "></pre>
+            </div>
 
-            <p style="margin-top: 1rem;">
-                ENCODED SIGNATURE
-            </p>
+            <div id="encodedBlock">
+                <p style="margin-top: 1rem;">
+                    ENCODED SIGNATURE
+                </p>
 
-            <pre id="encodedSignature" style="
-                color: #aaa;
-                white-space: pre-wrap;
-                margin-top: 0.5rem;
-            "></pre>
+                <pre id="encodedSignature" style="
+                    color: #aaa;
+                    white-space: pre-wrap;
+                    margin-top: 0.5rem;
+                "></pre>
+            </div>
 
-            <p style="margin-top: 1rem;">
-                CHECKSUM
-            </p>
+            <div id="checksumBlock">
+                <p style="margin-top: 1rem;">
+                    CHECKSUM
+                </p>
 
-            <pre id="checksumText" style="
-                color: #aaa;
-                white-space: pre-wrap;
-                margin-top: 0.5rem;
-            "></pre>
+                <pre id="checksumText" style="
+                    color: #aaa;
+                    white-space: pre-wrap;
+                    margin-top: 0.5rem;
+                "></pre>
+            </div>
 
-            <p style="margin-top: 1rem;">
-                HINT
-            </p>
+            <div id="lengthBlock">
+                <p style="margin-top: 1rem;">
+                    SIGNATURE LENGTH
+                </p>
 
-            <pre id="hintText" style="
-                color: #777;
-                white-space: pre-wrap;
-                margin-top: 0.5rem;
-                line-height: 1.5;
-            "></pre>
+                <pre id="lengthText" style="
+                    color: #aaa;
+                    white-space: pre-wrap;
+                    margin-top: 0.5rem;
+                "></pre>
+            </div>
+
+            <div id="hintBlock">
+                <p style="margin-top: 1rem;">
+                    HINT
+                </p>
+
+                <pre id="hintText" style="
+                    color: #777;
+                    white-space: pre-wrap;
+                    margin-top: 0.5rem;
+                    line-height: 1.5;
+                "></pre>
+            </div>
         </div>
 
         <div style="
@@ -225,10 +272,20 @@
     const selectedText = document.getElementById("selectedText");
     const levelText = document.getElementById("levelText");
 
+    const assistMode = document.getElementById("assistMode");
+
+    const rawBlock = document.getElementById("rawBlock");
+    const xorBlock = document.getElementById("xorBlock");
+    const encodedBlock = document.getElementById("encodedBlock");
+    const checksumBlock = document.getElementById("checksumBlock");
+    const lengthBlock = document.getElementById("lengthBlock");
+    const hintBlock = document.getElementById("hintBlock");
+
     const rawSignature = document.getElementById("rawSignature");
     const xorKey = document.getElementById("xorKey");
     const encodedSignature = document.getElementById("encodedSignature");
     const checksumText = document.getElementById("checksumText");
+    const lengthText = document.getElementById("lengthText");
     const hintText = document.getElementById("hintText");
 
     const checkBtn = document.getElementById("checkBtn");
@@ -335,7 +392,7 @@
         return indexes.some(index => forbidden.has(index));
     }
 
-    function placeSequence(bytes, forbidden, allowFragments) {
+    function placeSequence(bytes, forbidden) {
         let tries = 0;
 
         while (tries < 1000) {
@@ -378,7 +435,7 @@
             decoy[index] = randomByte();
         }
 
-        return placeSequence(decoy, forbidden, false);
+        return placeSequence(decoy, forbidden);
     }
 
     function placeFragment(signature, forbidden) {
@@ -386,7 +443,7 @@
         const start = Math.floor(Math.random() * (signature.length - fragmentLength + 1));
         const fragment = signature.slice(start, start + fragmentLength);
 
-        return placeSequence(fragment, forbidden, true);
+        return placeSequence(fragment, forbidden);
     }
 
     function createDump() {
@@ -404,7 +461,7 @@
         currentEncoded = encodeSignature(currentRaw, currentKey);
         checksum = getChecksum(currentRaw);
 
-        targetIndexes = placeSequence(currentEncoded, forbidden, false);
+        targetIndexes = placeSequence(currentEncoded, forbidden);
 
         for (let i = 0; i < difficulty.decoys; i++) {
             const indexes = placeDecoy(currentEncoded, forbidden);
@@ -421,20 +478,78 @@
         renderGrid();
         startTimer();
 
+        statusText.style.color = "lime";
         statusText.textContent = "SCAN READY: locate the encoded signature in memory.";
     }
 
+    function showBlock(block, visible) {
+        block.style.display = visible ? "block" : "none";
+    }
+
     function updateReport() {
+        const mode = assistMode.value;
+
         rawSignature.textContent = currentRaw.map(toHex).join(" ");
         xorKey.textContent = toHex(currentKey);
         encodedSignature.textContent = currentEncoded.map(toHex).join(" ");
         checksumText.textContent = `SUM MOD 256 = ${toHex(checksum)}`;
+        lengthText.textContent = `${currentEncoded.length} BYTES`;
 
-        hintText.textContent =
-            "Target bytes are stored as RAW_BYTE XOR KEY.\n" +
-            "Select the full encoded signature in exact sequence.\n" +
-            "Beware of decoys and partial fragments.\n" +
-            "Because apparently malware also enjoys hide-and-seek.";
+        showBlock(rawBlock, false);
+        showBlock(xorBlock, false);
+        showBlock(encodedBlock, false);
+        showBlock(checksumBlock, false);
+        showBlock(lengthBlock, false);
+        showBlock(hintBlock, true);
+
+        if (mode === "easy") {
+            showBlock(rawBlock, true);
+            showBlock(xorBlock, true);
+            showBlock(encodedBlock, true);
+            showBlock(checksumBlock, true);
+            showBlock(lengthBlock, true);
+
+            hintText.textContent =
+                "EASY MODE:\n" +
+                "Select the exact ENCODED SIGNATURE shown above.\n" +
+                "The RAW SIGNATURE is only here to teach the XOR relation.\n" +
+                "This is training wheels, but stylish ones.";
+        }
+
+        if (mode === "normal") {
+            showBlock(xorBlock, true);
+            showBlock(encodedBlock, true);
+            showBlock(checksumBlock, true);
+            showBlock(lengthBlock, true);
+
+            hintText.textContent =
+                "NORMAL MODE:\n" +
+                "The target is the ENCODED SIGNATURE.\n" +
+                "Use the checksum and length to avoid decoys.\n" +
+                "Decoys may share partial byte patterns.";
+        }
+
+        if (mode === "hard") {
+            showBlock(xorBlock, true);
+            showBlock(checksumBlock, true);
+            showBlock(lengthBlock, true);
+
+            hintText.textContent =
+                "HARD MODE:\n" +
+                "Encoded bytes are hidden.\n" +
+                "You get XOR key, checksum, and length only.\n" +
+                "Reconstruct the encoded sequence from the raw logic.";
+        }
+
+        if (mode === "nightmare") {
+            showBlock(lengthBlock, true);
+
+            hintText.textContent =
+                "NIGHTMARE MODE:\n" +
+                "Only signature length is available.\n" +
+                "Everything else is buried in the dump.\n" +
+                "This is less game design and more a small crime.";
+        }
     }
 
     function updateStats() {
@@ -492,7 +607,6 @@
 
     function verifySelection() {
         const selectedArray = Array.from(selected);
-
         const correct = arraysEqualAsSet(selectedArray, targetIndexes);
 
         if (correct) {
@@ -501,7 +615,7 @@
             statusText.textContent = "MATCH CONFIRMED: infected signature isolated.";
             statusText.style.color = "lime";
 
-            revealTarget(true);
+            revealTarget();
 
             setTimeout(() => {
                 level++;
@@ -520,7 +634,7 @@
         renderGrid();
     }
 
-    function revealTarget(success) {
+    function revealTarget() {
         memoryGrid.innerHTML = "";
 
         memory.forEach((byte, index) => {
@@ -574,6 +688,12 @@
     });
 
     clearBtn.addEventListener("click", clearSelection);
+
+    assistMode.addEventListener("change", () => {
+        updateReport();
+        statusText.style.color = "lime";
+        statusText.textContent = `ASSIST MODE CHANGED: ${assistMode.value.toUpperCase()}.`;
+    });
 
     createDump();
 </script>
