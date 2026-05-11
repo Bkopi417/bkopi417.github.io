@@ -284,6 +284,16 @@
     const restartBtn = document.getElementById("restartBtn");
     const briefBtn = document.getElementById("briefBtn");
 
+    async function sha256(text) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+
+        return Array.from(new Uint8Array(hashBuffer))
+            .map(byte => byte.toString(16).padStart(2, "0"))
+            .join("");
+    }
+
     const assessments = [
         "ROUTINE_ACTIVITY",
         "EXERCISE_OR_DRILL",
@@ -308,9 +318,9 @@
     const cases = [
         {
             title: "CASE 01: BORDER MOVEMENT",
-            correctAssessment: "LOGISTICS_BUILDUP",
-            correctConfidence: "HIGH",
-            correctAction: "ESCALATE_TO_COMMAND",
+            assessmentHash: "a2857564d11c1205ff360702ffd63d5ac50e815df92f84d0e51f763b1fc80eec",
+            confidenceHash: "b43e72eed0488d784f1e3092b48320e2355e9d6313f7ac401542018eec20d8a3",
+            actionHash: "6ccc6056f25ad9f66fb7ef906a6bdf5e69a2a7d063dab3ed0272ce873cc48a19",
             brief:
 `Multiple independent sources indicate a real logistics buildup near Sector 7.
 The strongest evidence is rail movement plus fuel shortage plus matching SIGINT timing.
@@ -353,9 +363,9 @@ No specific unit, time, or objective provided. Helpful, in the way fog is helpfu
         },
         {
             title: "CASE 02: MARKET PANIC",
-            correctAssessment: "MISINFORMATION",
-            correctConfidence: "MEDIUM",
-            correctAction: "ISSUE_WARNING",
+            assessmentHash: "16efef7f0cf76c0adbbd5b19b9640d04c8efab97a6978ddb6bf2b29b6a598ca9",
+            confidenceHash: "7c48dd672a68098c3a9dac57805004a146db39c8d60c81d091537ee9c4a76054",
+            actionHash: "5373e4fdcfa05e4449ad9ef4b6189653f01facffdc2ef5b6e3ca54e36015106a",
             brief:
 `The viral claim is not supported by credible reporting. Weak social media amplification and manipulated images suggest misinformation.
 Assessment: misinformation with medium confidence.`,
@@ -395,9 +405,9 @@ No corroborating details. Truly inspirational levels of uselessness.`
         },
         {
             title: "CASE 03: PORT DISRUPTION",
-            correctAssessment: "INTERNAL_SECURITY_INCIDENT",
-            correctConfidence: "HIGH",
-            correctAction: "PROTECT_CRITICAL_ASSETS",
+            assessmentHash: "cd58513bf61906a39b8b25a22f583d5df11294e21eea228e96c76fc7ba457096",
+            confidenceHash: "b43e72eed0488d784f1e3092b48320e2355e9d6313f7ac401542018eec20d8a3",
+            actionHash: "b4eb240414dfd99e86f46c6ed3eed92983595d8f68d638cb4949ed18b86e090f",
             brief:
 `Multiple port systems show access anomalies, badge failures, and cargo routing disruption.
 Assessment: internal security incident affecting critical logistics infrastructure.`,
@@ -438,9 +448,9 @@ Useful, if one enjoys measuring chaos through angry comments.`
         },
         {
             title: "CASE 04: QUIET EMBASSY",
-            correctAssessment: "ROUTINE_ACTIVITY",
-            correctConfidence: "MEDIUM",
-            correctAction: "MONITOR_ONLY",
+            assessmentHash: "d5fd45ab2f64dd431f987323bfcbf7ef26464c75ec03f2ea1d68ea5167dcbbe2",
+            confidenceHash: "7c48dd672a68098c3a9dac57805004a146db39c8d60c81d091537ee9c4a76054",
+            actionHash: "7bf263ca7cc0da44c34542372bd3133cc218e581f5b49ca9379453d4bf36b46a",
             brief:
 `Embassy movements are unusual but explainable by scheduled staff rotation and public holiday logistics.
 Assessment: routine activity, medium confidence.`,
@@ -480,9 +490,9 @@ No images, no official notice, no secondary confirmation. Classic internet soup.
         },
         {
             title: "CASE 05: ENERGY GRID STRAIN",
-            correctAssessment: "ECONOMIC_PRESSURE",
-            correctConfidence: "HIGH",
-            correctAction: "PREPARE_CONTINGENCY",
+            assessmentHash: "f565387deba1673cc1738163e28bbc70b45242e9368dc0c0a9c0860faf07debd",
+            confidenceHash: "b43e72eed0488d784f1e3092b48320e2355e9d6313f7ac401542018eec20d8a3",
+            actionHash: "1a50e882357236b74695175f03392f51877eead22508be58984c3cf60869b5d1",
             brief:
 `Energy shortages, price spikes, and industrial shutdowns indicate broad economic pressure rather than a single security event.
 Assessment: economic pressure with high confidence.`,
@@ -607,7 +617,7 @@ ${source.text}`;
         accuracyText.textContent = `${accuracy}%`;
     }
 
-    function submitAssessment() {
+    async function submitAssessment() {
         if (solvedCurrent) {
             statusText.style.color = "orange";
             statusText.textContent = "ASSESSMENT ALREADY SUBMITTED: move to next case.";
@@ -620,26 +630,30 @@ ${source.text}`;
         const confidence = confidenceSelect.value;
         const action = actionSelect.value;
 
+        const assessmentHash = await sha256(assessment);
+        const confidenceHash = await sha256(confidence);
+        const actionHash = await sha256(action);
+
         totalAnswered++;
 
         let caseScore = 0;
         let wrong = false;
 
-        if (assessment === item.correctAssessment) {
+        if (assessmentHash === item.assessmentHash) {
             caseScore += 15;
         } else {
             wrong = true;
         }
 
-        if (confidence === item.correctConfidence) {
+        if (confidenceHash === item.confidenceHash) {
             caseScore += 7;
-        } else if (confidence === "HIGH" && item.correctConfidence !== "HIGH") {
+        } else if (confidence === "HIGH") {
             caseScore -= 6;
         } else {
             caseScore -= 2;
         }
 
-        if (action === item.correctAction) {
+        if (actionHash === item.actionHash) {
             caseScore += 10;
         } else {
             wrong = true;
@@ -655,8 +669,7 @@ ${source.text}`;
         if (wrong) {
             mistakes++;
             statusText.style.color = "red";
-            statusText.textContent =
-                `PARTIAL/WRONG: expected ${item.correctAssessment.replaceAll("_", " ")} / ${item.correctConfidence} / ${item.correctAction.replaceAll("_", " ")}.`;
+            statusText.textContent = "PARTIAL/WRONG: assessment package rejected.";
         } else {
             statusText.style.color = "lime";
             statusText.textContent = `CORRECT ASSESSMENT: +${caseScore} points.`;
@@ -687,8 +700,6 @@ ${source.text}`;
     }
 
     function generateBrief() {
-        const item = cases[currentCase];
-
         briefBox.textContent =
 `ANALYST BRIEF PREVIEW:
 Review strongest sources first.
@@ -760,7 +771,10 @@ ${getRank(accuracy, score)}`;
     fillSelect(assessmentSelect, assessments);
     fillSelect(actionSelect, actions);
 
-    submitBtn.addEventListener("click", submitAssessment);
+    submitBtn.addEventListener("click", async () => {
+        await submitAssessment();
+    });
+
     nextBtn.addEventListener("click", nextCase);
     restartBtn.addEventListener("click", restartDesk);
     briefBtn.addEventListener("click", generateBrief);
